@@ -8,6 +8,8 @@ export class GlsLine {
     }
 
     public toString(): string {
-        return `${this.name} : ${this.args.join(" ")}`;
+        return this.args.length === 0
+            ? this.name
+            : `${this.name} : ${this.args.join(" ")}`;
     }
 }
