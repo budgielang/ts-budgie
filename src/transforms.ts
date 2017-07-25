@@ -1,40 +1,24 @@
 import { readFile } from "mz/fs";
 import { EOL } from "os";
 import { basename } from "path";
-import { createSourceFile, ScriptTarget, SourceFile } from "typescript";
+import { createSourceFile, Program, ScriptTarget, SourceFile, TypeChecker } from "typescript";
 
+import { createStubProgramForFile } from "./compiler/program";
 import { GlsLine } from "./glsLine";
 import { printTransformations } from "./printing";
 import { TransformationService } from "./service";
 import { Transformation } from "./transformation";
 
-const createAsyncTransformer = <TInput>(createTransforms: (input: TInput) => Promise<Transformation[]>) => {
-    return async (input: TInput) => printTransformations(await createTransforms(input));
-};
+export const getSourceFileTransforms = (
+    sourceFile: SourceFile,
+    typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()) =>
+    TransformationService.standard(typeChecker).transform(sourceFile);
 
-const createTransformer = <TInput>(createTransforms: (input: TInput) => Transformation[]) => {
-    return (input: TInput) => printTransformations(createTransforms(input));
-};
-
-export const getSourceFileTransforms = (sourceFile: SourceFile) =>
-    TransformationService.standard().transform(sourceFile);
-
-export const getTextTransforms = (sourceText: string, fileName: string = "transform.ts") =>
+export const getTextTransforms = (sourceText: string) =>
     getSourceFileTransforms(
-        createSourceFile(fileName, sourceText, ScriptTarget.Latest));
+        createSourceFile("input.ts", sourceText, ScriptTarget.Latest));
 
-export const getLineTransforms = (sourceLines: string[], fileName?: string) =>
-    getTextTransforms(sourceLines.join(EOL));
+export const transformSourceFile = (sourceFile: SourceFile, typeChecker?: TypeChecker) =>
+    printTransformations(getSourceFileTransforms(sourceFile, typeChecker));
 
-export const getFileTransforms = async (filePath: string) =>
-    getTextTransforms(
-        (await readFile(filePath)).toString(),
-        basename(filePath));
-
-export const transformSourceFile = createTransformer(getSourceFileTransforms);
-
-export const transformText = createTransformer(getTextTransforms);
-
-export const transformLine = createTransformer(getLineTransforms);
-
-export const transformFile = createAsyncTransformer(getFileTransforms);
+export const transformText = (sourceText: string) => printTransformations(getTextTransforms(sourceText));

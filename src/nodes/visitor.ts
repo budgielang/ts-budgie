@@ -1,10 +1,11 @@
-import { Node, SourceFile, SyntaxKind } from "typescript";
+import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
 import { visitClassDeclaration } from "./visitClassDeclaration";
 import { visitPropertyDeclaration } from "./visitPropertyDeclaration";
+import { visitVariableDeclaration } from "./visitVariableDeclaration";
 
-export type INodeVisitor = (node: Node, sourceFile: SourceFile) => Transformation[] | undefined;
+export type INodeVisitor = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) => Transformation[] | undefined;
 
 export interface INodeVisitors {
     [i: number /* SyntaxKind */]: INodeVisitor;

@@ -1,23 +1,23 @@
-import * as utils from "tsutils";
 import { Node, SourceFile, SyntaxKind } from "typescript";
 import * as ts from "typescript";
+import { TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
 import { INodeVisitor, nodeVisitors } from "./visitor";
 
-export const visitNode = (node: Node, sourceFile: SourceFile) => {
+export const visitNode = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) => {
     const visitor: INodeVisitor = nodeVisitors[node.kind] === undefined
         ? visitNodeChildren
         : nodeVisitors[node.kind];
 
-    return visitor(node, sourceFile);
+    return visitor(node, sourceFile, typeChecker);
 };
 
-export const visitNodes = (nodes: Node[], sourceFile: SourceFile) => {
+export const visitNodes = (nodes: Node[], sourceFile: SourceFile, typeChecker: TypeChecker) => {
     const transformations: Transformation[] = [];
 
     for (const child of nodes) {
-        const childTransformations = visitNode(child, sourceFile);
+        const childTransformations = visitNode(child, sourceFile, typeChecker);
 
         if (childTransformations !== undefined) {
             transformations.push(...childTransformations);
@@ -27,8 +27,8 @@ export const visitNodes = (nodes: Node[], sourceFile: SourceFile) => {
     return transformations;
 };
 
-export const visitNodeChildren = (node: Node, sourceFile: SourceFile) =>
-    visitNodes(node.getChildren(), sourceFile);
+export const visitNodeChildren = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) =>
+    visitNodes(node.getChildren(), sourceFile, typeChecker);
 
-export const visitSourceFile = (sourceFile: SourceFile) =>
-    visitNodeChildren(sourceFile, sourceFile);
+export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker) =>
+    visitNodeChildren(sourceFile, sourceFile, typeChecker);

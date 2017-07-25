@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import * as fs from "fs";
+import { readFileSync } from "fs";
 import * as minimatch from "minimatch";
 import "mocha";
 import * as path from "path";
@@ -17,7 +17,7 @@ import { findGlsFilesUnder, findGlsTestSourcesUnder } from "../util";
  * @returns   Lines of code from the file.
  */
 const readFile = (directoryPath: string, fileName: string, trim: string): string => {
-    const lines = fs.readFileSync(path.join(directoryPath, fileName))
+    const lines = readFileSync(path.join(directoryPath, fileName))
         .toString()
         .replace(/\r\n|\r|\n/g, "\n")
         .trim();
