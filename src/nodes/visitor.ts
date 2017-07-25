@@ -13,5 +13,6 @@ export interface INodeVisitors {
 
 export const nodeVisitors: INodeVisitors = {
     [SyntaxKind.ClassDeclaration]: visitClassDeclaration,
-    [SyntaxKind.PropertyDeclaration]: visitPropertyDeclaration
+    [SyntaxKind.PropertyDeclaration]: visitPropertyDeclaration,
+    [SyntaxKind.VariableDeclaration]: visitVariableDeclaration,
 };

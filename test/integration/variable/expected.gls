@@ -1,0 +1,6 @@
+comment line
+variable : abc number
+variable : def string "ghi"
+variable : jkl boolean true
+variable : mno number 7
+comment line
