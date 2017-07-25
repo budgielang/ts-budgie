@@ -121,8 +121,7 @@ gulp.task("test:clean", function () {
     var del = require("del");
 
     return del([
-        "test/*.js",
-        "test/unit/**/*.js"
+        "test/*.js"
     ]);
 });
 
@@ -134,7 +133,6 @@ gulp.task("test:tslint", function () {
     return gulp
         .src([
             "./test/*.ts",
-            "./test/unit/*.ts"
         ])
         .pipe(gulpTslint({ program }));
 });
@@ -167,10 +165,6 @@ function runTests(wildcard) {
         });
 }
 
-gulp.task("test:unit", function () {
-    return runTests("test/unit/**/*.js");
-});
-
 gulp.task("test:integration", function () {
     return runTests("test/integration.js");
 });
@@ -184,7 +178,6 @@ gulp.task("test", function (callback) {
         "test:clean",
         "test:tsc",
         "test:tslint",
-        "test:unit",
         "test:integration",
         "test:end-to-end",
         callback);

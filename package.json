@@ -49,7 +49,9 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
+    "@types/mz": "0.0.31",
     "general-language-syntax": "^0.3.16",
+    "mz": "^2.6.0",
     "tsutils": "^2.8.0",
     "typescript": "^2.4.2"
   }

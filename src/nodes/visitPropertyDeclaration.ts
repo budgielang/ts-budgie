@@ -1,15 +1,17 @@
 import { CommandNames } from "general-language-syntax";
-import * as utils from "tsutils";
-import { ClassDeclaration, PropertyDeclaration, SourceFile, SyntaxKind } from "typescript";
+import { hasModifier } from "tsutils";
+import { PropertyDeclaration, SourceFile, SyntaxKind } from "typescript";
 
-import { visitChildren } from "./visitNode";
+import { GlsLine } from "../glsLine";
+import { Transformation } from "../transformation";
+import { visitNodes } from "./visitNode";
 
 const getPrivacy = (node: PropertyDeclaration) => {
-    if (utils.hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
+    if (hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
         return "private";
     }
 
-    if (utils.hasModifier(node.modifiers, SyntaxKind.ProtectedKeyword)) {
+    if (hasModifier(node.modifiers, SyntaxKind.ProtectedKeyword)) {
         return "protected";
     }
 
@@ -27,6 +29,11 @@ export const visitPropertyDeclaration = (node: PropertyDeclaration, sourceFile: 
     }
 
     return [
-        `${CommandNames.MemberVariable} : ${results.join(" ")}`
+        Transformation.fromNode(
+            node,
+            sourceFile,
+            [
+                new GlsLine(CommandNames.MemberVariable, ...results)
+            ])
     ];
 };

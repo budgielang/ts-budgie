@@ -1,6 +1,7 @@
 {
     "extends": "tslint:recommended",
     "rules": {
+        "array-type": [true, "array"],
         "linebreak-style": [false],
         "member-ordering": [false],
         "object-literal-key-quotes": [false],
