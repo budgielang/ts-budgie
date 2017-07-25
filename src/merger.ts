@@ -31,23 +31,26 @@ export class Merger<T> {
     }
 
     private getNext(lists: T[][], mergePositions: number[]): T {
-        let optimal = lists[0][mergePositions[0]];
+        let optimal: T | undefined;
+        let i = 0;
 
-        for (let i = lists.length - 1; i > 0; i -= 1) {
+        while (i < lists.length) {
             if (mergePositions[i] === lists[i].length) {
                 lists.splice(i, 1);
                 mergePositions.splice(i, 1);
-                i -= 1;
                 continue;
             }
 
             const proposal = lists[i][mergePositions[i]];
 
-            if (this.betterThan(optimal, proposal)) {
+            if (optimal === undefined || this.betterThan(optimal, proposal)) {
                 optimal = proposal;
             }
+
+            mergePositions[i] += 1;
+            i += 1;
         }
 
-        return optimal;
+        return optimal!;
     }
 }
