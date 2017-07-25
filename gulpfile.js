@@ -42,7 +42,7 @@ gulp.task("dist:dev", function () {
     return browsering
         .plugin(tsify)
         .bundle()
-        .pipe(source("Gls.js"))
+        .pipe(source("TsGls.js"))
         .pipe(buffer())
         .pipe(gulp.dest("./dist"));
 });
@@ -64,7 +64,7 @@ gulp.task("dist:min", function () {
     return browsering
         .plugin(tsify)
         .bundle()
-        .pipe(source("Gls.min.js"))
+        .pipe(source("TsGls.min.js"))
         .pipe(buffer())
         .pipe(uglify())
         .pipe(gulp.dest("./dist"));
