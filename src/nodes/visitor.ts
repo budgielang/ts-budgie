@@ -1,6 +1,7 @@
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
+import { visitBinaryExpression } from "./visitBinaryExpression";
 import { visitClassDeclaration } from "./visitClassDeclaration";
 import { visitPropertyDeclaration } from "./visitPropertyDeclaration";
 import { visitVariableDeclaration } from "./visitVariableDeclaration";
@@ -12,6 +13,7 @@ export interface INodeVisitors {
 }
 
 export const nodeVisitors: INodeVisitors = {
+    [SyntaxKind.BinaryExpression]: visitBinaryExpression,
     [SyntaxKind.ClassDeclaration]: visitClassDeclaration,
     [SyntaxKind.PropertyDeclaration]: visitPropertyDeclaration,
     [SyntaxKind.VariableDeclaration]: visitVariableDeclaration,
