@@ -1,7 +1,9 @@
 import { CommandNames } from "general-language-syntax";
 import { SourceFile, SyntaxKind, TypeChecker, VariableDeclaration } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
+import { isVariableDeclarationMultiline } from "../../parsing/attributes";
 import { getNodeTypeName } from "../../parsing/names";
 import { Transformation } from "../../transformation";
 import { visitNode, visitNodes } from "../visitNode";
@@ -39,6 +41,10 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             return undefined;
         }
 
+        const command = isVariableDeclarationMultiline(node, sourceFile)
+            ? CommandNames.VariableStart
+            : CommandNames.Variable;
+
         const value = getValue(node, sourceFile);
 
         const results = [name, type];
@@ -51,7 +57,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
                 node,
                 sourceFile,
                 [
-                    new GlsLine(CommandNames.Variable, ...results)
+                    new GlsLine(command, ...results)
                 ])
         ];
     }
