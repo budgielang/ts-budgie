@@ -1,20 +1,29 @@
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
+import { GlsLine } from "../glsLine";
+import { printTransformations } from "../printing";
 import { Transformation } from "../transformation";
-import { visitBinaryExpression } from "./visitBinaryExpression";
-import { visitClassDeclaration } from "./visitClassDeclaration";
-import { visitPropertyDeclaration } from "./visitPropertyDeclaration";
-import { visitVariableDeclaration } from "./visitVariableDeclaration";
+import { visitNode } from "./visitNode";
 
-export type INodeVisitor = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) => Transformation[] | undefined;
+const finalTextNodes = new Set<SyntaxKind>([
+    SyntaxKind.FirstLiteralToken,
+    SyntaxKind.Identifier,
+    SyntaxKind.StringLiteral,
+]);
 
-export interface INodeVisitors {
-    [i: number /* SyntaxKind */]: INodeVisitor;
+export abstract class NodeVisitor {
+    public abstract visit(node: Node, sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | undefined;
+
+    protected recurseOnValue(node: Node, sourceFile: SourceFile, typeChecker: TypeChecker): string | GlsLine {
+        if (finalTextNodes.has(node.kind)) {
+            return node.getText(sourceFile);
+        }
+
+        const subTransformations = visitNode(node, sourceFile, typeChecker);
+        if (subTransformations === undefined) {
+            return "";
+        }
+
+        return printTransformations(subTransformations)[0];
+    }
 }
-
-export const nodeVisitors: INodeVisitors = {
-    [SyntaxKind.BinaryExpression]: visitBinaryExpression,
-    [SyntaxKind.ClassDeclaration]: visitClassDeclaration,
-    [SyntaxKind.PropertyDeclaration]: visitPropertyDeclaration,
-    [SyntaxKind.VariableDeclaration]: visitVariableDeclaration,
-};

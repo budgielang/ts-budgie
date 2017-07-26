@@ -48,5 +48,27 @@ describe("GlsLine", () => {
             // Assert
             expect(printed).to.be.equal("command : (abc def) ghi (jkl mno)");
         });
+
+        it("recursively includes a GlsLine", () => {
+            // Arrange
+            const line = new GlsLine("command", new GlsLine("inner"));
+
+            // Act
+            const printed = line.toString();
+
+            // Assert
+            expect(printed).to.be.equal("command : { inner }");
+        });
+
+        it("recursively includes a GlsLine with wrapped args", () => {
+            // Arrange
+            const line = new GlsLine("command", new GlsLine("inner", "abc def"));
+
+            // Act
+            const printed = line.toString();
+
+            // Assert
+            expect(printed).to.be.equal("command : { inner : (abc def) }");
+        });
     });
 });

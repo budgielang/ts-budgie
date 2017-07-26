@@ -1,22 +1,24 @@
-const wrapArg = (arg: string) =>
-    arg.indexOf(" ") === -1
-        ? arg
-        : `(${arg})`;
+const wrapArg = (arg: string) => arg.indexOf(" ") === -1 ? arg : `(${arg})`;
+
+const recurseOnArg = (arg: string) =>
+    typeof arg === "string"
+        ? wrapArg(arg)
+        : `{ ${arg} }`;
 
 export class GlsLine {
-    public readonly name: string;
-    public readonly args: string[];
+    public readonly command: string;
+    public readonly args: (string | GlsLine)[];
 
-    public constructor(name: string, ...args: string[]) {
-        this.name = name;
+    public constructor(command: string, ...args: (string | GlsLine)[]) {
+        this.command = command;
         this.args = args;
     }
 
     public toString(): string {
         if (this.args.length === 0) {
-            return this.name;
+            return this.command;
         }
 
-        return `${this.name} : ${this.args.map(wrapArg).join(" ")}`;
+        return `${this.command} : ` + this.args.map(recurseOnArg).join(" ");
     }
 }

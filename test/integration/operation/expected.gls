@@ -17,4 +17,6 @@ operation : abc (not equal to) 7
 operation : abc or 7
 operation : abc plus 7
 operation : abc times 7
+operation : abc plus 14 plus 2
+operation : abc plus 14 plus 2
 comment line

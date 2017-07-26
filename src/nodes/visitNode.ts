@@ -3,14 +3,15 @@ import * as ts from "typescript";
 import { TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
-import { INodeVisitor, nodeVisitors } from "./visitor";
+import { NodeVisitor } from "./visitor";
+import { nodeVisitors } from "./visitors";
 
 export const visitNode = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) => {
-    const visitor: INodeVisitor = nodeVisitors[node.kind] === undefined
-        ? visitNodeChildren
-        : nodeVisitors[node.kind];
+    if (nodeVisitors[node.kind] !== undefined) {
+        return nodeVisitors[node.kind].visit(node, sourceFile, typeChecker);
+    }
 
-    return visitor(node, sourceFile, typeChecker);
+    return visitNodeChildren(node, sourceFile, typeChecker);
 };
 
 export const visitNodes = (nodes: Node[], sourceFile: SourceFile, typeChecker: TypeChecker) => {
