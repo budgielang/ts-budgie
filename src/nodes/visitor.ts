@@ -6,8 +6,11 @@ import { Transformation } from "../transformation";
 import { visitNode } from "./visitNode";
 
 const finalTextNodes = new Set<SyntaxKind>([
+    SyntaxKind.FalseKeyword,
+    SyntaxKind.TrueKeyword,
     SyntaxKind.FirstLiteralToken,
     SyntaxKind.Identifier,
+    SyntaxKind.NumericLiteral,
     SyntaxKind.StringLiteral,
 ]);
 
