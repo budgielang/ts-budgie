@@ -8,6 +8,7 @@ import { ParenthesizedExpressionVisitor } from "./parenthesizedExpressionVisitor
 import { PropertyDeclarationVisitor } from "./propertyDeclarationVisitor";
 import { VariableDeclarationVisitor } from "./variableDeclarationVisitor";
 import { NodeVisitor } from "./visitor";
+import { WhileStatementVisitor } from "./whileStatementVisitor";
 
 export interface INodeVisitors {
     [i: number /* SyntaxKind */]: NodeVisitor;
@@ -20,4 +21,5 @@ export const nodeVisitors: INodeVisitors = {
     [SyntaxKind.ParenthesizedExpression]: new ParenthesizedExpressionVisitor(),
     [SyntaxKind.PropertyDeclaration]: new PropertyDeclarationVisitor(),
     [SyntaxKind.VariableDeclaration]: new VariableDeclarationVisitor(),
+    [SyntaxKind.WhileStatement]: new WhileStatementVisitor(),
 };
