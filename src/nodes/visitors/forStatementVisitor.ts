@@ -2,9 +2,8 @@ import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
-import { getNodeTypeName, getNumericTypeName } from "../../parsing/names";
+import { getNumericTypeName } from "../../parsing/names";
 import { Transformation } from "../../transformation";
-import { visitNode, visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
 
 const isIncrementorIncreasingByOne = (target: string, incrementor: ts.Expression) => {
@@ -34,8 +33,8 @@ const getConditionEnd = (target: string, condition: ts.Expression, sourceFile: t
 
 // name, type, start, end
 export class ForStatementVisitor extends NodeVisitor {
-    public visit(node: ts.ForStatement, sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker) {
-        const statement = this.recurseOnValue(node.statement, sourceFile, typeChecker);
+    public visit(node: ts.ForStatement) {
+        const statement = this.router.recurseIntoValue(node.statement);
         const { condition, incrementor, initializer } = node;
         if (
             condition === undefined
@@ -59,7 +58,7 @@ export class ForStatementVisitor extends NodeVisitor {
             return undefined;
         }
 
-        const end = getConditionEnd(name, condition, sourceFile);
+        const end = getConditionEnd(name, condition, this.sourceFile);
         if (end === undefined) {
             return undefined;
         }
@@ -69,12 +68,12 @@ export class ForStatementVisitor extends NodeVisitor {
             end
         ]);
 
-        const start = declaration.initializer.getText(sourceFile);
+        const start = declaration.initializer.getText(this.sourceFile);
 
         return [
             Transformation.fromNode(
                 node,
-                sourceFile,
+                this.sourceFile,
                 [
                     new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end),
                     statement as GlsLine,

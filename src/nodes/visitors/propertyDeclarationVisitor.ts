@@ -1,10 +1,9 @@
 import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
-import { Expression, PropertyDeclaration, SourceFile, SyntaxKind, TypeChecker } from "typescript";
+import { Expression, PropertyDeclaration, SyntaxKind } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
-import { visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
 
 const getPrivacy = (node: PropertyDeclaration) => {
@@ -20,10 +19,10 @@ const getPrivacy = (node: PropertyDeclaration) => {
 };
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
-    public visit(node: PropertyDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {
+    public visit(node: PropertyDeclaration) {
         const privacy = getPrivacy(node);
-        const instanceName = node.name.getText(sourceFile);
-        const value = this.getInitializerValue(node.initializer, sourceFile, typeChecker);
+        const instanceName = node.name.getText(this.sourceFile);
+        const value = this.getInitializerValue(node.initializer);
 
         const results: (string | GlsLine)[] = [privacy, instanceName];
         if (value !== undefined) {
@@ -33,18 +32,18 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         return [
             Transformation.fromNode(
                 node,
-                sourceFile,
+                this.sourceFile,
                 [
                     new GlsLine(CommandNames.MemberVariable, ...results)
                 ])
         ];
     }
 
-    private getInitializerValue(initializer: Expression | undefined, sourceFile: SourceFile, typeChecker: TypeChecker) {
+    private getInitializerValue(initializer: Expression | undefined) {
         if (initializer === undefined) {
             return undefined;
         }
 
-        return this.recurseOnValue(initializer, sourceFile, typeChecker);
+        return this.router.recurseIntoValue(initializer);
     }
 }

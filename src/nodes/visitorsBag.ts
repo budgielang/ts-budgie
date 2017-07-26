@@ -1,29 +1,31 @@
-import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
+import { SourceFile, TypeChecker } from "typescript";
 
-import { Transformation } from "../transformation";
+import { NodeVisitRouter } from "./router";
 import { NodeVisitor } from "./visitor";
-import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
-import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
-import { ForStatementVisitor } from "./visitors/forStatementVisitor";
-import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
-import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
-import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
-import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
-import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
-import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
 
-export interface IVisitorsBag {
-    [i: number /* SyntaxKind */]: NodeVisitor;
-}
-
-export const visitorsBag: IVisitorsBag = {
-    [SyntaxKind.BinaryExpression]: new BinaryExpressionVisitor(),
-    [SyntaxKind.ClassDeclaration]: new ClassDeclarationVisitor(),
-    [SyntaxKind.ForStatement]: new ForStatementVisitor(),
-    [SyntaxKind.IfStatement]: new IfStatementVisitor(),
-    [SyntaxKind.ParenthesizedExpression]: new ParenthesizedExpressionVisitor(),
-    [SyntaxKind.PropertyDeclaration]: new PropertyDeclarationVisitor(),
-    [SyntaxKind.TypeLiteral]: new TypeLiteralVisitor(),
-    [SyntaxKind.VariableDeclaration]: new VariableDeclarationVisitor(),
-    [SyntaxKind.WhileStatement]: new WhileStatementVisitor(),
+export type INodeVisitorCreator = typeof NodeVisitor & {
+    new(router: NodeVisitRouter, sourceFile: SourceFile, typeChecker: TypeChecker): NodeVisitor;
 };
+
+export class VisitorsBag {
+    private readonly instances = new Map<INodeVisitorCreator, NodeVisitor>();
+    private readonly router: NodeVisitRouter;
+    private readonly sourceFile: SourceFile;
+    private readonly typeChecker: TypeChecker;
+
+    public constructor(router: NodeVisitRouter, sourceFile: SourceFile, typeChecker: TypeChecker) {
+        this.router = router;
+        this.sourceFile = sourceFile;
+        this.typeChecker = typeChecker;
+    }
+
+    public createVisitor(creator: INodeVisitorCreator) {
+        if (this.instances.has(creator)) {
+            return this.instances.get(creator)!;
+        }
+
+        const visitor = new creator(this.router, this.sourceFile, this.typeChecker);
+        this.instances.set(creator, visitor);
+        return visitor;
+    }
+}

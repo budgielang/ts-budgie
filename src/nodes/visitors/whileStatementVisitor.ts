@@ -1,20 +1,18 @@
 import { CommandNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
-import { SourceFile, Statement, SyntaxKind, TypeChecker, WhileStatement } from "typescript";
+import { WhileStatement } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
-import { visitNode, visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
 
 export class WhileStatementVisitor extends NodeVisitor {
-    public visit(node: WhileStatement, sourceFile: SourceFile, typeChecker: TypeChecker) {
-        const expression = this.recurseOnValue(node.expression, sourceFile, typeChecker);
+    public visit(node: WhileStatement) {
+        const expression = this.router.recurseIntoValue(node.expression);
         const transformations: Transformation[] = [];
         const { statement } = node;
 
         if (statement !== undefined) {
-            const thenBody = visitNode(statement, sourceFile, typeChecker);
+            const thenBody = this.router.recurseIntoNode(statement);
             if (thenBody !== undefined) {
                 transformations.push(...thenBody);
             }
@@ -23,7 +21,7 @@ export class WhileStatementVisitor extends NodeVisitor {
         return [
             Transformation.fromNode(
                 node,
-                sourceFile,
+                this.sourceFile,
                 [
                     new GlsLine(CommandNames.WhileStart, expression),
                     ...transformations,

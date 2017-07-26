@@ -1,11 +1,9 @@
 import { CommandNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
-import { BinaryExpression, BinaryOperatorToken, Expression, isBinaryExpression, SourceFile, SyntaxKind, TypeChecker } from "typescript";
+import { BinaryExpression, Expression, isBinaryExpression } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { operators } from "../../parsing/aliases";
 import { Transformation } from "../../transformation";
-import { visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
 
 const collectOperationContents = (node: BinaryExpression): (string | Expression)[] => {
@@ -30,23 +28,23 @@ const collectOperationContents = (node: BinaryExpression): (string | Expression)
 };
 
 export class BinaryExpressionVisitor extends NodeVisitor {
-    public visit(node: BinaryExpression, sourceFile: SourceFile, typeChecker: TypeChecker) {
+    public visit(node: BinaryExpression) {
         const contents = collectOperationContents(node)
-            .map((content) => this.recurseOnOperationContents(content, sourceFile, typeChecker));
+            .map((content) => this.recurseOnOperationContents(content));
 
         return [
             Transformation.fromNode(
                 node,
-                sourceFile,
+                this.sourceFile,
                 [
                     new GlsLine(CommandNames.Operation, ...contents)
                 ])
         ];
     }
 
-    private recurseOnOperationContents(content: string | Expression, sourceFile: SourceFile, typeChecker: TypeChecker) {
+    private recurseOnOperationContents(content: string | Expression) {
         return typeof content === "string"
             ? content
-            : this.recurseOnValue(content, sourceFile, typeChecker);
+            : this.router.recurseIntoValue(content);
     }
 }

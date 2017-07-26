@@ -1,13 +1,12 @@
 import { CommandNames } from "general-language-syntax";
-import { ClassDeclaration, SourceFile, TypeChecker } from "typescript";
+import { ClassDeclaration } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
-import { visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
 
 export class ClassDeclarationVisitor extends NodeVisitor {
-    public visit(node: ClassDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {
+    public visit(node: ClassDeclaration) {
         if (node.name === undefined) {
             return undefined;
         }
@@ -15,10 +14,10 @@ export class ClassDeclarationVisitor extends NodeVisitor {
         return [
             Transformation.fromNode(
                 node,
-                sourceFile,
+                this.sourceFile,
                 [
                     new GlsLine(CommandNames.ClassStart, node.name.text),
-                    ...visitNodes(node.members, sourceFile, typeChecker),
+                    ...this.router.recurseIntoNodes(node.members),
                     new GlsLine(CommandNames.ClassEnd)
                 ])
         ];

@@ -1,32 +1,19 @@
-import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
+import { Node, SourceFile, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
 import { printTransformations } from "../printing";
 import { Transformation } from "../transformation";
-import { visitNode } from "./visitNode";
-
-const finalTextNodes = new Set<SyntaxKind>([
-    SyntaxKind.FalseKeyword,
-    SyntaxKind.TrueKeyword,
-    SyntaxKind.FirstLiteralToken,
-    SyntaxKind.Identifier,
-    SyntaxKind.NumericLiteral,
-    SyntaxKind.StringLiteral,
-]);
+import { NodeVisitRouter } from "./router";
 
 export abstract class NodeVisitor {
-    public abstract visit(node: Node, sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | undefined;
+    public abstract visit(node: Node): Transformation[] | undefined;
 
-    protected recurseOnValue(node: Node, sourceFile: SourceFile, typeChecker: TypeChecker): string | GlsLine {
-        if (finalTextNodes.has(node.kind)) {
-            return node.getText(sourceFile);
-        }
+    protected readonly router: NodeVisitRouter;
+    protected readonly sourceFile: SourceFile;
+    protected readonly typeChecker: TypeChecker;
 
-        const subTransformations = visitNode(node, sourceFile, typeChecker);
-        if (subTransformations === undefined) {
-            return "";
-        }
-
-        return printTransformations(subTransformations)[0];
+    public constructor(router: NodeVisitRouter, sourceFile: SourceFile, typeChecker: TypeChecker) {
+        this.router = router;
+        this.sourceFile = sourceFile;
+        this.typeChecker = typeChecker;
     }
 }

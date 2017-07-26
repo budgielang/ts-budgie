@@ -2,7 +2,7 @@ import { SourceFile, TypeChecker } from "typescript";
 
 import { visitEachComment } from "./comments/visitEachComment";
 import { Merger } from "./merger";
-import { visitSourceFile } from "./nodes/visitNode";
+import { visitSourceFile } from "./nodes/visitSourceFile";
 import { Transformation } from "./transformation";
 
 export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) => Transformation[];
