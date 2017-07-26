@@ -3,12 +3,10 @@ import { hasModifier } from "tsutils";
 import { SourceFile, SyntaxKind, TypeChecker, VariableDeclaration } from "typescript";
 
 import { GlsLine } from "../../glsLine";
+import { getNodeTypeName } from "../../parsing/names";
 import { Transformation } from "../../transformation";
 import { visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
-
-const getType = (node: VariableDeclaration, typeChecker: TypeChecker) =>
-    (typeChecker.getTypeAtLocation(node) as any).intrinsicName;
 
 const getValue = (node: VariableDeclaration, sourceFile: SourceFile) => {
     return node.initializer === undefined
@@ -19,7 +17,7 @@ const getValue = (node: VariableDeclaration, sourceFile: SourceFile) => {
 export class VariableDeclarationVisitor extends NodeVisitor {
     public visit(node: VariableDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {
         const name = node.name.getText(sourceFile);
-        const type = getType(node, typeChecker);
+        const type = getNodeTypeName(node, typeChecker);
 
         if (type === undefined) {
             return undefined;

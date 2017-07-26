@@ -4,6 +4,7 @@ import { Transformation } from "../transformation";
 import { NodeVisitor } from "./visitor";
 import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
+import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
@@ -17,6 +18,7 @@ export interface IVisitorsBag {
 export const visitorsBag: IVisitorsBag = {
     [SyntaxKind.BinaryExpression]: new BinaryExpressionVisitor(),
     [SyntaxKind.ClassDeclaration]: new ClassDeclarationVisitor(),
+    [SyntaxKind.ForStatement]: new ForStatementVisitor(),
     [SyntaxKind.IfStatement]: new IfStatementVisitor(),
     [SyntaxKind.ParenthesizedExpression]: new ParenthesizedExpressionVisitor(),
     [SyntaxKind.PropertyDeclaration]: new PropertyDeclarationVisitor(),
