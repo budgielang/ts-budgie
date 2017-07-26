@@ -71,7 +71,7 @@ gulp.task("dist:min", function () {
 });
 
 gulp.task("dist", function (callback) {
-    require("run-sequence")("dist:clean", "dist:dev", "dist:min", callback);
+    require("run-sequence")("dist:clean", "dist:dev"/*, "dist:min"*/, callback);
 });
 
 gulp.task("clean", function (callback) {
@@ -121,7 +121,8 @@ gulp.task("test:clean", function () {
     var del = require("del");
 
     return del([
-        "test/*.js"
+        "test/*.js",
+        "test/unit/**/*.js"
     ]);
 });
 
@@ -133,6 +134,7 @@ gulp.task("test:tslint", function () {
     return gulp
         .src([
             "./test/*.ts",
+            "./test/unit/*.ts"
         ])
         .pipe(gulpTslint({ program }));
 });
@@ -165,6 +167,10 @@ function runTests(wildcard) {
         });
 }
 
+gulp.task("test:unit", function () {
+    return runTests("test/unit/**/*.js");
+});
+
 gulp.task("test:integration", function () {
     return runTests("test/integration.js");
 });
@@ -178,6 +184,7 @@ gulp.task("test", function (callback) {
         "test:clean",
         "test:tsc",
         "test:tslint",
+        "test:unit",
         "test:integration",
         "test:end-to-end",
         callback);

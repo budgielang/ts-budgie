@@ -1,3 +1,8 @@
+const wrapArg = (arg: string) =>
+    arg.indexOf(" ") === -1
+        ? arg
+        : `(${arg})`;
+
 export class GlsLine {
     public readonly name: string;
     public readonly args: string[];
@@ -8,8 +13,10 @@ export class GlsLine {
     }
 
     public toString(): string {
-        return this.args.length === 0
-            ? this.name
-            : `${this.name} : ${this.args.join(" ")}`;
+        if (this.args.length === 0) {
+            return this.name;
+        }
+
+        return `${this.name} : ${this.args.map(wrapArg).join(" ")}`;
     }
 }
