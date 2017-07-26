@@ -1,6 +1,6 @@
 comment line
-variable : abc number
+variable : abc float
 variable : def string "ghi"
 variable : jkl boolean true
-variable : mno number 7
+variable : mno float 7
 comment line

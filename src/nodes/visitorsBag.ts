@@ -8,6 +8,7 @@ import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
+import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
 import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
 
@@ -22,6 +23,7 @@ export const visitorsBag: IVisitorsBag = {
     [SyntaxKind.IfStatement]: new IfStatementVisitor(),
     [SyntaxKind.ParenthesizedExpression]: new ParenthesizedExpressionVisitor(),
     [SyntaxKind.PropertyDeclaration]: new PropertyDeclarationVisitor(),
+    [SyntaxKind.TypeLiteral]: new TypeLiteralVisitor(),
     [SyntaxKind.VariableDeclaration]: new VariableDeclarationVisitor(),
     [SyntaxKind.WhileStatement]: new WhileStatementVisitor(),
 };

@@ -1,12 +1,29 @@
 import { CommandNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
 import { SourceFile, SyntaxKind, TypeChecker, VariableDeclaration } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { getNodeTypeName } from "../../parsing/names";
 import { Transformation } from "../../transformation";
-import { visitNodes } from "../visitNode";
+import { visitNode, visitNodes } from "../visitNode";
 import { NodeVisitor } from "../visitor";
+
+const getLocalNodeTypeName = (node: VariableDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) => {
+    if (node.type === undefined) {
+        return getNodeTypeName(node, typeChecker);
+    }
+
+    const quickType = getNodeTypeName(node.type, typeChecker);
+    if (quickType !== undefined) {
+        return quickType;
+    }
+
+    const deepType = visitNode(node.type, sourceFile, typeChecker);
+    if (deepType === undefined) {
+        return undefined;
+    }
+
+    return deepType[0].output[0] as GlsLine;
+};
 
 const getValue = (node: VariableDeclaration, sourceFile: SourceFile) => {
     return node.initializer === undefined
@@ -17,8 +34,7 @@ const getValue = (node: VariableDeclaration, sourceFile: SourceFile) => {
 export class VariableDeclarationVisitor extends NodeVisitor {
     public visit(node: VariableDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {
         const name = node.name.getText(sourceFile);
-        const type = getNodeTypeName(node, typeChecker);
-
+        const type = getLocalNodeTypeName(node, sourceFile, typeChecker);
         if (type === undefined) {
             return undefined;
         }
