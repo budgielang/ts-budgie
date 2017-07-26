@@ -1,22 +1,18 @@
 import { SourceFile, TypeChecker } from "typescript";
 
 import { NodeVisitRouter } from "./router";
-import { NodeVisitor } from "./visitor";
+import { INodeVisitorDependencies, NodeVisitor } from "./visitor";
 
 export type INodeVisitorCreator = typeof NodeVisitor & {
-    new(router: NodeVisitRouter, sourceFile: SourceFile, typeChecker: TypeChecker): NodeVisitor;
+    new(dependencies: INodeVisitorDependencies): NodeVisitor;
 };
 
 export class VisitorsBag {
     private readonly instances = new Map<INodeVisitorCreator, NodeVisitor>();
-    private readonly router: NodeVisitRouter;
-    private readonly sourceFile: SourceFile;
-    private readonly typeChecker: TypeChecker;
+    private readonly dependencies: INodeVisitorDependencies;
 
-    public constructor(router: NodeVisitRouter, sourceFile: SourceFile, typeChecker: TypeChecker) {
-        this.router = router;
-        this.sourceFile = sourceFile;
-        this.typeChecker = typeChecker;
+    public constructor(dependencies: INodeVisitorDependencies) {
+        this.dependencies = dependencies;
     }
 
     public createVisitor(creator: INodeVisitorCreator) {
@@ -24,7 +20,7 @@ export class VisitorsBag {
             return this.instances.get(creator)!;
         }
 
-        const visitor = new creator(this.router, this.sourceFile, this.typeChecker);
+        const visitor = new creator(this.dependencies);
         this.instances.set(creator, visitor);
         return visitor;
     }

@@ -3,6 +3,7 @@ import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 import { GlsLine } from "../glsLine";
 import { printTransformations } from "../printing";
 import { Transformation } from "../transformation";
+import { VisitorContext } from "./context";
 import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
@@ -16,22 +17,30 @@ const finalTextNodes = new Set<SyntaxKind>([
     SyntaxKind.StringLiteral,
 ]);
 
+export interface INodeVisitRouterDependencies {
+    sourceFile: SourceFile;
+    typeChecker: TypeChecker;
+    visitorContext: VisitorContext;
+    visitorCreatorsBag: VisitorCreatorsBag;
+}
+
 export class NodeVisitRouter {
-    private readonly sourceFile: SourceFile;
-    private readonly typeChecker: TypeChecker;
-    private readonly visitorCreatorsBag: VisitorCreatorsBag;
+    private readonly dependencies: INodeVisitRouterDependencies;
     private readonly visitorsBag: VisitorsBag;
 
-    public constructor(sourceFile: SourceFile, typeChecker: TypeChecker, visitorCreatorsBag: VisitorCreatorsBag) {
-        this.sourceFile = sourceFile;
-        this.typeChecker = typeChecker;
-        this.visitorCreatorsBag = visitorCreatorsBag;
-        this.visitorsBag = new VisitorsBag(this, sourceFile, typeChecker);
+    public constructor(dependencies: INodeVisitRouterDependencies) {
+        this.dependencies = dependencies;
+        this.visitorsBag = new VisitorsBag({
+            router: this,
+            sourceFile: dependencies.sourceFile,
+            typeChecker: dependencies.typeChecker,
+            visitorContext: dependencies.visitorContext,
+        });
     }
 
     public recurseIntoValue(node: Node): string | GlsLine {
         if (finalTextNodes.has(node.kind)) {
-            return node.getText(this.sourceFile);
+            return node.getText(this.dependencies.sourceFile);
         }
 
         const subTransformations = this.recurseIntoNode(node);
@@ -43,7 +52,7 @@ export class NodeVisitRouter {
     }
 
     public recurseIntoNode(node: Node): Transformation[] | undefined {
-        const creator = this.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
+        const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
         if (creator === undefined) {
             return this.recurseIntoChildren(node);
         }
