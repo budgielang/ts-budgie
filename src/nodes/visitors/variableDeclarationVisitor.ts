@@ -1,8 +1,8 @@
 import { CommandNames } from "general-language-syntax";
 import { SourceFile, SyntaxKind, TypeChecker, VariableDeclaration } from "typescript";
-import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
+import { getTypeAlias } from "../../parsing/aliases";
 import { isVariableDeclarationMultiline } from "../../parsing/attributes";
 import { getNodeTypeName } from "../../parsing/names";
 import { Transformation } from "../../transformation";
@@ -24,13 +24,15 @@ const getLocalNodeTypeName = (node: VariableDeclaration, sourceFile: SourceFile,
         return undefined;
     }
 
-    return deepType[0].output[0] as GlsLine;
-};
+    if (deepType[0] !== undefined) {
+        return deepType[0].output[0] as GlsLine;
+    }
 
-const getValue = (node: VariableDeclaration, sourceFile: SourceFile) => {
-    return node.initializer === undefined
-        ? undefined
-        : node.initializer.getText(sourceFile);
+    if (node.initializer === undefined) {
+        return undefined;
+    }
+
+    return getTypeAlias(node.type.getText(sourceFile));
 };
 
 export class VariableDeclarationVisitor extends NodeVisitor {
@@ -45,7 +47,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             ? CommandNames.VariableStart
             : CommandNames.Variable;
 
-        const value = getValue(node, sourceFile);
+        const value = this.getValue(node, sourceFile, typeChecker);
 
         const results = [name, type];
         if (value !== undefined) {
@@ -60,5 +62,11 @@ export class VariableDeclarationVisitor extends NodeVisitor {
                     new GlsLine(command, ...results)
                 ])
         ];
+    }
+
+    private getValue(node: VariableDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {
+        return node.initializer === undefined
+            ? undefined
+            : this.recurseOnValue(node.initializer, sourceFile, typeChecker);
     }
 }
