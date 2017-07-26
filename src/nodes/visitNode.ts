@@ -4,11 +4,11 @@ import { TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
 import { NodeVisitor } from "./visitor";
-import { nodeVisitors } from "./visitors";
+import { visitorsBag } from "./visitorsBag";
 
 export const visitNode = (node: Node, sourceFile: SourceFile, typeChecker: TypeChecker) => {
-    if (nodeVisitors[node.kind] !== undefined) {
-        return nodeVisitors[node.kind].visit(node, sourceFile, typeChecker);
+    if (visitorsBag[node.kind] !== undefined) {
+        return visitorsBag[node.kind].visit(node, sourceFile, typeChecker);
     }
 
     return visitNodeChildren(node, sourceFile, typeChecker);

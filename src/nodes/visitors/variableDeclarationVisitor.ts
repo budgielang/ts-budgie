@@ -2,10 +2,10 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { SourceFile, SyntaxKind, TypeChecker, VariableDeclaration } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 const getType = (node: VariableDeclaration, typeChecker: TypeChecker) =>
     (typeChecker.getTypeAtLocation(node) as any).intrinsicName;

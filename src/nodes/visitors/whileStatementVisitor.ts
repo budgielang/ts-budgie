@@ -2,10 +2,10 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { SourceFile, Statement, SyntaxKind, TypeChecker, WhileStatement } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNode, visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNode, visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 export class WhileStatementVisitor extends NodeVisitor {
     public visit(node: WhileStatement, sourceFile: SourceFile, typeChecker: TypeChecker) {

@@ -1,10 +1,10 @@
 import { CommandNames } from "general-language-syntax";
 import { ClassDeclaration, SourceFile, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 export class ClassDeclarationVisitor extends NodeVisitor {
     public visit(node: ClassDeclaration, sourceFile: SourceFile, typeChecker: TypeChecker) {

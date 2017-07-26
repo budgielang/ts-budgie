@@ -2,11 +2,11 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { BinaryExpression, BinaryOperatorToken, Expression, isBinaryExpression, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { operators } from "../parsing/aliases";
-import { Transformation } from "../transformation";
-import { visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { operators } from "../../parsing/aliases";
+import { Transformation } from "../../transformation";
+import { visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 const collectOperationContents = (node: BinaryExpression): (string | Expression)[] => {
     const contents: (string | Expression)[] = [];

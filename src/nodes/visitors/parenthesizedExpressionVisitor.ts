@@ -2,10 +2,10 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { ParenthesizedExpression, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNodes } from "./../visitNode";
+import { NodeVisitor } from "./../visitor";
 
 export class ParenthesizedExpressionVisitor extends NodeVisitor {
     public visit(node: ParenthesizedExpression, sourceFile: SourceFile, typeChecker: TypeChecker) {

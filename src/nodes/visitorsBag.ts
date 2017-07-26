@@ -1,20 +1,20 @@
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
-import { BinaryExpressionVisitor } from "./binaryExpressionVisitor";
-import { ClassDeclarationVisitor } from "./classDeclarationVisitor";
-import { IfStatementVisitor } from "./ifStatementVisitor";
-import { ParenthesizedExpressionVisitor } from "./parenthesizedExpressionVisitor";
-import { PropertyDeclarationVisitor } from "./propertyDeclarationVisitor";
-import { VariableDeclarationVisitor } from "./variableDeclarationVisitor";
 import { NodeVisitor } from "./visitor";
-import { WhileStatementVisitor } from "./whileStatementVisitor";
+import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
+import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
+import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
+import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
+import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
+import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
+import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
 
-export interface INodeVisitors {
+export interface IVisitorsBag {
     [i: number /* SyntaxKind */]: NodeVisitor;
 }
 
-export const nodeVisitors: INodeVisitors = {
+export const visitorsBag: IVisitorsBag = {
     [SyntaxKind.BinaryExpression]: new BinaryExpressionVisitor(),
     [SyntaxKind.ClassDeclaration]: new ClassDeclarationVisitor(),
     [SyntaxKind.IfStatement]: new IfStatementVisitor(),

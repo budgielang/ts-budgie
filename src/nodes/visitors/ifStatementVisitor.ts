@@ -2,10 +2,10 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { IfStatement, SourceFile, Statement, SyntaxKind, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNode, visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNode, visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 const replaceWithElseCommands = (elseStatement: Statement, sourceFile: SourceFile, transformations: Transformation[] | undefined) => {
     // If there are no commands, just end with an else command

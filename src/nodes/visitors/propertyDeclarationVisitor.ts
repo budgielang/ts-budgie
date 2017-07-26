@@ -2,10 +2,10 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { Expression, PropertyDeclaration, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
-import { visitNodes } from "./visitNode";
-import { NodeVisitor } from "./visitor";
+import { GlsLine } from "../../glsLine";
+import { Transformation } from "../../transformation";
+import { visitNodes } from "../visitNode";
+import { NodeVisitor } from "../visitor";
 
 const getPrivacy = (node: PropertyDeclaration) => {
     if (hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
