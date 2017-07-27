@@ -1,0 +1,7 @@
+comment line
+string length : "abc"
+variable : def string "ghi"
+string length : def
+variable : jkl int { string length : "abc" }
+variable : mno int { string length : "def" }
+comment line

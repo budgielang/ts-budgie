@@ -7,6 +7,7 @@ import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
+import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
 import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
@@ -24,6 +25,7 @@ const creators: ISyntaxKindDictionary<typeof NodeVisitor> = {
     [SyntaxKind.ForStatement]: ForStatementVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
     [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
+    [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
     [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
     [SyntaxKind.SourceFile]: SourceFileVisitor,
     [SyntaxKind.TypeLiteral]: TypeLiteralVisitor,

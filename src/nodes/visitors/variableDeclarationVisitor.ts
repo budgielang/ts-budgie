@@ -4,6 +4,7 @@ import { VariableDeclaration } from "typescript";
 import { GlsLine } from "../../glsLine";
 import { isVariableDeclarationMultiline } from "../../parsing/attributes";
 import { Transformation } from "../../transformation";
+import { getTypeAdjustment } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
 export class VariableDeclarationVisitor extends NodeVisitor {
@@ -15,14 +16,26 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             ? CommandNames.VariableStart
             : CommandNames.Variable;
 
+        // If we have a type, tell the value parser to use it
+        // This is necessary for some commands, such as lists
         if (interpretedType !== undefined) {
             this.context.setTypeCoercion(interpretedType);
         }
 
+        // A value may indicate to us better typing info than what we already have
         const value = this.getValue(node);
         const typeModified = this.context.exitTypeCoercion()!;
         if (typeModified !== undefined) {
             interpretedType = typeModified;
+        }
+
+        // Some values may request a more specific intepreted type,
+        // such as length commands switching from "float" to "int"
+        if (value !== undefined) {
+            const manualTypeAdjustment = getTypeAdjustment(typeModified, value);
+            if (manualTypeAdjustment !== undefined) {
+                interpretedType = manualTypeAdjustment;
+            }
         }
 
         const results: (string | GlsLine)[] = [name, interpretedType];

@@ -3,6 +3,7 @@ import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, SyntaxKin
 
 import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
+import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { AutomaticAliaser } from "./automaticAliaser";
 import { NumericAliaser } from "./numericAliaser";
@@ -13,15 +14,14 @@ type INodeChildPasser = (node: Node) => Node;
 
 const createChildGetter = (index = 0) => (node: Node) => node.getChildren()[index];
 
-// todo: allow for hints from node initializer
 export class RootAliaser implements INodeAliaser {
+    private readonly flagResolver: TypeFlagsResolver;
     private readonly passThroughTypes: Map<SyntaxKind, INodeChildPasser>;
-
     private readonly typesWithKnownTypeNames: Map<SyntaxKind, INodeAliaser>;
-
     private readonly typeChecker: TypeChecker;
 
     public constructor(typeChecker: TypeChecker) {
+        this.flagResolver = new TypeFlagsResolver();
         this.typeChecker = typeChecker;
 
         this.passThroughTypes = new Map<SyntaxKind, INodeChildPasser>([
@@ -54,6 +54,14 @@ export class RootAliaser implements INodeAliaser {
         const passThroughType = this.passThroughTypes.get(node.kind);
         if (passThroughType !== undefined) {
             return this.getFriendlyTypeNameForNode(passThroughType(node));
+        }
+
+        // We use real type checker last because our checks can know the difference
+        // between seemingly identical types, such as "float" or "int" within "number"
+        const { flags } = this.typeChecker.getTypeAtLocation(node);
+        const resolvedFlagType = this.flagResolver.resolve(flags);
+        if (resolvedFlagType !== undefined) {
+            return resolvedFlagType;
         }
 
         return "unknown";
