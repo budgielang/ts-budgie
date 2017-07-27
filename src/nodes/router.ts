@@ -1,6 +1,7 @@
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { GlsLine } from "../glsLine";
+import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { printTransformations } from "../printing";
 import { Transformation } from "../transformation";
 import { VisitorContext } from "./context";
@@ -18,6 +19,7 @@ const finalTextNodes = new Set<SyntaxKind>([
 ]);
 
 export interface INodeVisitRouterDependencies {
+    aliaser: RootAliaser;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
     visitorContext: VisitorContext;
@@ -31,6 +33,7 @@ export class NodeVisitRouter {
     public constructor(dependencies: INodeVisitRouterDependencies) {
         this.dependencies = dependencies;
         this.visitorsBag = new VisitorsBag({
+            aliaser: dependencies.aliaser,
             router: this,
             sourceFile: dependencies.sourceFile,
             typeChecker: dependencies.typeChecker,

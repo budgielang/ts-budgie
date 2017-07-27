@@ -1,19 +1,5 @@
 import { SyntaxKind } from "typescript";
 
-const knownTypeAliases: { [i: string]: string } = {
-    number: "float"
-};
-
-export const getTypeAlias = (type: string): string => {
-    if (type.substring(type.length - "[]".length) === "[]") {
-        return getTypeAlias(type.substring(0, type.length - "[]".length)) + "[]";
-    }
-
-    return knownTypeAliases[type] === undefined
-        ? type
-        : knownTypeAliases[type];
-};
-
 export const operators = {
     [SyntaxKind.AmpersandAmpersandToken]: "and",
     [SyntaxKind.MinusEqualsToken]: "decrease by",

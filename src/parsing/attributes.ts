@@ -1,11 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import {
-    Node, SourceFile, SyntaxKind, TypeChecker, VariableDeclaration
-} from "typescript";
-import * as ts from "typescript";
-
-import { GlsLine } from "../glsLine";
-import { getTypeAlias } from "./aliases";
+import { SourceFile, VariableDeclaration } from "typescript";
 
 export const isVariableDeclarationMultiline = (node: VariableDeclaration, sourceFile: SourceFile) => {
     if (node.initializer === undefined) {

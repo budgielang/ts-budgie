@@ -2,5 +2,5 @@ comment line
 variable : abc float
 variable : def string "ghi"
 variable : jkl boolean true
-variable : mno float 7
+variable : mno int 7
 comment line

@@ -1,24 +1,14 @@
 import { CommandNames } from "general-language-syntax";
 import { IndexSignatureDeclaration, isIndexSignatureDeclaration, TypeLiteralNode } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { getNodeTypeName } from "../../parsing/names";
+import { getDictionaryTypeNameFromNode } from "../../parsing/dictionaries";
 import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
 export class TypeLiteralVisitor extends NodeVisitor {
     public visit(node: TypeLiteralNode) {
-        if (node.members.length !== 1) {
-            return undefined;
-        }
-
-        const typeMember = node.members[0];
-        if (!isIndexSignatureDeclaration(typeMember)) {
-            return undefined;
-        }
-
-        const valueType = this.getParameterValueType(typeMember);
-        if (valueType === undefined) {
+        const dictionaryTypeName = getDictionaryTypeNameFromNode(node, this.aliaser.getFriendlyTypeNameForNode);
+        if (dictionaryTypeName === undefined || dictionaryTypeName === "object") {
             return undefined;
         }
 
@@ -27,16 +17,8 @@ export class TypeLiteralVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.DictionaryType, "string", valueType)
+                    dictionaryTypeName
                 ])
         ];
-    }
-
-    private getParameterValueType(typeMember: IndexSignatureDeclaration) {
-        if (typeMember.type === undefined) {
-            return undefined;
-        }
-
-        return getNodeTypeName(typeMember.type, this.typeChecker);
     }
 }

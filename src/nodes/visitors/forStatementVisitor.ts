@@ -2,7 +2,7 @@ import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
-import { getNumericTypeName } from "../../parsing/names";
+import { getNumericTypeNameFromUsages } from "../../parsing/numerics";
 import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -63,7 +63,7 @@ export class ForStatementVisitor extends NodeVisitor {
             return undefined;
         }
 
-        const realType = getNumericTypeName([
+        const realType = getNumericTypeNameFromUsages([
             declaration.initializer.text,
             end
         ]);

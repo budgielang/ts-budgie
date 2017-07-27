@@ -1,6 +1,7 @@
 import { Node, SyntaxKind } from "typescript";
 
 import { NodeVisitor } from "./visitor";
+import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpressionVisitor";
 import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
@@ -17,6 +18,7 @@ interface ISyntaxKindDictionary<TContents> {
 }
 
 const creators: ISyntaxKindDictionary<typeof NodeVisitor> = {
+    [SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
     [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,
