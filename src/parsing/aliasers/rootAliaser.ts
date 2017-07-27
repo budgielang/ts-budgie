@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, SyntaxKind, TypeChecker, TypeLiteralNode } from "typescript";
+import { isVariableDeclaration, Node, SyntaxKind, TypeChecker, TypeLiteralNode } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
@@ -56,12 +56,27 @@ export class RootAliaser implements INodeAliaser {
             return this.getFriendlyTypeNameForNode(passThroughType(node));
         }
 
-        // We use real type checker last because our checks can know the difference
+        // We use the real type checker last because our checks can know the difference
         // between seemingly identical types, such as "float" or "int" within "number"
         const { flags } = this.typeChecker.getTypeAtLocation(node);
         const resolvedFlagType = this.flagResolver.resolve(flags);
         if (resolvedFlagType !== undefined) {
             return resolvedFlagType;
+        }
+
+        // TypeScript won't give up expression nodes' types, but if they have a type symbol
+        // we can use it to find their value declaration
+        const symbol = this.typeChecker.getSymbolAtLocation(node);
+        if (symbol !== undefined && symbol.valueDeclaration !== undefined) {
+            const valueDeclaration = symbol.valueDeclaration;
+
+            if (isVariableDeclaration(valueDeclaration)) {
+                const initializer = valueDeclaration.initializer;
+
+                if (initializer !== undefined) {
+                    return this.getFriendlyTypeNameForNode(initializer);
+                }
+            }
         }
 
         return "unknown";

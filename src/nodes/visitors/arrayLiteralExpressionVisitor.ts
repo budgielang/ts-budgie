@@ -20,21 +20,25 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.ArrayInitialize, typeParsed, ...parsedElements)
+                    new GlsLine(CommandNames.ListInitialize, typeParsed, ...parsedElements)
                 ])
         ];
     }
 
-    private getType(elements: Expression[], parsedElements: (string | GlsLine)[]) {
+    private getType(elements: Expression[]) {
         if (this.context.coercion instanceof GlsLine) {
             return this.context.coercion.args[0];
         }
 
-        return "string"; // todo: actually do this
+        if (elements.length === 0) {
+            return "object";
+        }
+
+        return this.aliaser.getFriendlyTypeNameForNode(elements[0]);
     }
 
     private getTypeParsed(elements: Expression[], parsedElements: (string | GlsLine)[]) {
-        let typeRaw = this.getType(elements, parsedElements);
+        let typeRaw = this.getType(elements);
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {
             typeRaw = getNumericTypeNameFromUsages(parsedElements);
