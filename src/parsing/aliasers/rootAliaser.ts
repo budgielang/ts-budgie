@@ -7,6 +7,7 @@ import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { AutomaticAliaser } from "./automaticAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { TypeLiteralAliaser } from "./typeLiteralAliaser";
+import { VariableDeclarationAliaser } from "./variableDeclarationAliaser";
 
 type INodeChildPasser = (node: Node) => Node;
 
@@ -28,7 +29,6 @@ export class RootAliaser implements INodeAliaser {
             [SyntaxKind.ParenthesizedExpression, createChildGetter()],
             [SyntaxKind.ParenthesizedType, createChildGetter()],
             [SyntaxKind.SyntaxList, createChildGetter()],
-            [SyntaxKind.VariableDeclaration, createChildGetter(2)],
         ]);
 
         this.typesWithKnownTypeNames = new Map<SyntaxKind, INodeAliaser>([
@@ -41,6 +41,7 @@ export class RootAliaser implements INodeAliaser {
             [SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
             [SyntaxKind.StringKeyword, new AutomaticAliaser("string")],
             [SyntaxKind.StringLiteral, new AutomaticAliaser("string")],
+            [SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
         ]);
     }
 
