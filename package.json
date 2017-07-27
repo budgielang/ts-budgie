@@ -4,6 +4,7 @@
   "description": "Converts TypeScript code to General Language Syntax (GLS).",
   "main": "lib/index.js",
   "scripts": {
+    "build-all": "gulp src:tsc && gulp test:tsc",
     "test": "gulp test"
   },
   "repository": {
