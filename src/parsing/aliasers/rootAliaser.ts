@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { isVariableDeclaration, Node, SyntaxKind, TypeChecker, TypeLiteralNode } from "typescript";
+import { isVariableDeclaration, Node, SyntaxKind, TypeChecker } from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
@@ -45,7 +45,7 @@ export class RootAliaser implements INodeAliaser {
         ]);
     }
 
-    public getFriendlyTypeNameForNode = (node: Node): string | GlsLine => {
+    public getFriendlyTypeNameForNode = (node: Node): string | GlsLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
             return knownTypeNameConverter.getFriendlyTypeNameForNode(node);
@@ -79,6 +79,6 @@ export class RootAliaser implements INodeAliaser {
             }
         }
 
-        return "unknown";
+        return undefined;
     }
 }

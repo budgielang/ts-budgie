@@ -16,8 +16,9 @@ export class VisitorsBag {
     }
 
     public createVisitor(creator: INodeVisitorCreator) {
-        if (this.instances.has(creator)) {
-            return this.instances.get(creator)!;
+        const previousInstance = this.instances.get(creator);
+        if (previousInstance !== undefined) {
+            return previousInstance;
         }
 
         const visitor = new creator(this.dependencies);

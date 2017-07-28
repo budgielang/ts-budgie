@@ -11,11 +11,9 @@ export class WhileStatementVisitor extends NodeVisitor {
         const transformations: Transformation[] = [];
         const { statement } = node;
 
-        if (statement !== undefined) {
-            const thenBody = this.router.recurseIntoNode(statement);
-            if (thenBody !== undefined) {
-                transformations.push(...thenBody);
-            }
+        const thenBody = this.router.recurseIntoNode(statement);
+        if (thenBody !== undefined) {
+            transformations.push(...thenBody);
         }
 
         return [

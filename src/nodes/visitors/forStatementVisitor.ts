@@ -46,14 +46,11 @@ export class ForStatementVisitor extends NodeVisitor {
         }
 
         const declaration = initializer.declarations[0];
-        if (declaration === undefined || declaration.initializer === undefined || !ts.isNumericLiteral(declaration.initializer)) {
+        if (declaration.initializer === undefined || !ts.isNumericLiteral(declaration.initializer)) {
             return undefined;
         }
 
         const name = (declaration.name as ts.Identifier).text;
-        if (name === undefined) {
-            return undefined;
-        }
         if (!isIncrementorIncreasingByOne(name, incrementor)) {
             return undefined;
         }

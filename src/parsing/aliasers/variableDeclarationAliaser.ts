@@ -5,7 +5,7 @@ import { getDictionaryTypeNameFromNode } from "../dictionaries";
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class VariableDeclarationAliaser extends RecursiveAliaser {
-    public getFriendlyTypeNameForNode(node: VariableDeclaration): string | GlsLine {
+    public getFriendlyTypeNameForNode(node: VariableDeclaration): string | GlsLine | undefined {
         if (node.type !== undefined) {
             return this.recurseOntoNode(node.type);
         }
@@ -14,6 +14,6 @@ export class VariableDeclarationAliaser extends RecursiveAliaser {
             return this.recurseOntoNode(node.initializer);
         }
 
-        return "object";
+        return undefined;
     }
 }

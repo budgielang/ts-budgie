@@ -24,7 +24,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // A value may indicate to us better typing info than what we already have
         const value = this.getValue(node);
-        const typeModified = this.context.exitTypeCoercion()!;
+        const typeModified = this.context.exitTypeCoercion();
         if (typeModified !== undefined) {
             interpretedType = typeModified;
         }
@@ -32,10 +32,15 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         // Some values may request a more specific intepreted type,
         // such as length commands switching from "float" to "int"
         if (value !== undefined) {
-            const manualTypeAdjustment = getTypeAdjustment(typeModified, value);
+            const manualTypeAdjustment = getTypeAdjustment(interpretedType, value);
             if (manualTypeAdjustment !== undefined) {
                 interpretedType = manualTypeAdjustment;
             }
+        }
+
+        // If we don't know the interpreted type by now, just give up
+        if (interpretedType === undefined) {
+            return undefined;
         }
 
         const results: (string | GlsLine)[] = [name, interpretedType];

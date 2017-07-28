@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { CommentRange, SourceFile } from "typescript";
+import { CommentRange } from "typescript";
 
 import { GlsLine } from "../glsLine";
 import { Transformation } from "../transformation";
@@ -12,12 +12,11 @@ const parseCommentText = (commentText: string) => {
     return commentText.trim();
 };
 
-export const visitSingleLineCommentTrivia = (fullText: string, comment: CommentRange) => {
-    return [
+export const visitSingleLineCommentTrivia = (fullText: string, comment: CommentRange) =>
+    [
         Transformation.fromCommentRange(
             comment,
             [
                 new GlsLine(CommandNames.CommentLine, parseCommentText(fullText.substring(comment.pos, comment.end)))
             ])
     ];
-};

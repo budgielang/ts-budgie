@@ -5,8 +5,13 @@ import { GlsLine } from "../../glsLine";
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class ArrayLiteralExpressionAliaser extends RecursiveAliaser {
-    public getFriendlyTypeNameForNode(node: ArrayLiteralExpression) {
-        return new GlsLine(CommandNames.ListType, this.getCommonElementsType(node.elements));
+    public getFriendlyTypeNameForNode(node: ArrayLiteralExpression): string | GlsLine | undefined {
+        const elementsType = this.getCommonElementsType(node.elements);
+        if (elementsType === undefined) {
+            return undefined;
+        }
+
+        return new GlsLine(CommandNames.ListType, elementsType);
     }
 
     private getCommonElementsType(elements: Expression[]) {

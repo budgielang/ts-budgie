@@ -5,7 +5,7 @@ import "mocha";
 import * as path from "path";
 import { createSourceFile, ScriptTarget, SourceFile } from "typescript";
 
-import { transformText } from "../lib/transforms";
+import { createTransformer } from "../lib";
 import { findGlsFilesUnder, findGlsTestSourcesUnder } from "../util";
 
 /**
@@ -86,7 +86,7 @@ export class ComparisonTestsRunner {
         const expected = readFile(directoryPath, "expected.gls", "comment line");
 
         // Act
-        const actual = transformText(source);
+        const actual = createTransformer().transformText(source);
 
         // Asserted
         expect(actual.join("\n").split("\n")).to.be.deep.equal(expected.split("\n"));

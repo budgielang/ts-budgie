@@ -13,6 +13,10 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
             .map((element) => this.router.recurseIntoValue(element));
         const typeParsed = this.getTypeParsed(elements, parsedElements);
 
+        if (typeParsed === undefined) {
+            return undefined;
+        }
+
         this.context.setTypeCoercion(new GlsLine(CommandNames.ListType, typeParsed));
 
         return [

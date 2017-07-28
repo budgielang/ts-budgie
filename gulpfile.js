@@ -93,8 +93,16 @@ gulp.task("src:tslint", function () {
     var program = tslint.Linter.createProgram("./tsconfig.json");
 
     return gulp
-        .src("src/**/*.ts")
-        .pipe(gulpTslint({ program }));
+        .src(
+            ["src/**/*.ts"],
+            {
+                base: "."
+            })
+        .pipe(gulpTslint({
+            formatter: "verbose",
+            program
+        }))
+        .pipe(gulpTslint.report());
 });
 
 gulp.task("src:tsc", function () {

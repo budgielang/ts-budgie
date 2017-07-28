@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { Expression, ForInitializer, ForOfStatement, VariableDeclaration } from "typescript";
+import { ForInitializer, ForOfStatement } from "typescript";
 
 import { isExpression } from "tsutils";
 import { GlsLine } from "../../glsLine";
@@ -10,9 +10,14 @@ import { NodeVisitor } from "../visitor";
 
 export class ForOfStatementVisitor extends NodeVisitor {
     public visit(node: ForOfStatement) {
-        const body = this.router.recurseIntoNode(node.statement) || [];
+        const body = this.router.recurseIntoNode(node.statement);
         const container = this.router.recurseIntoValue(node.expression);
-        const valueType = getListValueType(this.aliaser.getFriendlyTypeNameForNode(node.expression));
+        const expressionType = this.aliaser.getFriendlyTypeNameForNode(node.expression);
+        if (expressionType === undefined) {
+            return undefined;
+        }
+
+        const valueType = getListValueType(expressionType);
         const value = this.getContainer(node.initializer);
 
         return [
@@ -21,7 +26,7 @@ export class ForOfStatementVisitor extends NodeVisitor {
                 this.sourceFile,
                 [
                     new GlsLine(CommandNames.ForEachStart, container, valueType, value),
-                    ...body,
+                    ...(body === undefined ? [] : body),
                     new GlsLine(CommandNames.ForEachEnd)
                 ])
         ];

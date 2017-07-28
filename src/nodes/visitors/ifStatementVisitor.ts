@@ -11,11 +11,9 @@ export class IfStatementVisitor extends NodeVisitor {
         const transformations: Transformation[] = [];
         const { elseStatement, thenStatement } = node;
 
-        if (thenStatement !== undefined) {
-            const thenBody = this.router.recurseIntoNode(thenStatement);
-            if (thenBody !== undefined) {
-                transformations.push(...thenBody);
-            }
+        const thenBody = this.router.recurseIntoNode(thenStatement);
+        if (thenBody !== undefined) {
+            transformations.push(...thenBody);
         }
 
         if (elseStatement !== undefined) {

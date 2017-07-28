@@ -1,4 +1,4 @@
-import { CommentRange, SourceFile, SyntaxKind } from "typescript";
+import { CommentRange, SyntaxKind } from "typescript";
 
 import { Transformation } from "../transformation";
 import { visitMultiLineCommentTrivia } from "./visitMultiLineCommentTrivia";

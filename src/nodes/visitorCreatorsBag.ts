@@ -1,4 +1,4 @@
-import { Node, SyntaxKind } from "typescript";
+import { SyntaxKind } from "typescript";
 
 import { NodeVisitor } from "./visitor";
 import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpressionVisitor";

@@ -10,7 +10,7 @@ const lengthCommands = new Set([
 ]);
 
 export class LengthCommandTypeAdjustmentChecker implements ITypeAdjustmentChecker {
-    public attempt(originalType: string | GlsLine, actualValue: string | GlsLine): string | GlsLine | undefined {
+    public attempt(originalType: string | GlsLine | undefined, actualValue: string | GlsLine): string | GlsLine | undefined {
         if (originalType !== "float" || typeof actualValue === "string") {
             return undefined;
         }

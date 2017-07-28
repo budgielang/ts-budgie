@@ -25,17 +25,17 @@ export class StubCompilerHost implements CompilerHost {
         return "";
     }
 
-    public getSourceFile(fileName: string, languageVersion: ScriptTarget, onError?: (messagE: string) => void): SourceFile {
+    public getSourceFile(fileName: string, languageVersion: ScriptTarget, onError?: (message: string) => void): SourceFile {
         const sourceFile = this.sourceFiles.get(fileName);
         if (sourceFile !== undefined) {
             return sourceFile;
         }
 
-        if (onError) {
+        if (onError !== undefined) {
             onError(`'${fileName}' not found.`);
         }
 
-        // tsc's declarations don't support strict null checks
+        // TypeScript's declarations don't support strict null checks
         // tslint:disable-next-line no-any
         return undefined as any as SourceFile;
     }
@@ -63,7 +63,13 @@ export class StubCompilerHost implements CompilerHost {
     }
 
     public readFile(fileName: string): string {
-        return this.sourceFiles.get(fileName)!.text;
+        const file = this.sourceFiles.get(fileName);
+
+        if (file === undefined) {
+            throw new Error(`File now found: '${file}'`);
+        }
+
+        return file.text;
     }
 
     public resolveModuleNames(): ResolvedModule[] {

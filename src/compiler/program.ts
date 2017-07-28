@@ -1,4 +1,4 @@
-import { CompilerHost, createProgram, createSourceFile, Program, ScriptTarget, SourceFile, TypeChecker } from "typescript";
+import { createProgram, Program, ScriptTarget, SourceFile } from "typescript";
 
 import { StubCompilerHost } from "./stubCompilerHost";
 

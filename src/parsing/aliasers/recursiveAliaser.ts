@@ -4,7 +4,7 @@ import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, TypeCheck
 import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
 
-export type IRecurseOntoNode = (node: Node) => string | GlsLine;
+export type IRecurseOntoNode = (node: Node) => string | GlsLine | undefined;
 
 export abstract class RecursiveAliaser implements INodeAliaser {
     protected readonly recurseOntoNode: IRecurseOntoNode;
@@ -15,5 +15,5 @@ export abstract class RecursiveAliaser implements INodeAliaser {
         this.typeChecker = typeChecker;
     }
 
-    public abstract getFriendlyTypeNameForNode(node: Node): string | GlsLine;
+    public abstract getFriendlyTypeNameForNode(node: Node): string | GlsLine | undefined;
 }

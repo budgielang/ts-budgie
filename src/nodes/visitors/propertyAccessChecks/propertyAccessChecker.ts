@@ -4,9 +4,7 @@ import { GlsLine } from "../../../glsLine";
 
 export interface IAccessCredentials {
     expression: LeftHandSideExpression;
-    expressionAlias: string | GlsLine;
     name: Identifier;
-    nameAlias: string | GlsLine;
     node: PropertyAccessExpression;
 }
 

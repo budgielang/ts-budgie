@@ -2,7 +2,7 @@ import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { GlsLine } from "../glsLine";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
-import { printTransformations } from "../printing";
+import { ITransformationsPrinter } from "../printing";
 import { Transformation } from "../transformation";
 import { VisitorContext } from "./context";
 import { NodeVisitor } from "./visitor";
@@ -20,6 +20,7 @@ const finalTextNodes = new Set<SyntaxKind>([
 
 export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
+    printer: ITransformationsPrinter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
     visitorContext: VisitorContext;
@@ -51,7 +52,7 @@ export class NodeVisitRouter {
             return "";
         }
 
-        return printTransformations(subTransformations)[0];
+        return this.dependencies.printer.printTransformations(subTransformations)[0];
     }
 
     public recurseIntoNode(node: Node): Transformation[] | undefined {

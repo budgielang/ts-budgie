@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { CommentRange, SourceFile } from "typescript";
+import { CommentRange } from "typescript";
 
 import { GlsLine } from "../glsLine";
 import { Transformation } from "../transformation";

@@ -14,13 +14,9 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
 
     public visit(node: PropertyAccessExpression) {
         const { expression, name } = node;
-        const expressionAlias = this.aliaser.getFriendlyTypeNameForNode(expression);
-        const nameAlias = this.aliaser.getFriendlyTypeNameForNode(name);
 
         for (const checker of this.checkers) {
-            const checkedResult = checker.attemptVisit({
-                expression, expressionAlias, name, nameAlias, node
-            });
+            const checkedResult = checker.attemptVisit({ expression, name, node });
 
             if (checkedResult !== undefined) {
                 return [

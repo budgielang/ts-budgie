@@ -1,7 +1,6 @@
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
-import { printTransformations } from "../printing";
 import { Transformation } from "../transformation";
 import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
