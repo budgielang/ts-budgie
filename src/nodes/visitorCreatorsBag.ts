@@ -15,11 +15,11 @@ import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
 import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
 
-interface ISyntaxKindDictionary<TContents> {
-    [i: number /* SyntaxKind */]: TContents;
+interface IVisitorCreators {
+    [i: number /* SyntaxKind */]: typeof NodeVisitor;
 }
 
-const creators: ISyntaxKindDictionary<typeof NodeVisitor> = {
+const creators: IVisitorCreators = {
     [SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
     [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
@@ -35,7 +35,16 @@ const creators: ISyntaxKindDictionary<typeof NodeVisitor> = {
     [SyntaxKind.WhileStatement]: WhileStatementVisitor,
 };
 
+/**
+ * Holds visitor creators by their node syntax kind.
+ */
 export class VisitorCreatorsBag {
+    /**
+     * Gets the creator for a node syntax kind.
+     *
+     * @param kind   Syntax kind for a node.
+     * @returns A creator for that kind of node.
+     */
     public getCreator(kind: SyntaxKind) {
         return creators[kind];
     }

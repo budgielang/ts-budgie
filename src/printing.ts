@@ -1,6 +1,9 @@
 import { GlsLine } from "./glsLine";
 import { Transformation } from "./transformation";
 
+/**
+ * Prints series of transformations as lines of GLS.
+ */
 export interface ITransformationsPrinter {
     /**
      * Prints a series of transformations as lines of GLS.
@@ -11,6 +14,9 @@ export interface ITransformationsPrinter {
     printTransformations(transformations: Transformation[]): GlsLine[];
 }
 
+/**
+ * Prints series of transformations as lines of GLS.
+ */
 export class TransformationsPrinter implements ITransformationsPrinter {
     /**
      * Prints a series of transformations as lines of GLS.

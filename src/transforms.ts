@@ -10,7 +10,14 @@ import { Transformation } from "./transformation";
  * Dependencies to initialize a new instance of the Transformer class.
  */
 export interface ITransformerDependencies {
+    /**
+     * Prints series of transformations as lines of GLS.
+     */
     printer: ITransformationsPrinter;
+
+    /**
+     * Retrieves and merges source-to-GLS transforms from a file.
+     */
     service: ITransformationService;
 }
 
@@ -33,35 +40,47 @@ export class Transformer {
     }
 
     /**
+     * Transforms a source file to GLS.
+     *
+     * @param sourceText   Source file to transform.
+     * @returns GLS equivalent for the source file.
+     */
+    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): GlsLine[] {
+        return this.dependencies.printer.printTransformations(
+            this.getSourceFileTransforms(sourceFile, typeChecker));
+    }
+
+    /**
+     * Transforms source text to GLS.
+     *
+     * @param sourceText   Source text to transform.
+     * @returns GLS equivalent for the source text.
+     */
+    public transformText(sourceText: string): GlsLine[] {
+        return this.dependencies.printer.printTransformations(this.getTextTransforms(sourceText));
+    }
+
+    /**
      * Creates transformations for a source file.
      *
      * @param sourceFile   Source file to transform.
      * @param typeChecker   Type checker for the source file.
      * @returns Transformations for the source file.
      */
-    public getSourceFileTransforms(
+    private getSourceFileTransforms(
         sourceFile: SourceFile,
-        typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()) {
+        typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()): Transformation[] {
         return this.dependencies.service.transform(sourceFile, typeChecker);
     }
 
     /**
-     * Creates transformates for source text.
+     * Creates transformations for source text.
      *
      * @param sourceText   Source text to transform.
      * @returns Transformations for the source text.
      */
-    public getTextTransforms(sourceText: string) {
+    private getTextTransforms(sourceText: string): Transformation[] {
         return this.getSourceFileTransforms(
             createSourceFile("input.ts", sourceText, ScriptTarget.Latest));
-    }
-
-    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker) {
-        return this.dependencies.printer.printTransformations(
-            this.getSourceFileTransforms(sourceFile, typeChecker));
-    }
-
-    public transformText(sourceText: string) {
-        return this.dependencies.printer.printTransformations(this.getTextTransforms(sourceText));
     }
 }

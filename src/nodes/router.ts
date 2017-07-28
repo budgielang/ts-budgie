@@ -9,6 +9,9 @@ import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 
+/**
+ * Nodes known to always output simple strings.
+ */
 const finalTextNodes = new Set<SyntaxKind>([
     SyntaxKind.FalseKeyword,
     SyntaxKind.TrueKeyword,
@@ -27,10 +30,25 @@ export interface INodeVisitRouterDependencies {
     visitorCreatorsBag: VisitorCreatorsBag;
 }
 
+/**
+ * Routes visitors for node types.
+ */
 export class NodeVisitRouter {
+    /**
+     * Dependencies used for initialization.
+     */
     private readonly dependencies: INodeVisitRouterDependencies;
+
+    /**
+     * Lazily creates visitors for node types.
+     */
     private readonly visitorsBag: VisitorsBag;
 
+    /**
+     * Initializes a new instance of the NodeVisitRouter.
+     *
+     * @param dependencies   Dependencies to be used for initialization.
+     */
     public constructor(dependencies: INodeVisitRouterDependencies) {
         this.dependencies = dependencies;
         this.visitorsBag = new VisitorsBag({
@@ -42,6 +60,27 @@ export class NodeVisitRouter {
         });
     }
 
+    /**
+     * Retrieves the output transformations for a node.
+     *
+     * @param node   Node to retrieve transformations for.
+     * @returns Output transformations for the node.
+     */
+    public recurseIntoNode(node: Node): Transformation[] | undefined {
+        const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
+        if (creator === undefined) {
+            return this.recurseIntoChildren(node);
+        }
+
+        return this.visitorsBag.createVisitor(creator).visit(node);
+    }
+
+    /**
+     * Retrieves the GLS output for an inline value.
+     *
+     * @param node   Node to transform.
+     * @returns Transformed GLS output for the inline value.
+     */
     public recurseIntoValue(node: Node): string | GlsLine {
         if (finalTextNodes.has(node.kind)) {
             return node.getText(this.dependencies.sourceFile);
@@ -55,15 +94,12 @@ export class NodeVisitRouter {
         return this.dependencies.printer.printTransformations(subTransformations)[0];
     }
 
-    public recurseIntoNode(node: Node): Transformation[] | undefined {
-        const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
-        if (creator === undefined) {
-            return this.recurseIntoChildren(node);
-        }
-
-        return this.visitorsBag.createVisitor(creator).visit(node);
-    }
-
+    /**
+     * Retrieves the GLS output for a node.
+     *
+     * @param node   Node to transform.
+     * @returns Transformed GLS output for the node.
+     */
     public recurseIntoNodes(nodes: Node[]): Transformation[] {
         const transformations: Transformation[] = [];
 
@@ -78,6 +114,12 @@ export class NodeVisitRouter {
         return transformations;
     }
 
+    /**
+     * Recurses the GLS outputs for a node's children.
+     *
+     * @param node   Node to transform the children of.
+     * @returns Transformed GLS output for the node's children.
+     */
     public recurseIntoChildren(node: Node): Transformation[] {
         return this.recurseIntoNodes(node.getChildren());
     }

@@ -5,9 +5,9 @@ import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
 import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
-import { AutomaticAliaser } from "./automaticAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { TypeLiteralAliaser } from "./typeLiteralAliaser";
+import { TypeNameAliaser } from "./typeNameAliaser";
 import { VariableDeclarationAliaser } from "./variableDeclarationAliaser";
 
 type INodeChildPasser = (node: Node) => Node;
@@ -33,14 +33,14 @@ export class RootAliaser implements INodeAliaser {
 
         this.typesWithKnownTypeNames = new Map<SyntaxKind, INodeAliaser>([
             [SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
-            [SyntaxKind.BooleanKeyword, new AutomaticAliaser("boolean")],
-            [SyntaxKind.FalseKeyword, new AutomaticAliaser("boolean")],
-            [SyntaxKind.NumberKeyword, new AutomaticAliaser("float")],
+            [SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
+            [SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
+            [SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
             [SyntaxKind.NumericLiteral, new NumericAliaser()],
-            [SyntaxKind.TrueKeyword, new AutomaticAliaser("boolean")],
+            [SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
             [SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
-            [SyntaxKind.StringKeyword, new AutomaticAliaser("string")],
-            [SyntaxKind.StringLiteral, new AutomaticAliaser("string")],
+            [SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
+            [SyntaxKind.StringLiteral, new TypeNameAliaser("string")],
             [SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
         ]);
     }

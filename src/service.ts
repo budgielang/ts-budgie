@@ -23,7 +23,7 @@ const isTransformationEarlierThan = (left: Transformation, right: Transformation
     left.range.start < right.range.start;
 
 /**
- * Retrieves and merges source-to-GLS transforms from a file.
+ * Retrieves and merges source-to-GLS transforms from files.
  */
 export interface ITransformationService {
     /**
@@ -37,7 +37,7 @@ export interface ITransformationService {
 }
 
 /**
- * Retrieves and merges source-to-GLS transforms from a file.
+ * Retrieves and merges source-to-GLS transforms from files.
  */
 export class TransformationService {
     /**

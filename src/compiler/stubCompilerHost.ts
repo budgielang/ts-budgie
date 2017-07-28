@@ -1,5 +1,7 @@
 import { CompilerHost, createProgram, createSourceFile, ResolvedModule, ScriptTarget, SourceFile, TypeChecker } from "typescript";
 
+/* tslint:disable completed-docs */
+
 const createSourceFilesMap = (sourceFiles: SourceFile[] | Map<string, SourceFile>) => {
     if (sourceFiles instanceof Map) {
         return sourceFiles;
@@ -80,3 +82,5 @@ export class StubCompilerHost implements CompilerHost {
         throw new Error("Unsupported");
     }
 }
+
+/* tslint:enable completed-docs */
