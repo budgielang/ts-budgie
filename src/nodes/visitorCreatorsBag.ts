@@ -3,6 +3,7 @@ import { SyntaxKind } from "typescript";
 import { NodeVisitor } from "./visitor";
 import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpressionVisitor";
 import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
+import { BreakStatementVisitor } from "./visitors/breakStatementVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
@@ -22,6 +23,7 @@ interface IVisitorCreators {
 const creators: IVisitorCreators = {
     [SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
     [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
+    [SyntaxKind.BreakStatement]: BreakStatementVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
