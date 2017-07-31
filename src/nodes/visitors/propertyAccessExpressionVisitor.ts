@@ -4,29 +4,23 @@ import { PropertyAccessExpression } from "typescript";
 import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
-import { PropertyAccessChecker } from "./propertyAccessChecks/propertyAccessChecker";
-import { StringLengthAccessChecker } from "./propertyAccessChecks/stringLengthAccessChecker";
+import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
+import { StringLengthAccessChecker } from "./propertyAccess/stringLengthAccessChecker";
 
 export class PropertyAccessExpressionVisitor extends NodeVisitor {
-    private readonly checkers: PropertyAccessChecker[] = [
-        new StringLengthAccessChecker(this.sourceFile)
+    private readonly checkers: NodeVisitor[] = [
+        new ConsoleLogAccessChecker(this),
+        new StringLengthAccessChecker(this)
     ];
 
     public visit(node: PropertyAccessExpression) {
         const { expression, name } = node;
 
         for (const checker of this.checkers) {
-            const checkedResult = checker.attemptVisit({ expression, name, node });
+            const checkedResult = checker.visit(node);
 
             if (checkedResult !== undefined) {
-                return [
-                    Transformation.fromNode(
-                        node,
-                        this.sourceFile,
-                        [
-                            checkedResult
-                        ])
-                ];
+                return checkedResult;
             }
         }
 

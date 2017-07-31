@@ -14,7 +14,7 @@ export interface INodeVisitorDependencies {
 }
 
 /**
- * Creates transformations for a node.
+ * Creates transformations for a node type.
  */
 export abstract class NodeVisitor {
     /**
@@ -55,7 +55,12 @@ export abstract class NodeVisitor {
      *
      * @param dependencies   Dependencies to be used for initialization.
      */
-    public constructor(dependencies: INodeVisitorDependencies) {
+    public constructor(dependencies: INodeVisitorDependencies | NodeVisitor) {
+        // See https://github.com/Microsoft/TypeScript/issues/17523
+        if (dependencies instanceof NodeVisitor) {
+            dependencies = dependencies as {} as INodeVisitorDependencies;
+        }
+
         this.aliaser = dependencies.aliaser;
         this.context = dependencies.visitorContext;
         this.router = dependencies.router;
