@@ -68,6 +68,9 @@ export class ComparisonTestsRunner {
      * Runs tests under the directory path.
      */
     public run(): void {
+        // Takes initial startup time costs away from the first test run's visitor bags
+        createTransformer().transformText('console.log("Hello world!")');
+
         describe(this.section, () => {
             this.commandTests.forEach((tests: string[], test: string): void => {
                 it(test, () => this.runCommandTest(path.join(this.section, test)));
