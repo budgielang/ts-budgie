@@ -5,6 +5,7 @@ import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpression
 import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
 import { BreakStatementVisitor } from "./visitors/breakStatementVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
+import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
@@ -25,6 +26,7 @@ const creators: IVisitorCreators = {
     [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
     [SyntaxKind.BreakStatement]: BreakStatementVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
+    [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
