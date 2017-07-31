@@ -2,7 +2,10 @@ import { CommentRange, Node, SourceFile } from "typescript";
 
 import { GlsLine } from "./glsLine";
 
-export type IOutput = (GlsLine | Transformation)[];
+/**
+ * Output from any level of node.
+ */
+export type IOutput = (string | GlsLine | Transformation)[];
 
 /**
  * Range to modify in a source file.

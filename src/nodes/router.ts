@@ -9,18 +9,6 @@ import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 
-/**
- * Nodes known to always output simple strings.
- */
-const finalTextNodes = new Set<SyntaxKind>([
-    SyntaxKind.FalseKeyword,
-    SyntaxKind.TrueKeyword,
-    SyntaxKind.FirstLiteralToken,
-    SyntaxKind.Identifier,
-    SyntaxKind.NumericLiteral,
-    SyntaxKind.StringLiteral,
-]);
-
 export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
     printer: ITransformationsPrinter;
@@ -82,10 +70,6 @@ export class NodeVisitRouter {
      * @returns Transformed GLS output for the inline value.
      */
     public recurseIntoValue(node: Node): string | GlsLine {
-        if (finalTextNodes.has(node.kind)) {
-            return node.getText(this.dependencies.sourceFile);
-        }
-
         const subTransformations = this.recurseIntoNode(node);
         if (subTransformations === undefined) {
             return "";

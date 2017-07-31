@@ -11,7 +11,15 @@ export interface ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent GLS.
      */
-    printTransformations(transformations: Transformation[]): GlsLine[];
+    printRootTransformations(transformations: Transformation[]): GlsLine[];
+
+    /**
+     * Prints a series of transformations as lines of GLS and literal string lines.
+     *
+     * @param transformations   A series of transformations.
+     * @returns The transformations' equivalent GLS and literal string lines.
+     */
+    printTransformations(transformations: Transformation[]): (string | GlsLine)[];
 }
 
 /**
@@ -24,8 +32,19 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent GLS.
      */
-    public printTransformations(transformations: Transformation[]): GlsLine[] {
-        const lines: GlsLine[] = [];
+    public printRootTransformations(transformations: Transformation[]): GlsLine[] {
+        return this.printTransformations(transformations)
+            .filter((transformation): transformation is GlsLine => transformation instanceof GlsLine);
+    }
+
+    /**
+     * Prints a series of transformations as lines of GLS and literal string lines.
+     *
+     * @param transformations   A series of transformations.
+     * @returns The transformations' equivalent GLS and literal string lines.
+     */
+    public printTransformations(transformations: Transformation[]): (string | GlsLine)[] {
+        const lines: (string | GlsLine)[] = [];
 
         for (const transformation of transformations) {
             lines.push(...this.printTransformation(transformation));
@@ -40,8 +59,8 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      * @param transformation   A transformations.
      * @returns The transformation's equivalent GLS.
      */
-    private printTransformation(transformation: Transformation): GlsLine[] {
-        const lines: GlsLine[] = [];
+    private printTransformation(transformation: Transformation): (string | GlsLine)[] {
+        const lines: (string | GlsLine)[] = [];
 
         for (const transformed of transformation.output) {
             if (transformed instanceof Transformation) {

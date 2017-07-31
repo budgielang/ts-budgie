@@ -18,14 +18,6 @@ export interface INodeVisitorDependencies {
  */
 export abstract class NodeVisitor {
     /**
-     * Creates transformations for a node.
-     *
-     * @param node   Node to transform.
-     * @returns Transformations for the node, if possible.
-     */
-    public abstract visit(node: Node): Transformation[] | undefined;
-
-    /**
      * Generates GLS-friendly names for nodes.
      */
     protected readonly aliaser: INodeAliaser;
@@ -67,4 +59,12 @@ export abstract class NodeVisitor {
         this.sourceFile = dependencies.sourceFile;
         this.typeChecker = dependencies.typeChecker;
     }
+
+    /**
+     * Creates transformations for a node.
+     *
+     * @param node   Node to transform.
+     * @returns Transformations for the node, if possible.
+     */
+    public abstract visit(node: Node): Transformation[] | undefined;
 }

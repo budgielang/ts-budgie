@@ -9,10 +9,12 @@ import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
+import { LiteralVisitor } from "./visitors/literalVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
 import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
+import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
 import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
@@ -27,13 +29,19 @@ const creators: IVisitorCreators = {
     [SyntaxKind.BreakStatement]: BreakStatementVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
+    [SyntaxKind.FalseKeyword]: LiteralVisitor,
+    [SyntaxKind.FirstLiteralToken]: LiteralVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
+    [SyntaxKind.Identifier]: LiteralVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
+    [SyntaxKind.NumericLiteral]: LiteralVisitor,
     [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
     [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
     [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
     [SyntaxKind.SourceFile]: SourceFileVisitor,
+    [SyntaxKind.StringLiteral]: StringLiteralVisitor,
+    [SyntaxKind.TrueKeyword]: LiteralVisitor,
     [SyntaxKind.TypeLiteral]: TypeLiteralVisitor,
     [SyntaxKind.VariableDeclaration]: VariableDeclarationVisitor,
     [SyntaxKind.WhileStatement]: WhileStatementVisitor,
