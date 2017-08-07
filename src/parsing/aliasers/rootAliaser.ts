@@ -1,8 +1,9 @@
 import { CommandNames } from "general-language-syntax";
-import { isVariableDeclaration, Node, SyntaxKind, TypeChecker } from "typescript";
+import { hasModifier } from "tsutils";
+import { isParameter, isVariableDeclaration, Modifier, Node, Symbol, SyntaxKind, TypeChecker } from "typescript";
 
 import { GlsLine } from "../../glsLine";
-import { INodeAliaser } from "../../nodes/aliaser";
+import { INodeAliaser, IPrivacyName, IRootAliaser } from "../../nodes/aliaser";
 import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
@@ -14,7 +15,7 @@ type INodeChildPasser = (node: Node) => Node;
 
 const createChildGetter = (index = 0) => (node: Node) => node.getChildren()[index];
 
-export class RootAliaser implements INodeAliaser {
+export class RootAliaser implements IRootAliaser {
     private readonly flagResolver: TypeFlagsResolver;
     private readonly passThroughTypes: Map<SyntaxKind, INodeChildPasser>;
     private readonly typesWithKnownTypeNames: Map<SyntaxKind, INodeAliaser>;
@@ -32,28 +33,28 @@ export class RootAliaser implements INodeAliaser {
         ]);
 
         this.typesWithKnownTypeNames = new Map<SyntaxKind, INodeAliaser>([
-            [SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
+            [SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
             [SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
             [SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
             [SyntaxKind.NumericLiteral, new NumericAliaser()],
             [SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
-            [SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
+            [SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
             [SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
             [SyntaxKind.StringLiteral, new TypeNameAliaser("string")],
-            [SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeNameForNode)],
+            [SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeName)],
         ]);
     }
 
-    public getFriendlyTypeNameForNode = (node: Node): string | GlsLine | undefined => {
+    public getFriendlyTypeName = (node: Node): string | GlsLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
-            return knownTypeNameConverter.getFriendlyTypeNameForNode(node);
+            return knownTypeNameConverter.getFriendlyTypeName(node);
         }
 
         const passThroughType = this.passThroughTypes.get(node.kind);
         if (passThroughType !== undefined) {
-            return this.getFriendlyTypeNameForNode(passThroughType(node));
+            return this.getFriendlyTypeName(passThroughType(node));
         }
 
         // We use the real type checker last because our checks can know the difference
@@ -74,11 +75,30 @@ export class RootAliaser implements INodeAliaser {
                 const initializer = valueDeclaration.initializer;
 
                 if (initializer !== undefined) {
-                    return this.getFriendlyTypeNameForNode(initializer);
+                    return this.getFriendlyTypeName(initializer);
                 }
             }
         }
 
+        // By now, this is probably be a node with a non-primitive type, such as a class instance.
+        if (isParameter(node) || isVariableDeclaration(node)) {
+            if (node.type !== undefined) {
+                return node.type.getText();
+            }
+        }
+
         return undefined;
+    }
+
+    public getFriendlyPrivacyName(node: Node): IPrivacyName {
+        if (hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
+            return "private";
+        }
+
+        if (hasModifier(node.modifiers, SyntaxKind.ProtectedKeyword)) {
+            return "protected";
+        }
+
+        return "public";
     }
 }

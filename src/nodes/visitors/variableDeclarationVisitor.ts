@@ -10,7 +10,7 @@ import { NodeVisitor } from "../visitor";
 export class VariableDeclarationVisitor extends NodeVisitor {
     public visit(node: VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);
-        let interpretedType = this.aliaser.getFriendlyTypeNameForNode(node);
+        let interpretedType = this.aliaser.getFriendlyTypeName(node);
 
         const command = isVariableDeclarationMultiline(node, this.sourceFile)
             ? CommandNames.VariableStart

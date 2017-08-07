@@ -15,5 +15,5 @@ export abstract class RecursiveAliaser implements INodeAliaser {
         this.typeChecker = typeChecker;
     }
 
-    public abstract getFriendlyTypeNameForNode(node: Node): string | GlsLine | undefined;
+    public abstract getFriendlyTypeName(node: Node): string | GlsLine | undefined;
 }

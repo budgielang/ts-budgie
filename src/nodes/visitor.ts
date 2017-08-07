@@ -1,12 +1,12 @@
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
-import { INodeAliaser } from "./aliaser";
+import { IRootAliaser } from "./aliaser";
 import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
 
 export interface INodeVisitorDependencies {
-    aliaser: INodeAliaser;
+    aliaser: IRootAliaser;
     router: NodeVisitRouter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
@@ -20,7 +20,7 @@ export abstract class NodeVisitor {
     /**
      * Generates GLS-friendly names for nodes.
      */
-    protected readonly aliaser: INodeAliaser;
+    protected readonly aliaser: IRootAliaser;
 
     /**
      * Shared context for visitors in a file.

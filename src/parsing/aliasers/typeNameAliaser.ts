@@ -7,7 +7,7 @@ export class TypeNameAliaser implements INodeAliaser {
         this.typeName = typeName;
     }
 
-    public getFriendlyTypeNameForNode(): string {
+    public getFriendlyTypeName(): string {
         return this.typeName;
     }
 }

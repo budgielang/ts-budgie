@@ -7,7 +7,7 @@ import { NodeVisitor } from "../visitor";
 
 export class TypeLiteralVisitor extends NodeVisitor {
     public visit(node: TypeLiteralNode) {
-        const dictionaryTypeName = getDictionaryTypeNameFromNode(node, this.aliaser.getFriendlyTypeNameForNode);
+        const dictionaryTypeName = getDictionaryTypeNameFromNode(node, this.aliaser.getFriendlyTypeName);
         if (dictionaryTypeName === "object") {
             return undefined;
         }

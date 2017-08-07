@@ -6,21 +6,9 @@ import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
-const getPrivacy = (node: PropertyDeclaration) => {
-    if (hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
-        return "private";
-    }
-
-    if (hasModifier(node.modifiers, SyntaxKind.ProtectedKeyword)) {
-        return "protected";
-    }
-
-    return "public";
-};
-
 export class PropertyDeclarationVisitor extends NodeVisitor {
     public visit(node: PropertyDeclaration) {
-        const privacy = getPrivacy(node);
+        const privacy = this.aliaser.getFriendlyPrivacyName(node);
         const instanceName = node.name.getText(this.sourceFile);
         const value = this.getInitializerValue(node.initializer);
 

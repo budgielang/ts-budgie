@@ -38,7 +38,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
             return "object";
         }
 
-        return this.aliaser.getFriendlyTypeNameForNode(elements[0]);
+        return this.aliaser.getFriendlyTypeName(elements[0]);
     }
 
     private getTypeParsed(elements: Expression[], parsedElements: (string | GlsLine)[]) {

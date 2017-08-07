@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import "mocha";
-import { Node, SourceFile, TypeNode, VariableStatement } from "typescript";
+import { ClassDeclaration, ConstructorDeclaration, Node, SourceFile, TypeNode, VariableStatement } from "typescript";
 
 import { GlsLine } from "../../../../lib/glsLine";
 import { RootAliaser } from "../../../../lib/parsing/aliasers/rootAliaser";
@@ -10,67 +10,119 @@ type INodeGetter = (sourceFile: SourceFile) => Node;
 
 const getRootNode = (sourceFile: SourceFile) => sourceFile.getChildren()[0].getChildren()[0];
 
-const getVariableDeclarationType = (sourceFile: SourceFile) =>
-    (getRootNode(sourceFile) as VariableStatement).declarationList.declarations[0].type as TypeNode;
-
-const assertSourceBecomes = (sourceText: string, expectedTypeName: string | GlsLine | undefined, getNode: INodeGetter = getRootNode) => {
-    // Arrange
-    const { sourceFile, typeChecker } = mountSourceText(sourceText);
-    const node = getNode(sourceFile);
-    const aliaser = new RootAliaser(typeChecker);
-
-    // Act
-    const typeName = aliaser.getFriendlyTypeNameForNode(getNode(sourceFile));
-
-    // Assert
-    expect(`${typeName}`).to.be.equal(expectedTypeName);
-};
-
 describe("RootAliaser", () => {
-    describe("getFriendlyTypeNameForNode", () => {
+    describe("getFriendlyTypeName", () => {
+        const getVariableDeclarationType = (sourceFile: SourceFile) =>
+            (getRootNode(sourceFile) as VariableStatement).declarationList.declarations[0].type as TypeNode;
+
+        const assertTypeNameBecomes = (
+            sourceText: string,
+            expectedTypeName: string | GlsLine | undefined,
+            getNode: INodeGetter = getRootNode) => {
+            // Arrange
+            const { sourceFile, typeChecker } = mountSourceText(sourceText);
+            const node = getNode(sourceFile);
+            const aliaser = new RootAliaser(typeChecker);
+
+            // Act
+            const typeName = aliaser.getFriendlyTypeName(getNode(sourceFile));
+
+            // Assert
+            expect(`${typeName}`).to.be.equal(expectedTypeName);
+        };
+
         it("gets a boolean literal type", () => {
-            assertSourceBecomes("true", "boolean");
+            assertTypeNameBecomes("true", "boolean");
         });
 
         it("gets a float literal type", () => {
-            assertSourceBecomes("3.5", "float");
+            assertTypeNameBecomes("3.5", "float");
         });
 
         it("gets an int literal type", () => {
-            assertSourceBecomes("7", "int");
+            assertTypeNameBecomes("7", "int");
         });
 
         it("gets a string literal type", () => {
-            assertSourceBecomes('"abc"', "string");
+            assertTypeNameBecomes('"abc"', "string");
         });
 
         it("gets a shallow list type", () => {
-            assertSourceBecomes('["abc", "def"]', "list type : string");
+            assertTypeNameBecomes('["abc", "def"]', "list type : string");
         });
 
         it("gets a deep list type", () => {
-            assertSourceBecomes('[["abc", "def"], ["ghi", "kjl"]]', "list type : { list type : string }");
+            assertTypeNameBecomes('[["abc", "def"], ["ghi", "kjl"]]', "list type : { list type : string }");
         });
 
         it("gets a shallow dictionary type ", () => {
-            assertSourceBecomes(
+            assertTypeNameBecomes(
                 "let foo: { [i: string]: boolean }",
                 "dictionary type : string boolean",
                 getVariableDeclarationType);
         });
 
         it("gets a deep dictionary type", () => {
-            assertSourceBecomes(
+            assertTypeNameBecomes(
                 "let foo: { [i: string]: { [i: string]: boolean} }",
                 "dictionary type : string { dictionary type : string boolean }",
                 getVariableDeclarationType);
         });
 
         it("defaults a dictionary numeric type to float", () => {
-            assertSourceBecomes(
+            assertTypeNameBecomes(
                 "let foo: { [i: string]: number };",
                 "dictionary type : string float",
                 getVariableDeclarationType);
+        });
+    });
+
+    describe("getFriendlyPrivacyName", () => {
+        const getFirstChildConstructor = (sourceFile: SourceFile) =>
+            (getRootNode(sourceFile) as ClassDeclaration).members[0] as ConstructorDeclaration;
+
+        const assertTypeNameBecomes = (
+            sourceText: string,
+            expectedTypeName: string | GlsLine | undefined,
+            getNode: INodeGetter = getRootNode) => {
+            // Arrange
+            const { sourceFile, typeChecker } = mountSourceText(sourceText);
+            const node = getNode(sourceFile);
+            const aliaser = new RootAliaser(typeChecker);
+
+            // Act
+            const typeName = aliaser.getFriendlyPrivacyName(getNode(sourceFile));
+
+            // Assert
+            expect(`${typeName}`).to.be.equal(expectedTypeName);
+        };
+
+        it("defaults a constructor to public", () => {
+            assertTypeNameBecomes(
+                "class Foo { constructor() {} }",
+                "public",
+                getFirstChildConstructor);
+        });
+
+        it("retrieves public from a public constructor", () => {
+            assertTypeNameBecomes(
+                "class Foo { constructor() {} }",
+                "public",
+                getFirstChildConstructor);
+        });
+
+        it("retrieves protected from a protected constructor", () => {
+            assertTypeNameBecomes(
+                "class Foo { protected constructor() {} }",
+                "protected",
+                getFirstChildConstructor);
+        });
+
+        it("retrieves private from a private constructor", () => {
+            assertTypeNameBecomes(
+                "class Foo { private constructor() {} }",
+                "private",
+                getFirstChildConstructor);
         });
     });
 });
