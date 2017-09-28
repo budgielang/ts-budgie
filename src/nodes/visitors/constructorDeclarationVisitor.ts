@@ -29,7 +29,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private getBodyChildren(body: Block | undefined): Statement[] {
+    private getBodyChildren(body: Block | undefined): ReadonlyArray<Statement> {
         if (body === undefined) {
             return [];
         }
@@ -37,7 +37,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return body.statements;
     }
 
-    private parseParameters(parameters: ParameterDeclaration[]): (string | GlsLine)[] | undefined {
+    private parseParameters(parameters: ReadonlyArray<ParameterDeclaration>): (string | GlsLine)[] | undefined {
         const parsedParameters: (string | GlsLine)[] = [];
 
         for (const parameter of parameters) {

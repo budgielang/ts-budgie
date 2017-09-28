@@ -84,7 +84,7 @@ export class NodeVisitRouter {
      * @param node   Node to transform.
      * @returns Transformed GLS output for the node.
      */
-    public recurseIntoNodes(nodes: Node[]): Transformation[] {
+    public recurseIntoNodes(nodes: ReadonlyArray<Node>): Transformation[] {
         const transformations: Transformation[] = [];
 
         for (const child of nodes) {

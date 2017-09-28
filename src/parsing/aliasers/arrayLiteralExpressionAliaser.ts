@@ -14,7 +14,7 @@ export class ArrayLiteralExpressionAliaser extends RecursiveAliaser {
         return new GlsLine(CommandNames.ListType, elementsType);
     }
 
-    private getCommonElementsType(elements: Expression[]) {
+    private getCommonElementsType(elements: ReadonlyArray<Expression>) {
         if (elements.length === 0) {
             return "object";
         }

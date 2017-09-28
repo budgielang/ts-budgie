@@ -29,7 +29,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getType(elements: Expression[]) {
+    private getType(elements: ReadonlyArray<Expression>) {
         if (this.context.coercion instanceof GlsLine) {
             return this.context.coercion.args[0];
         }
@@ -41,7 +41,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         return this.aliaser.getFriendlyTypeName(elements[0]);
     }
 
-    private getTypeParsed(elements: Expression[], parsedElements: (string | GlsLine)[]) {
+    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine)[]) {
         let typeRaw = this.getType(elements);
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {
