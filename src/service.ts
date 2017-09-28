@@ -55,7 +55,7 @@ export class TransformationService {
      *
      * @param transformers   Transformations to retrieve source-to-GLS transforms from a file.
      */
-    public constructor(transformers: ITransformer[], ) {
+    public constructor(transformers: ITransformer[]) {
         this.merger = new Merger(isTransformationEarlierThan);
         this.transformers = transformers;
     }

@@ -17,6 +17,10 @@ var getTsProject = (function () {
     }
 })();
 
+gulp.task("clean", function (callback) {
+    require("run-sequence")("src:clean", "util:clean", "test:clean", callback);
+});
+
 gulp.task("dist:clean", function () {
     var del = require("del");
 
@@ -74,10 +78,6 @@ gulp.task("dist", function (callback) {
     require("run-sequence")("dist:clean", "dist:dev"/*, "dist:min"*/, callback);
 });
 
-gulp.task("clean", function (callback) {
-    require("run-sequence")("src:clean", "util:clean", "test:clean", callback);
-});
-
 gulp.task("src:clean", function () {
     var del = require("del");
 
@@ -99,7 +99,7 @@ gulp.task("src:tslint", function () {
                 base: "."
             })
         .pipe(gulpTslint({
-            formatter: "verbose",
+            formatter: "stylish",
             program
         }))
         .pipe(gulpTslint.report());
@@ -144,7 +144,11 @@ gulp.task("test:tslint", function () {
             "./test/*.ts",
             "./test/unit/*.ts"
         ])
-        .pipe(gulpTslint({ program }));
+        .pipe(gulpTslint({
+            formatter: "stylish",
+            program
+        }))
+        .pipe(gulpTslint.report());
 });
 
 gulp.task("test:tsc", function () {
@@ -214,7 +218,11 @@ gulp.task("util:tslint", function () {
 
     return gulp
         .src("util/**/*.ts")
-        .pipe(gulpTslint({ program }));
+        .pipe(gulpTslint({
+            formatter: "stylish",
+            program
+        }))
+        .pipe(gulpTslint.report());
 });
 
 gulp.task("util:tsc", function () {
@@ -237,24 +245,10 @@ gulp.task("util", function (callback) {
         callback);
 });
 
-gulp.task("util:new-language", function () {
-    var createNewLanguage = require("./util").createNewLanguage;
-
-    createNewLanguage(
-        {
-            extension: ".php",
-            name: "PHP"
-        },
-        {
-            extension: ".py",
-            name: "Python"
-        });
-});
-
 gulp.task("watch", ["default"], function () {
-    gulp.watch("util/**/*.ts", ["src:build"]);
     gulp.watch("src/**/*.ts", ["src:tsc"]);
     gulp.watch("test/**/*.ts", ["test:tsc"]);
+    gulp.watch("util/**/*.ts", ["util:tsc"]);
 });
 
 gulp.task("default", function (callback) {

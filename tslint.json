@@ -9,6 +9,7 @@
         "member-ordering": [false],
         "newline-before-return": [false],
         "no-import-side-effect": [false],
+        "no-submodule-imports": [false],
         "no-unbound-method": [false],
         "no-unsafe-any": [false],
         "no-unused-variable": [false],

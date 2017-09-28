@@ -4,9 +4,9 @@ import { CommentRange } from "typescript";
 import { GlsLine } from "../glsLine";
 import { Transformation } from "../transformation";
 
-const parseCommentText = (commentText: string) => {
+const parseCommentText = (commentText: string): string => {
     if (commentText.substring(0, "//".length) === "//") {
-        commentText = commentText.substring("//".length);
+        return parseCommentText(commentText.substring("//".length));
     }
 
     return commentText.trim();

@@ -73,7 +73,9 @@ export class ComparisonTestsRunner {
 
         describe(this.section, () => {
             this.commandTests.forEach((tests: string[], test: string): void => {
-                it(test, () => this.runCommandTest(path.join(this.section, test)));
+                it(test, () => {
+                    this.runCommandTest(path.join(this.section, test));
+                });
             });
         });
     }
