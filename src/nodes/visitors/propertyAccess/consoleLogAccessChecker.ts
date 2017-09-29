@@ -1,6 +1,6 @@
 import { CommandNames } from "general-language-syntax";
+import { CallExpression, isCallExpression, PropertyAccessExpression } from "typescript";
 
-import { CallExpression, isCallExpression, PropertyAccessExpression } from "typescript/lib/typescript";
 import { GlsLine } from "../../../glsLine";
 import { Transformation } from "../../../transformation";
 import { NodeVisitor } from "../../visitor";

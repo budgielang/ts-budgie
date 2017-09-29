@@ -6,6 +6,7 @@ import { GlsLine } from "../../glsLine";
 import { INodeAliaser, IPrivacyName, IRootAliaser } from "../../nodes/aliaser";
 import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
+import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { TypeLiteralAliaser } from "./typeLiteralAliaser";
 import { TypeNameAliaser } from "./typeNameAliaser";
@@ -25,11 +26,13 @@ interface IIntrinsicSignatureReturnType extends ts.Type {
 export class RootAliaser implements IRootAliaser {
     private readonly flagResolver: TypeFlagsResolver;
     private readonly passThroughTypes: Map<ts.SyntaxKind, INodeChildPasser>;
+    private readonly sourceFile: ts.SourceFile;
     private readonly typesWithKnownTypeNames: Map<ts.SyntaxKind, INodeAliaser>;
     private readonly typeChecker: ts.TypeChecker;
 
-    public constructor(typeChecker: ts.TypeChecker) {
+    public constructor(sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker) {
         this.flagResolver = new TypeFlagsResolver();
+        this.sourceFile = sourceFile;
         this.typeChecker = typeChecker;
 
         this.passThroughTypes = new Map<ts.SyntaxKind, INodeChildPasser>([
@@ -43,6 +46,7 @@ export class RootAliaser implements IRootAliaser {
             [ts.SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
+            [ts.SyntaxKind.NewExpression, new NewExpressionAliaser(this.sourceFile)],
             [ts.SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
             [ts.SyntaxKind.NumericLiteral, new NumericAliaser()],
             [ts.SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
@@ -88,10 +92,15 @@ export class RootAliaser implements IRootAliaser {
         }
 
         // By now, this is probably a node with a non-primitive type, such as a class instance.
+
         if (ts.isParameter(node) || ts.isVariableDeclaration(node)) {
             if (node.type !== undefined) {
                 return node.type.getText();
             }
+        }
+
+        if (ts.isTypeNode(node)) {
+            return node.getText(this.sourceFile);
         }
 
         return undefined;

@@ -1,0 +1,15 @@
+comment line
+class start : Abc
+member variable declare : public explicits string "def"
+member variable declare : public implicits int 7
+member variable declare : protected infinite Abc
+member variable declare : private array { list type : string } { list initialize : string "ghi" }
+constructor start : public
+operation : { member variable : protected { this } infinite } equals { new : Abc }
+operation : { member variable : private { this } array } equals { list initialize : string "jkl" }
+constructor end
+class end
+variable : abc Abc { new : Abc }
+operation : { member variable : public abc explicits } equals "mno"
+operation : { member variable : public abc implicits } (multiply by) 2
+comment line

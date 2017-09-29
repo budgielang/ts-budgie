@@ -22,7 +22,7 @@ describe("RootAliaser", () => {
             // Arrange
             const { sourceFile, typeChecker } = mountSourceText(sourceText);
             const node = getNode(sourceFile);
-            const aliaser = new RootAliaser(typeChecker);
+            const aliaser = new RootAliaser(sourceFile, typeChecker);
 
             // Act
             const typeName = aliaser.getFriendlyTypeName(getNode(sourceFile));
@@ -88,7 +88,7 @@ describe("RootAliaser", () => {
             // Arrange
             const { sourceFile, typeChecker } = mountSourceText(sourceText);
             const node = getNode(sourceFile);
-            const aliaser = new RootAliaser(typeChecker);
+            const aliaser = new RootAliaser(sourceFile, typeChecker);
 
             // Act
             const typeName = aliaser.getFriendlyPrivacyName(getNode(sourceFile));

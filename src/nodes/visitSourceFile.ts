@@ -10,7 +10,7 @@ import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 
 export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] => {
-    const aliaser = new RootAliaser(typeChecker);
+    const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
     const printer = new TransformationsPrinter();
     const visitorContext = new VisitorContext();

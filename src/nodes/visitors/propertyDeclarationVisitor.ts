@@ -8,11 +8,16 @@ import { NodeVisitor } from "../visitor";
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
     public visit(node: PropertyDeclaration) {
-        const privacy = this.aliaser.getFriendlyPrivacyName(node);
-        const instanceName = node.name.getText(this.sourceFile);
-        const value = this.getInitializerValue(node.initializer);
+        const type = this.getType(node);
+        if (type === undefined) {
+            return undefined;
+        }
 
-        const results: (string | GlsLine)[] = [privacy, instanceName];
+        const privacy = this.aliaser.getFriendlyPrivacyName(node);
+        const name = node.name.getText(this.sourceFile);
+        const results: (string | GlsLine)[] = [privacy, name, type];
+
+        const value = this.getInitializerValue(node.initializer);
         if (value !== undefined) {
             results.push(value);
         }
@@ -22,7 +27,7 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.MemberVariable, ...results)
+                    new GlsLine(CommandNames.MemberVariableDeclare, ...results)
                 ])
         ];
     }
@@ -33,5 +38,17 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         }
 
         return this.router.recurseIntoValue(initializer);
+    }
+
+    private getType(node: PropertyDeclaration) {
+        if (node.type !== undefined) {
+            return this.aliaser.getFriendlyTypeName(node.type);
+        }
+
+        if (node.initializer !== undefined) {
+            return this.aliaser.getFriendlyTypeName(node.initializer);
+        }
+
+        return undefined;
     }
 }
