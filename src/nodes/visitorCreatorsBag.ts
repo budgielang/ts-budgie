@@ -11,11 +11,15 @@ import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
 import { LiteralVisitor } from "./visitors/literalVisitor";
+import { MethodDeclarationVisitor } from "./visitors/methodDeclarationVisitor";
+import { NewExpressionVisitor } from "./visitors/newExpressionVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
+import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
 import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
+import { ThisExpressionVisitor } from "./visitors/thisExpressionVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
 import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
@@ -37,12 +41,16 @@ const creators: IVisitorCreators = {
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
     [SyntaxKind.Identifier]: LiteralVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
+    [SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
+    [SyntaxKind.NewExpression]: NewExpressionVisitor,
     [SyntaxKind.NumericLiteral]: LiteralVisitor,
     [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
     [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
     [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
+    [SyntaxKind.ReturnStatement]: ReturnStatementVisitor,
     [SyntaxKind.SourceFile]: SourceFileVisitor,
     [SyntaxKind.StringLiteral]: StringLiteralVisitor,
+    [SyntaxKind.ThisKeyword]: ThisExpressionVisitor,
     [SyntaxKind.TrueKeyword]: LiteralVisitor,
     [SyntaxKind.TypeLiteral]: TypeLiteralVisitor,
     [SyntaxKind.VariableDeclaration]: VariableDeclarationVisitor,

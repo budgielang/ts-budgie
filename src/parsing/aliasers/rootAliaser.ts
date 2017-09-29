@@ -1,6 +1,6 @@
 import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
-import { isParameter, isVariableDeclaration, Modifier, Node, Symbol, SyntaxKind, TypeChecker } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
 import { INodeAliaser, IPrivacyName, IRootAliaser } from "../../nodes/aliaser";
@@ -11,42 +11,49 @@ import { TypeLiteralAliaser } from "./typeLiteralAliaser";
 import { TypeNameAliaser } from "./typeNameAliaser";
 import { VariableDeclarationAliaser } from "./variableDeclarationAliaser";
 
-type INodeChildPasser = (node: Node) => Node;
+type INodeChildPasser = (node: ts.Node) => ts.Node;
 
-const createChildGetter = (index = 0) => (node: Node) => node.getChildren()[index];
+const createChildGetter = (index = 0) => (node: ts.Node) => node.getChildren()[index];
+
+interface IIntrinsicSignatureReturnType extends ts.Type {
+    /**
+     * @remarks This is private within TypeScript, and might change in the future.
+     */
+    intrinsicName: string;
+}
 
 export class RootAliaser implements IRootAliaser {
     private readonly flagResolver: TypeFlagsResolver;
-    private readonly passThroughTypes: Map<SyntaxKind, INodeChildPasser>;
-    private readonly typesWithKnownTypeNames: Map<SyntaxKind, INodeAliaser>;
-    private readonly typeChecker: TypeChecker;
+    private readonly passThroughTypes: Map<ts.SyntaxKind, INodeChildPasser>;
+    private readonly typesWithKnownTypeNames: Map<ts.SyntaxKind, INodeAliaser>;
+    private readonly typeChecker: ts.TypeChecker;
 
-    public constructor(typeChecker: TypeChecker) {
+    public constructor(typeChecker: ts.TypeChecker) {
         this.flagResolver = new TypeFlagsResolver();
         this.typeChecker = typeChecker;
 
-        this.passThroughTypes = new Map<SyntaxKind, INodeChildPasser>([
-            [SyntaxKind.ExpressionStatement, createChildGetter()],
-            [SyntaxKind.ParenthesizedExpression, createChildGetter()],
-            [SyntaxKind.ParenthesizedType, createChildGetter()],
-            [SyntaxKind.SyntaxList, createChildGetter()],
+        this.passThroughTypes = new Map<ts.SyntaxKind, INodeChildPasser>([
+            [ts.SyntaxKind.ExpressionStatement, createChildGetter()],
+            [ts.SyntaxKind.ParenthesizedExpression, createChildGetter()],
+            [ts.SyntaxKind.ParenthesizedType, createChildGetter()],
+            [ts.SyntaxKind.SyntaxList, createChildGetter()],
         ]);
 
-        this.typesWithKnownTypeNames = new Map<SyntaxKind, INodeAliaser>([
-            [SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
-            [SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
-            [SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
-            [SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
-            [SyntaxKind.NumericLiteral, new NumericAliaser()],
-            [SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
-            [SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
-            [SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
-            [SyntaxKind.StringLiteral, new TypeNameAliaser("string")],
-            [SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeName)],
+        this.typesWithKnownTypeNames = new Map<ts.SyntaxKind, INodeAliaser>([
+            [ts.SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
+            [ts.SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
+            [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
+            [ts.SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
+            [ts.SyntaxKind.NumericLiteral, new NumericAliaser()],
+            [ts.SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
+            [ts.SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
+            [ts.SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
+            [ts.SyntaxKind.StringLiteral, new TypeNameAliaser("string")],
+            [ts.SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeName)],
         ]);
     }
 
-    public getFriendlyTypeName = (node: Node): string | GlsLine | undefined => {
+    public getFriendlyTypeName = (node: ts.Node): string | GlsLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
             return knownTypeNameConverter.getFriendlyTypeName(node);
@@ -71,7 +78,7 @@ export class RootAliaser implements IRootAliaser {
         if (symbol !== undefined && symbol.valueDeclaration !== undefined) {
             const valueDeclaration = symbol.valueDeclaration;
 
-            if (isVariableDeclaration(valueDeclaration)) {
+            if (ts.isVariableDeclaration(valueDeclaration)) {
                 const initializer = valueDeclaration.initializer;
 
                 if (initializer !== undefined) {
@@ -80,8 +87,8 @@ export class RootAliaser implements IRootAliaser {
             }
         }
 
-        // By now, this is probably be a node with a non-primitive type, such as a class instance.
-        if (isParameter(node) || isVariableDeclaration(node)) {
+        // By now, this is probably a node with a non-primitive type, such as a class instance.
+        if (ts.isParameter(node) || ts.isVariableDeclaration(node)) {
             if (node.type !== undefined) {
                 return node.type.getText();
             }
@@ -90,15 +97,33 @@ export class RootAliaser implements IRootAliaser {
         return undefined;
     }
 
-    public getFriendlyPrivacyName(node: Node): IPrivacyName {
-        if (hasModifier(node.modifiers, SyntaxKind.PrivateKeyword)) {
+    public getFriendlyPrivacyName(node: ts.Node): IPrivacyName {
+        if (hasModifier(node.modifiers, ts.SyntaxKind.PrivateKeyword)) {
             return "private";
         }
 
-        if (hasModifier(node.modifiers, SyntaxKind.ProtectedKeyword)) {
+        if (hasModifier(node.modifiers, ts.SyntaxKind.ProtectedKeyword)) {
             return "protected";
         }
 
         return "public";
+    }
+
+    public getFriendlyReturnTypeName(node: ts.ArrowFunction | ts.MethodDeclaration | ts.FunctionDeclaration): string | GlsLine | undefined {
+        const typeAtLocation = this.typeChecker.getTypeAtLocation(node);
+        const signaturesOfType = this.typeChecker.getSignaturesOfType(typeAtLocation, ts.SignatureKind.Call);
+        if (signaturesOfType.length !== 1) {
+            return undefined;
+        }
+
+        const signatureOfType = signaturesOfType[0];
+        const signatureReturnType = signatureOfType.getReturnType();
+
+        const symbol = signatureReturnType.getSymbol();
+        if (symbol !== undefined) {
+            return symbol.getName();
+        }
+
+        return (signatureReturnType as IIntrinsicSignatureReturnType).intrinsicName;
     }
 }

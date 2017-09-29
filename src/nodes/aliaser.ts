@@ -1,4 +1,4 @@
-import { Node } from "typescript";
+import { ArrowFunction, FunctionDeclaration, MethodDeclaration, Node } from "typescript";
 
 import { GlsLine } from "../glsLine";
 
@@ -31,4 +31,12 @@ export interface IRootAliaser extends INodeAliaser {
      * @returns GLS-equivalent output name of the node's privacy.
      */
     getFriendlyPrivacyName(node: Node): IPrivacyName;
+
+    /**
+     * Generates a GLS-friendly name for a node's return type.
+     *
+     * @param node   Node to generate a name of.
+     * @returns GLS-equivalent output name of the node's return type.
+     */
+    getFriendlyReturnTypeName(node: ArrowFunction | MethodDeclaration | FunctionDeclaration): string | GlsLine | undefined;
 }

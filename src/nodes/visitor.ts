@@ -1,3 +1,4 @@
+import { CaseStyleConverterBag } from "general-language-syntax";
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { Transformation } from "../transformation";
@@ -7,6 +8,7 @@ import { NodeVisitRouter } from "./router";
 
 export interface INodeVisitorDependencies {
     aliaser: IRootAliaser;
+    casing: CaseStyleConverterBag;
     router: NodeVisitRouter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
@@ -21,6 +23,11 @@ export abstract class NodeVisitor {
      * Generates GLS-friendly names for nodes.
      */
     protected readonly aliaser: IRootAliaser;
+
+    /**
+     * Transforms words between cases.
+     */
+    protected readonly casing: CaseStyleConverterBag;
 
     /**
      * Shared context for visitors in a file.
@@ -55,6 +62,7 @@ export abstract class NodeVisitor {
         }
 
         this.aliaser = dependencies.aliaser;
+        this.casing = dependencies.casing;
         this.context = dependencies.visitorContext;
         this.router = dependencies.router;
         this.sourceFile = dependencies.sourceFile;

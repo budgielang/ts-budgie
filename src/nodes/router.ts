@@ -1,3 +1,4 @@
+import { CaseStyleConverterBag } from "general-language-syntax";
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { GlsLine } from "../glsLine";
@@ -11,6 +12,7 @@ import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 
 export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
+    casing: CaseStyleConverterBag;
     printer: ITransformationsPrinter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
@@ -41,6 +43,7 @@ export class NodeVisitRouter {
         this.dependencies = dependencies;
         this.visitorsBag = new VisitorsBag({
             aliaser: dependencies.aliaser,
+            casing: dependencies.casing,
             router: this,
             sourceFile: dependencies.sourceFile,
             typeChecker: dependencies.typeChecker,
