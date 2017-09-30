@@ -5,7 +5,7 @@ import { GlsLine } from "../../glsLine";
 import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
-import { MemberFunctionChecker } from "./propertyAccess/memberFunctionChecker";
+import { MemberOrStaticFunctionChecker } from "./propertyAccess/memberOrStaticFunctionChecker";
 import { MemberVariableChecker } from "./propertyAccess/memberVariableChecker";
 import { StringLengthAccessChecker } from "./propertyAccess/stringLengthAccessChecker";
 
@@ -13,7 +13,7 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
     private readonly checkers: NodeVisitor[] = [
         new ConsoleLogAccessChecker(this),
         new StringLengthAccessChecker(this),
-        new MemberFunctionChecker(this),
+        new MemberOrStaticFunctionChecker(this),
         new MemberVariableChecker(this),
     ];
 

@@ -1,4 +1,5 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
+import { hasModifier } from "tsutils";
 import { MethodDeclaration, ParameterDeclaration, SignatureKind, SyntaxKind } from "typescript";
 
 import { GlsLine } from "../../glsLine";
@@ -24,15 +25,16 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
         const nameRaw = node.name.getText(this.sourceFile);
         const name = this.casing.getConverter(CaseStyle.PascalCase).convert([nameRaw]);
+        const [commandStart, commandEnd] = this.getCommandNames(node);
 
         return [
             Transformation.fromNode(
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.MemberFunctionDeclareStart, privacy, name, returnType, ...parameters),
+                    new GlsLine(commandStart, privacy, name, returnType, ...parameters),
                     ...this.router.recurseIntoNodes(node.body.statements),
-                    new GlsLine(CommandNames.MemberFunctionDeclareEnd)
+                    new GlsLine(commandEnd)
                 ])
         ];
     }
@@ -51,5 +53,11 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         }
 
         return parameters;
+    }
+
+    private getCommandNames(node: MethodDeclaration) {
+        return hasModifier(node.modifiers, SyntaxKind.StaticKeyword)
+            ? [CommandNames.StaticFunctionDeclareStart, CommandNames.StaticFunctionDeclareEnd]
+            : [CommandNames.MemberFunctionDeclareStart, CommandNames.MemberFunctionDeclareEnd];
     }
 }
