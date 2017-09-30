@@ -8,7 +8,7 @@ import { GlsLine } from "../glsLine";
 export type IPrivacyName = "private" | "protected" | "public";
 
 /**
- * 
+ * A node type that contains a return type.
  */
 export type IReturningNode = ArrowFunction | MethodDeclaration | MethodSignature | FunctionDeclaration;
 
