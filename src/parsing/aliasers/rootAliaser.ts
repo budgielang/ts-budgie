@@ -3,7 +3,7 @@ import { hasModifier } from "tsutils";
 import * as ts from "typescript";
 
 import { GlsLine } from "../../glsLine";
-import { INodeAliaser, IPrivacyName, IRootAliaser } from "../../nodes/aliaser";
+import { INodeAliaser, IPrivacyName, IReturningNode, IRootAliaser } from "../../nodes/aliaser";
 import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
@@ -118,7 +118,7 @@ export class RootAliaser implements IRootAliaser {
         return "public";
     }
 
-    public getFriendlyReturnTypeName(node: ts.ArrowFunction | ts.MethodDeclaration | ts.FunctionDeclaration): string | GlsLine | undefined {
+    public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
         const typeAtLocation = this.typeChecker.getTypeAtLocation(node);
         const signaturesOfType = this.typeChecker.getSignaturesOfType(typeAtLocation, ts.SignatureKind.Call);
         if (signaturesOfType.length !== 1) {

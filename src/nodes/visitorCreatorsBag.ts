@@ -10,8 +10,10 @@ import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
+import { InterfaceDeclarationVisitor } from "./visitors/interfaceDeclarationVisitor";
 import { LiteralVisitor } from "./visitors/literalVisitor";
 import { MethodDeclarationVisitor } from "./visitors/methodDeclarationVisitor";
+import { MethodSignatureVisitor } from "./visitors/methodSignatureVisitor";
 import { NewExpressionVisitor } from "./visitors/newExpressionVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
@@ -41,7 +43,9 @@ const creators: IVisitorCreators = {
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
     [SyntaxKind.Identifier]: LiteralVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
+    [SyntaxKind.InterfaceDeclaration]: InterfaceDeclarationVisitor,
     [SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
+    [SyntaxKind.MethodSignature]: MethodSignatureVisitor,
     [SyntaxKind.NewExpression]: NewExpressionVisitor,
     [SyntaxKind.NumericLiteral]: LiteralVisitor,
     [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
