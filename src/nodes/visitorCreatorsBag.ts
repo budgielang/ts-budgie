@@ -4,6 +4,7 @@ import { NodeVisitor } from "./visitor";
 import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpressionVisitor";
 import { BinaryExpressionVisitor } from "./visitors/binaryExpressionVisitor";
 import { BreakStatementVisitor } from "./visitors/breakStatementVisitor";
+import { CallExpressionVisitor } from "./visitors/callExpressionVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ConstructorDeclarationVisitor } from "./visitors/constructorDeclarationVisitor";
 import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
@@ -19,7 +20,6 @@ import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressi
 import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
 import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
-import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
 import { ThisExpressionVisitor } from "./visitors/thisExpressionVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
@@ -34,6 +34,7 @@ const creators: IVisitorCreators = {
     [SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
     [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
     [SyntaxKind.BreakStatement]: BreakStatementVisitor,
+    [SyntaxKind.CallExpression]: CallExpressionVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
     [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
@@ -52,7 +53,6 @@ const creators: IVisitorCreators = {
     [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
     [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
     [SyntaxKind.ReturnStatement]: ReturnStatementVisitor,
-    [SyntaxKind.SourceFile]: SourceFileVisitor,
     [SyntaxKind.StringLiteral]: StringLiteralVisitor,
     [SyntaxKind.ThisKeyword]: ThisExpressionVisitor,
     [SyntaxKind.TrueKeyword]: LiteralVisitor,

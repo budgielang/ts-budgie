@@ -8,6 +8,9 @@ import { NodeVisitor } from "./../visitor";
 export class ParenthesizedExpressionVisitor extends NodeVisitor {
     public visit(node: ParenthesizedExpression) {
         const contents = this.router.recurseIntoValue(node.expression);
+        if (contents === undefined) {
+            return undefined;
+        }
 
         return [
             Transformation.fromNode(

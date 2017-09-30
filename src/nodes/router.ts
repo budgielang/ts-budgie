@@ -72,7 +72,7 @@ export class NodeVisitRouter {
      * @param node   Node to transform.
      * @returns Transformed GLS output for the inline value.
      */
-    public recurseIntoValue(node: Node): string | GlsLine {
+    public recurseIntoValue(node: Node): string | GlsLine | undefined {
         const subTransformations = this.recurseIntoNode(node);
         if (subTransformations === undefined) {
             return "";

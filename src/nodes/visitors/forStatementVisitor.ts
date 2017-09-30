@@ -31,7 +31,6 @@ const getConditionEnd = (target: string, condition: ts.Expression, sourceFile: t
     return condition.right.getText(sourceFile);
 };
 
-// name, type, start, end
 export class ForStatementVisitor extends NodeVisitor {
     public visit(node: ts.ForStatement) {
         const statement = this.router.recurseIntoValue(node.statement);
@@ -66,16 +65,18 @@ export class ForStatementVisitor extends NodeVisitor {
         ]);
 
         const start = declaration.initializer.getText(this.sourceFile);
+        const output: (string | GlsLine)[] = [
+            new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end)
+        ];
+
+        if (statement !== undefined) {
+            output.push(statement);
+        }
+
+        output.push(new GlsLine(CommandNames.ForNumbersEnd));
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end),
-                    statement as GlsLine,
-                    new GlsLine(CommandNames.ForNumbersEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, output)
         ];
     }
 }

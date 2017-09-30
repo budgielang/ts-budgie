@@ -4,15 +4,19 @@ import { ArrayLiteralExpression, Expression } from "typescript";
 import { GlsLine } from "../../glsLine";
 import { getNumericTypeNameFromUsages, isNumericTypeName } from "../../parsing/numerics";
 import { Transformation } from "../../transformation";
+import { filterOutUndefined } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 export class ArrayLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ArrayLiteralExpression) {
-        const { elements } = node;
-        const parsedElements = node.elements
-            .map((element) => this.router.recurseIntoValue(element));
-        const typeParsed = this.getTypeParsed(elements, parsedElements);
+        const parsedElements = filterOutUndefined(
+            node.elements.map(
+                (element) => this.router.recurseIntoValue(element)));
+        if (parsedElements === undefined) {
+            return undefined;
+        }
 
+        const typeParsed = this.getTypeParsed(node.elements, parsedElements);
         if (typeParsed === undefined) {
             return undefined;
         }
@@ -41,7 +45,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         return this.aliaser.getFriendlyTypeName(elements[0]);
     }
 
-    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine)[]) {
+    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine | undefined)[]) {
         let typeRaw = this.getType(elements);
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {

@@ -30,7 +30,8 @@ const collectOperationContents = (node: BinaryExpression): (string | Expression)
 export class BinaryExpressionVisitor extends NodeVisitor {
     public visit(node: BinaryExpression) {
         const contents = collectOperationContents(node)
-            .map((content) => this.recurseOnOperationContents(content));
+            .map((content) => this.recurseOnOperationContents(content))
+            .filter((content) => content !== undefined) as (string | GlsLine)[];
 
         return [
             Transformation.fromNode(

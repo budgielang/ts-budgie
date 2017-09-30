@@ -20,9 +20,5 @@ export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker
         aliaser, casing, printer, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
     });
 
-    const result = router.recurseIntoNode(sourceFile);
-
-    return result === undefined
-        ? []
-        : result;
+    return router.recurseIntoNodes(sourceFile.statements);
 };

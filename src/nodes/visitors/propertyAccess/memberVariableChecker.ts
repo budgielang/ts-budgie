@@ -12,6 +12,10 @@ export class MemberVariableChecker extends NodeVisitor {
         }
 
         const caller = this.router.recurseIntoValue(node.expression);
+        if (caller === undefined) {
+            return undefined;
+        }
+
         const variableName = node.name.getText(this.sourceFile);
         const privacy = this.getMemberPrivacy(node.expression, node.name);
 

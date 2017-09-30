@@ -8,6 +8,10 @@ import { NodeVisitor } from "../visitor";
 export class IfStatementVisitor extends NodeVisitor {
     public visit(node: IfStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
+        if (expression === undefined) {
+            return undefined;
+        }
+
         const transformations: Transformation[] = [];
         const { elseStatement, thenStatement } = node;
 

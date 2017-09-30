@@ -8,6 +8,10 @@ import { NodeVisitor } from "../visitor";
 export class WhileStatementVisitor extends NodeVisitor {
     public visit(node: WhileStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
+        if (expression === undefined) {
+            return undefined;
+        }
+
         const transformations: Transformation[] = [];
         const { statement } = node;
 

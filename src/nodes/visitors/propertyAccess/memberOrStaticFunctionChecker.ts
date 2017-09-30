@@ -3,6 +3,7 @@ import * as ts from "typescript";
 
 import { GlsLine } from "../../../glsLine";
 import { Transformation } from "../../../transformation";
+import { filterOutUndefined } from "../../../utils";
 import { NodeVisitor } from "../../visitor";
 
 export class MemberOrStaticFunctionChecker extends NodeVisitor {
@@ -21,14 +22,24 @@ export class MemberOrStaticFunctionChecker extends NodeVisitor {
             return undefined;
         }
 
+        const caller = this.router.recurseIntoValue(node.expression);
+        if (caller === undefined) {
+            return undefined;
+        }
+
+        const args = filterOutUndefined(
+            node.parent.arguments.map(
+                (arg) => this.router.recurseIntoValue(arg)));
+        if (args === undefined) {
+            return undefined;
+        }
+
         const [hostDeclaration] = hostSignature.declarations;
         const commandName = hostContainer === classSymbol.members
             ? CommandNames.MemberFunction
             : CommandNames.StaticFunction;
 
         const privacy = this.aliaser.getFriendlyPrivacyName(hostDeclaration);
-        const args = node.parent.arguments.map((arg) => this.router.recurseIntoValue(arg));
-        const caller = this.router.recurseIntoValue(node.expression);
         const functionName = this.casing.getConverter(CaseStyle.PascalCase).convert([node.name.getText(this.sourceFile)]);
 
         return [
