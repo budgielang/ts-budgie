@@ -1,8 +1,7 @@
 comment line
 class start : Abc
 class end
-return
-return : ""
-return : 7
-return : { new : Abc }
+
+variable : abc Abc { new : Abc }
+new : Abc
 comment line

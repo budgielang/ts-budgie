@@ -1,6 +1,7 @@
 comment line
 class start : Abc
 class end
+
 return
 return : ""
 return : 7

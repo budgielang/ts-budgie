@@ -3,31 +3,38 @@ class start : PublicImplicitNoParameters
 constructor start : public
 constructor end
 class end
+
 class start : PublicExplicitNoParameters
 constructor start : public
 constructor end
 class end
+
 class start : ProtectedNoParameters
 constructor start : protected
 constructor end
 class end
+
 class start : PrivateNoParameters
 constructor start : private
 constructor end
 class end
+
 class start : OneParameter
 constructor start : public abc string
 constructor end
 class end
+
 class start : OneParameterContent
 constructor start : public abc string
 print : abc
 constructor end
 class end
+
 class start : TwoParameters
 constructor start : public abc string def OneParameter
 constructor end
 class end
+
 class start : TwoParametersContent
 constructor start : public abc string def OneParameter
 print : abc

@@ -74,11 +74,12 @@ export class NodeVisitRouter {
      */
     public recurseIntoValue(node: Node): string | GlsLine | undefined {
         const subTransformations = this.recurseIntoNode(node);
-        if (subTransformations === undefined) {
-            return "";
+        if (subTransformations === undefined || subTransformations.length === 0) {
+            return undefined;
         }
 
-        return this.dependencies.printer.printTransformations(subTransformations)[0];
+        const { sourceFile } = this.dependencies;
+        return this.dependencies.printer.printTransformations(sourceFile.getText(sourceFile), subTransformations)[0];
     }
 
     /**

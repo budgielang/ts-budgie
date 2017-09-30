@@ -1,8 +1,6 @@
 //
 class Abc { }
 
-return
-return "";
-return 7
-return new Abc();
+let abc = new Abc();
+new Abc()
 //

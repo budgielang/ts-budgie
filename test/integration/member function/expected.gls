@@ -3,10 +3,12 @@ class start : Abc
 member function declare start : public Explicits string
 return : ""
 member function declare end
+
 member function declare start : public Implicits Abc
 member function : private { this } Parameters "" 0
 return : { new : Abc }
 member function declare end
+
 member function declare start : private Parameters void first string second float
 member function : public { this } Explicits
 member function declare end
