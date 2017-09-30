@@ -7,24 +7,27 @@ import { NodeVisitor } from "../visitor";
 
 export class ReturnStatementVisitor extends NodeVisitor {
     public visit(node: ReturnStatement) {
-        const returnValue = this.getReturnValues(node.expression);
-        if (returnValue === undefined) {
-            return undefined;
-        }
+        const returnValues = this.getReturnValues(node.expression);
 
         return [
             Transformation.fromNode(
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.Return, returnValue),
+                    new GlsLine(CommandNames.Return, ...returnValues),
                 ])
         ];
     }
 
     private getReturnValues(expression: Expression | undefined) {
-        return expression === undefined
-            ? undefined
-            : this.router.recurseIntoValue(expression);
+        if (expression === undefined) {
+            return [];
+        }
+
+        const value = this.router.recurseIntoValue(expression);
+
+        return value === undefined
+            ? []
+            : [value];
     }
 }

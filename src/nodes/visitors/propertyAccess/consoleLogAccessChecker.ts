@@ -3,6 +3,7 @@ import { CallExpression, isCallExpression, PropertyAccessExpression } from "type
 
 import { GlsLine } from "../../../glsLine";
 import { Transformation } from "../../../transformation";
+import { filterOutUndefined } from "../../../utils";
 import { NodeVisitor } from "../../visitor";
 
 export class ConsoleLogAccessChecker extends NodeVisitor {
@@ -14,7 +15,12 @@ export class ConsoleLogAccessChecker extends NodeVisitor {
             return undefined;
         }
 
-        const args = node.parent.arguments.map((arg) => this.router.recurseIntoValue(arg));
+        const args = filterOutUndefined(
+            node.parent.arguments
+                .map((arg) => this.router.recurseIntoValue(arg)));
+        if (args === undefined) {
+            return undefined;
+        }
 
         return [
             Transformation.fromNode(
