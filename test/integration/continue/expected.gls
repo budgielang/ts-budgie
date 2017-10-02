@@ -1,13 +1,13 @@
 comment line
 while start : true
-continue
+    continue
 while end
 
 for numbers start : i int 0 7
-continue
+    continue
 for numbers end
 
 for each start : { list initialize : string "abc" "def" } string word
-continue
+    continue
 for each end
 comment line

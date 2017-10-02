@@ -1,16 +1,16 @@
 comment line
 class start : Abc
-static function declare start : public Explicits string
-return : ""
-static function declare end
+    static function declare start : public Explicits string
+        return : ""
+    static function declare end
 
-static function declare start : public Implicits Abc
-static function : private Abc Parameters "" 0
-return : { new : Abc }
-static function declare end
+    static function declare start : public Implicits Abc
+        static function : private Abc Parameters "" 0
+        return : { new : Abc }
+    static function declare end
 
-static function declare start : private Parameters void first string second float
-static function : public Abc Explicits
-static function declare end
+    static function declare start : private Parameters void first string second float
+        static function : public Abc Explicits
+    static function declare end
 class end
 comment line

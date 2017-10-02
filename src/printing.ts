@@ -1,10 +1,20 @@
 import { GlsLine } from "./glsLine";
+import { LineIndenter } from "./lineIndenter";
 import { Transformation } from "./transformation";
 
 /**
  * Prints series of transformations as lines of GLS.
  */
 export interface ITransformationsPrinter {
+    /**
+     * Prints a series of transformations as indented lines.
+     *
+     * @param sourceText   Full source text from the transforming file.
+     * @param transformations   A series of transformations.
+     * @returns The transformations' equivalent indented lines.
+     */
+    printFile(sourceText: string, transformations: Transformation[]): string[];
+
     /**
      * Prints a series of transformations as lines of GLS and literal string lines.
      *
@@ -35,6 +45,22 @@ const countEndlinesWithin = (text: string): number => {
  */
 export class TransformationsPrinter implements ITransformationsPrinter {
     /**
+     * Indents GLS lines using their command metadata.
+     */
+    private readonly lineIndenter: LineIndenter = new LineIndenter();
+
+    /**
+     * Prints a series of transformations as indented lines.
+     *
+     * @param sourceText   Full source text from the transforming file.
+     * @param transformations   A series of transformations.
+     * @returns The transformations' equivalent indented lines.
+     */
+    public printFile(sourceText: string, transformations: Transformation[]): string[] {
+        return this.lineIndenter.indent(this.printTransformations(sourceText, transformations));
+    }
+
+    /**
      * Prints a series of transformations as lines of GLS and literal string lines.
      *
      * @param sourceText   Full source text from the transforming file.
@@ -57,6 +83,7 @@ export class TransformationsPrinter implements ITransformationsPrinter {
 
             lines.push(...this.printTransformation(sourceText, transformations[i]));
         }
+
         return lines;
     }
 
