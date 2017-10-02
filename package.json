@@ -52,7 +52,7 @@
   },
   "dependencies": {
     "@types/mz": "0.0.32",
-    "general-language-syntax": "^0.3.18",
+    "general-language-syntax": "^0.3.20",
     "mz": "^2.7.0",
     "tsutils": "^2.9.0"
   }
