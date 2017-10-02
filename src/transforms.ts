@@ -46,7 +46,7 @@ export class Transformer {
      * @returns GLS equivalent for the source file.
      */
     public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): (string | GlsLine)[] {
-        return this.dependencies.printer.printTransformations(
+        return this.dependencies.printer.printFile(
             sourceFile.getFullText(sourceFile),
             this.getSourceFileTransforms(sourceFile, typeChecker));
     }
@@ -58,7 +58,7 @@ export class Transformer {
      * @returns GLS equivalent for the source text.
      */
     public transformText(sourceText: string): (string | GlsLine)[] {
-        return this.dependencies.printer.printTransformations(
+        return this.dependencies.printer.printFile(
             sourceText,
             this.getTextTransforms(sourceText));
     }
