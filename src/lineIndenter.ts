@@ -1,4 +1,4 @@
-import { CommandsBag } from "general-language-syntax";
+import { CommandsBag, CommandsBagFactory } from "general-language-syntax";
 
 import { GlsLine } from "./glsLine";
 
@@ -22,7 +22,7 @@ const generateTabs = (amount: number): string => {
  * Indents GLS lines using their command metadata.
  */
 export class LineIndenter {
-    private readonly commandsBag: CommandsBag = CommandsBag.forLanguageName("TypeScript");
+    private readonly commandsBag: CommandsBag = CommandsBagFactory.forLanguageName("TypeScript");
 
     /**
      * Indents GLS lines using their command metadata.
