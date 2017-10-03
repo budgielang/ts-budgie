@@ -1,15 +1,15 @@
 import { NumericLiteral } from "typescript";
 
-import { GlsLine } from "../glsLine";
+import { GlsLine } from "../output/glsLine";
 
 export type NumericType = "float" | "int";
 
 export const isNumericTypeName = (type: string): type is NumericType =>
     type === "float" || type === "int";
 
-export const getNumericTypeNameFromUsages = (usages: (number | string | GlsLine | undefined)[]): NumericType => {
+export const getNumericTypeNameFromUsages = (usages: (number | string | GlsLine)[]): NumericType => {
     for (const usage of usages) {
-        if (usage instanceof GlsLine || usage === undefined) {
+        if (usage instanceof GlsLine) {
             continue;
         }
 

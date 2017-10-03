@@ -6,7 +6,8 @@ export const createStubProgramForFiles = (sourceFiles: SourceFile[]) =>
     createProgram(
         sourceFiles.map((sourceFile) => sourceFile.fileName),
         {
-            allowJs: false
+            allowJs: false,
+            lib: ["es5", "es2015.collection"]
         },
         new StubCompilerHost(sourceFiles));
 

@@ -1,9 +1,10 @@
 import { CommandNames } from "general-language-syntax";
 import { VariableDeclaration } from "typescript";
 
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { isVariableDeclarationMultiline } from "../../parsing/attributes";
-import { Transformation } from "../../transformation";
 import { getTypeAdjustment } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
@@ -24,6 +25,10 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // A value may indicate to us better typing info than what we already have
         const value = this.getValue(node);
+        if (value instanceof UnsupportedComplaint) {
+            return value;
+        }
+
         const typeModified = this.context.exitTypeCoercion();
         if (typeModified !== undefined) {
             interpretedType = typeModified;
@@ -40,7 +45,10 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // If we don't know the interpreted type by now, just give up
         if (interpretedType === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forNode(
+                node,
+                this.sourceFile,
+                "Could not determine type information.");
         }
 
         const results: (string | GlsLine)[] = [name, interpretedType];

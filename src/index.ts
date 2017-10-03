@@ -1,12 +1,14 @@
 import { visitEachComment } from "./comments/visitEachComment";
 import { visitSourceFile } from "./nodes/visitSourceFile";
-import { TransformationsPrinter } from "./printing";
+import { TransformationsPrinter } from "./printing/transformationsPrinter";
 import { TransformationService } from "./service";
 import { Transformer } from "./transforms";
 
-export { GlsLine } from "./glsLine";
+export { GlsLine } from "./output/glsLine";
+export { UnsupportedComplaint } from "./output/complaint";
+export { IOutput, Transformation } from "./output/transformation";
+export { IRange } from "./output/range";
 export { ITransformer, TransformationService } from "./service";
-export { IOutput, IRange, Transformation } from "./transformation";
 export * from "./transforms";
 
 /**

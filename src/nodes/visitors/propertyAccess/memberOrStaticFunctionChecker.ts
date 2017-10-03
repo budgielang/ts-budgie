@@ -1,12 +1,13 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../glsLine";
-import { Transformation } from "../../../transformation";
-import { filterOutUndefined } from "../../../utils";
-import { NodeVisitor } from "../../visitor";
+import { UnsupportedComplaint } from "../../../output/complaint";
+import { GlsLine } from "../../../output/glsLine";
+import { Transformation } from "../../../output/transformation";
+import { filterOutUnsupportedComplaint } from "../../../utils";
+import { PropertyAccessChecker } from "./propertyAccessChecker";
 
-export class MemberOrStaticFunctionChecker extends NodeVisitor {
+export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
     public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined || !ts.isCallExpression(node.parent)) {
             return undefined;
@@ -23,14 +24,14 @@ export class MemberOrStaticFunctionChecker extends NodeVisitor {
         }
 
         const caller = this.router.recurseIntoValue(node.expression);
-        if (caller === undefined) {
+        if (caller instanceof UnsupportedComplaint) {
             return undefined;
         }
 
-        const args = filterOutUndefined(
+        const args = filterOutUnsupportedComplaint(
             node.parent.arguments.map(
                 (arg) => this.router.recurseIntoValue(arg)));
-        if (args === undefined) {
+        if (args instanceof UnsupportedComplaint) {
             return undefined;
         }
 

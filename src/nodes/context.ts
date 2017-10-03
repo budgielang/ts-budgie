@@ -1,4 +1,4 @@
-import { GlsLine } from "../glsLine";
+import { GlsLine } from "../output/glsLine";
 
 /**
  * Shared context for visitors in a file.

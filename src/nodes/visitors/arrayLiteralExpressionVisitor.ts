@@ -1,24 +1,25 @@
 import { CommandNames } from "general-language-syntax";
 import { ArrayLiteralExpression, Expression } from "typescript";
 
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { getNumericTypeNameFromUsages, isNumericTypeName } from "../../parsing/numerics";
-import { Transformation } from "../../transformation";
-import { filterOutUndefined } from "../../utils";
+import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 export class ArrayLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ArrayLiteralExpression) {
-        const parsedElements = filterOutUndefined(
+        const parsedElements = filterOutUnsupportedComplaint(
             node.elements.map(
                 (element) => this.router.recurseIntoValue(element)));
-        if (parsedElements === undefined) {
-            return undefined;
+        if (parsedElements instanceof UnsupportedComplaint) {
+            return parsedElements;
         }
 
         const typeParsed = this.getTypeParsed(node.elements, parsedElements);
         if (typeParsed === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
         }
 
         this.context.setTypeCoercion(new GlsLine(CommandNames.ListType, typeParsed));
@@ -45,7 +46,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         return this.aliaser.getFriendlyTypeName(elements[0]);
     }
 
-    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine | undefined)[]) {
+    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine)[]) {
         let typeRaw = this.getType(elements);
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {

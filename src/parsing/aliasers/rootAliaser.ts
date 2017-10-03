@@ -2,8 +2,8 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../glsLine";
 import { INodeAliaser, IPrivacyName, IReturningNode, IRootAliaser } from "../../nodes/aliaser";
+import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";

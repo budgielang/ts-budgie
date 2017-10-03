@@ -1,25 +1,16 @@
 import { CaseStyleConverterBag } from "general-language-syntax";
 import { Node, SourceFile, TypeChecker } from "typescript";
 
-import { UnsupportedComplaint } from "../output/complaint";
-import { Transformation } from "../output/transformation";
-import { IRootAliaser } from "./aliaser";
-import { VisitorContext } from "./context";
-import { NodeVisitRouter } from "./router";
-
-export interface INodeVisitorDependencies {
-    aliaser: IRootAliaser;
-    casing: CaseStyleConverterBag;
-    router: NodeVisitRouter;
-    sourceFile: SourceFile;
-    typeChecker: TypeChecker;
-    visitorContext: VisitorContext;
-}
+import { Transformation } from "../../../output/transformation";
+import { IRootAliaser } from "../../aliaser";
+import { VisitorContext } from "../../context";
+import { NodeVisitRouter } from "../../router";
+import { INodeVisitorDependencies, NodeVisitor } from "../../visitor";
 
 /**
- * Creates transformations for a node type.
+ * Creates transformations for a type of property access, if possible.
  */
-export abstract class NodeVisitor {
+export abstract class PropertyAccessChecker {
     /**
      * Generates GLS-friendly names for nodes.
      */
@@ -51,7 +42,7 @@ export abstract class NodeVisitor {
     protected readonly typeChecker: TypeChecker;
 
     /**
-     * Initializes a new instance of the NodeVisitor class.
+     * Initializes a new instance of the PropertyAccessChecker class.
      *
      * @param dependencies   Dependencies to be used for initialization.
      */
@@ -71,10 +62,10 @@ export abstract class NodeVisitor {
     }
 
     /**
-     * Creates transformations for a node.
+     * Creates transformations for a type of property access.
      *
      * @param node   Node to transform.
-     * @returns Transformations for the node, or a complaint for unsupported syntax.
+     * @returns Transformations for the node, if possible.
      */
-    public abstract visit(node: Node): Transformation[] | UnsupportedComplaint;
+    public abstract visit(node: Node): Transformation[] | undefined;
 }

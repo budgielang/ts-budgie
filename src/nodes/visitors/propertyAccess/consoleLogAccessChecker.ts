@@ -1,12 +1,13 @@
 import { CommandNames } from "general-language-syntax";
 import { CallExpression, isCallExpression, PropertyAccessExpression } from "typescript";
 
-import { GlsLine } from "../../../glsLine";
-import { Transformation } from "../../../transformation";
-import { filterOutUndefined } from "../../../utils";
-import { NodeVisitor } from "../../visitor";
+import { UnsupportedComplaint } from "../../../output/complaint";
+import { GlsLine } from "../../../output/glsLine";
+import { Transformation } from "../../../output/transformation";
+import { filterOutUnsupportedComplaint } from "../../../utils";
+import { PropertyAccessChecker } from "./propertyAccessChecker";
 
-export class ConsoleLogAccessChecker extends NodeVisitor {
+export class ConsoleLogAccessChecker extends PropertyAccessChecker {
     public visit(node: PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined
             || !isCallExpression(node.parent)
@@ -15,10 +16,10 @@ export class ConsoleLogAccessChecker extends NodeVisitor {
             return undefined;
         }
 
-        const args = filterOutUndefined(
+        const args = filterOutUnsupportedComplaint(
             node.parent.arguments
                 .map((arg) => this.router.recurseIntoValue(arg)));
-        if (args === undefined) {
+        if (args instanceof UnsupportedComplaint) {
             return undefined;
         }
 

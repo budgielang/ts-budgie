@@ -23,6 +23,7 @@ import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
 import { ThisExpressionVisitor } from "./visitors/thisExpressionVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
+import { UnsupportedVisitor } from "./visitors/unsupportedVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
 import { WhileStatementVisitor } from "./visitors/whileStatementVisitor";
 
@@ -36,6 +37,7 @@ const creators: IVisitorCreators = {
     [SyntaxKind.BreakStatement]: BreakStatementVisitor,
     [SyntaxKind.CallExpression]: CallExpressionVisitor,
     [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
+    [SyntaxKind.ClassExpression]: UnsupportedVisitor.withDescriptor("class expressions"),
     [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
     [SyntaxKind.FalseKeyword]: LiteralVisitor,
@@ -45,6 +47,7 @@ const creators: IVisitorCreators = {
     [SyntaxKind.Identifier]: LiteralVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
     [SyntaxKind.InterfaceDeclaration]: InterfaceDeclarationVisitor,
+    [SyntaxKind.NamespaceKeyword]: UnsupportedVisitor.withDescriptor("namespaces"),
     [SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
     [SyntaxKind.MethodSignature]: MethodSignatureVisitor,
     [SyntaxKind.NewExpression]: NewExpressionVisitor,
@@ -71,7 +74,7 @@ export class VisitorCreatorsBag {
      * @param kind   Syntax kind for a node.
      * @returns A creator for that kind of node.
      */
-    public getCreator(kind: SyntaxKind) {
+    public getCreator(kind: SyntaxKind): typeof NodeVisitor {
         return creators[kind];
     }
 }

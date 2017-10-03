@@ -2,24 +2,30 @@ import { CaseStyle, CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { MethodDeclaration, ParameterDeclaration, SignatureKind, SyntaxKind } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class MethodDeclarationVisitor extends NodeVisitor {
     public visit(node: MethodDeclaration) {
         if (node.body === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, "Methods must have bodies.");
         }
 
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, "Could not parse method return type.");
         }
 
         const parameters = this.accumulateParameters(node.parameters);
-        if (parameters === undefined) {
-            return undefined;
+        if (parameters instanceof UnsupportedComplaint) {
+            return parameters;
+        }
+
+        const bodyNodes = this.router.recurseIntoNodes(node.body.statements);
+        if (bodyNodes instanceof UnsupportedComplaint) {
+            return bodyNodes;
         }
 
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
@@ -33,7 +39,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
                 this.sourceFile,
                 [
                     new GlsLine(commandStart, privacy, name, returnType, ...parameters),
-                    ...this.router.recurseIntoNodes(node.body.statements),
+                    ...bodyNodes,
                     new GlsLine(commandEnd)
                 ])
         ];
@@ -45,7 +51,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         for (const declaration of declarations) {
             const typeName = this.aliaser.getFriendlyTypeName(declaration);
             if (typeName === undefined) {
-                return undefined;
+                return UnsupportedComplaint.forUnsupportedTypeNode(declaration, this.sourceFile);
             }
 
             parameters.push(declaration.name.getText(this.sourceFile));

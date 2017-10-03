@@ -1,8 +1,8 @@
 import { CommandNames } from "general-language-syntax";
 import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, TypeChecker, TypeLiteralNode } from "typescript";
 
-import { GlsLine } from "../../glsLine";
 import { INodeAliaser } from "../../nodes/aliaser";
+import { GlsLine } from "../../output/glsLine";
 
 export type IRecurseOntoNode = (node: Node) => string | GlsLine | undefined;
 

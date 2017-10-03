@@ -2,23 +2,28 @@ import { CommandNames } from "general-language-syntax";
 import { ForInitializer, ForOfStatement } from "typescript";
 
 import { isExpression } from "tsutils";
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { getListValueType } from "../../parsing/lists";
 import { getNumericTypeNameFromUsages, isNumericTypeName } from "../../parsing/numerics";
-import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
 export class ForOfStatementVisitor extends NodeVisitor {
     public visit(node: ForOfStatement) {
-        const body = this.router.recurseIntoNode(node.statement);
+        const bodyNodes = this.router.recurseIntoNode(node.statement);
+        if (bodyNodes instanceof UnsupportedComplaint) {
+            return bodyNodes;
+        }
+
         const container = this.router.recurseIntoValue(node.expression);
-        if (container === undefined) {
-            return undefined;
+        if (container instanceof UnsupportedComplaint) {
+            return container;
         }
 
         const expressionType = this.aliaser.getFriendlyTypeName(node.expression);
         if (expressionType === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
         }
 
         const valueType = getListValueType(expressionType);
@@ -30,7 +35,7 @@ export class ForOfStatementVisitor extends NodeVisitor {
                 this.sourceFile,
                 [
                     new GlsLine(CommandNames.ForEachStart, container, valueType, value),
-                    ...(body === undefined ? [] : body),
+                    ...bodyNodes,
                     new GlsLine(CommandNames.ForEachEnd)
                 ])
         ];

@@ -2,15 +2,21 @@ import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import { Expression, PropertyDeclaration, SyntaxKind } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
     public visit(node: PropertyDeclaration) {
         const type = this.getType(node);
+
         if (type === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+        }
+
+        if (type instanceof UnsupportedComplaint) {
+            return type;
         }
 
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
@@ -19,6 +25,10 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
 
         const value = this.getInitializerValue(node.initializer);
         if (value !== undefined) {
+            if (value instanceof UnsupportedComplaint) {
+                return value;
+            }
+
             results.push(value);
         }
 
@@ -49,6 +59,6 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
             return this.aliaser.getFriendlyTypeName(node.initializer);
         }
 
-        return undefined;
+        return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
     }
 }

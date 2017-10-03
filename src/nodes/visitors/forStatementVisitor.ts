@@ -1,9 +1,10 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { getNumericTypeNameFromUsages } from "../../parsing/numerics";
-import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
 const isIncrementorIncreasingByOne = (target: string, incrementor: ts.Expression) => {
@@ -20,20 +21,10 @@ const isIncrementorIncreasingByOne = (target: string, incrementor: ts.Expression
     return false;
 };
 
-const getConditionEnd = (target: string, condition: ts.Expression, sourceFile: ts.SourceFile) => {
-    if (!ts.isBinaryExpression(condition)
-        || (condition.left as ts.Identifier).text !== target
-        || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken
-        || condition.right.kind !== ts.SyntaxKind.NumericLiteral) {
-        return undefined;
-    }
-
-    return condition.right.getText(sourceFile);
-};
+const irregularComplaint = "Could not parse irregular for loop.";
 
 export class ForStatementVisitor extends NodeVisitor {
     public visit(node: ts.ForStatement) {
-        const statement = this.router.recurseIntoValue(node.statement);
         const { condition, incrementor, initializer } = node;
         if (
             condition === undefined
@@ -41,42 +32,55 @@ export class ForStatementVisitor extends NodeVisitor {
             || initializer === undefined
             || !ts.isVariableDeclarationList(initializer)
             || initializer.declarations.length !== 1) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, irregularComplaint);
         }
 
         const declaration = initializer.declarations[0];
         if (declaration.initializer === undefined || !ts.isNumericLiteral(declaration.initializer)) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, irregularComplaint);
         }
 
         const name = (declaration.name as ts.Identifier).text;
         if (!isIncrementorIncreasingByOne(name, incrementor)) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, irregularComplaint);
         }
 
-        const end = getConditionEnd(name, condition, this.sourceFile);
-        if (end === undefined) {
-            return undefined;
+        const end = this.getConditionEnd(name, condition, this.sourceFile);
+        if (end instanceof UnsupportedComplaint) {
+            return end;
         }
 
+        const start = declaration.initializer.getText(this.sourceFile);
         const realType = getNumericTypeNameFromUsages([
             declaration.initializer.text,
             end
         ]);
 
-        const start = declaration.initializer.getText(this.sourceFile);
-        const output: (string | GlsLine)[] = [
-            new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end)
-        ];
-
-        if (statement !== undefined) {
-            output.push(statement);
+        const bodyNodes = this.router.recurseIntoNode(node.statement);
+        if (bodyNodes instanceof UnsupportedComplaint) {
+            return bodyNodes;
         }
 
-        output.push(new GlsLine(CommandNames.ForNumbersEnd));
-
         return [
-            Transformation.fromNode(node, this.sourceFile, output)
-        ];
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end),
+                    ...bodyNodes,
+                    new GlsLine(CommandNames.ForNumbersEnd)
+                ])
+    ];
+    }
+
+    private getConditionEnd(target: string, condition: ts.Expression, sourceFile: ts.SourceFile) {
+        if (!ts.isBinaryExpression(condition)
+            || (condition.left as ts.Identifier).text !== target
+            || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken
+            || condition.right.kind !== ts.SyntaxKind.NumericLiteral) {
+            return UnsupportedComplaint.forNode(condition, this.sourceFile, irregularComplaint);
+        }
+
+        return condition.right.getText(sourceFile);
     }
 }

@@ -1,27 +1,32 @@
 import { CommandNames } from "general-language-syntax";
 import { IfStatement, SourceFile, Statement } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class IfStatementVisitor extends NodeVisitor {
     public visit(node: IfStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
-        if (expression === undefined) {
-            return undefined;
+        if (expression instanceof UnsupportedComplaint) {
+            return expression;
         }
 
-        const transformations: Transformation[] = [];
         const { elseStatement, thenStatement } = node;
-
         const thenBody = this.router.recurseIntoNode(thenStatement);
-        if (thenBody !== undefined) {
-            transformations.push(...thenBody);
+        if (thenBody instanceof UnsupportedComplaint) {
+            return thenBody;
         }
+
+        const transformations: Transformation[] = [...thenBody];
 
         if (elseStatement !== undefined) {
             const elseBody = this.router.recurseIntoNode(elseStatement);
+            if (elseBody instanceof UnsupportedComplaint) {
+                return elseBody;
+            }
+
             transformations.push(...this.replaceWithElseCommands(elseStatement, elseBody));
         }
 
@@ -37,9 +42,9 @@ export class IfStatementVisitor extends NodeVisitor {
         ];
     }
 
-    private replaceWithElseCommands(elseStatement: Statement, transformations: Transformation[] | undefined) {
+    private replaceWithElseCommands(elseStatement: Statement, transformations: Transformation[]) {
         // If there are no commands, just end with an else command
-        if (transformations === undefined || transformations.length === 0) {
+        if (transformations.length === 0) {
             return [
                 Transformation.fromNode(
                     elseStatement,

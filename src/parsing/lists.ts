@@ -1,4 +1,4 @@
-import { GlsLine } from "../glsLine";
+import { GlsLine } from "../output/glsLine";
 
 export const getListValueType = (typeCommand: string | GlsLine) =>
     typeof typeCommand === "string"

@@ -1,8 +1,8 @@
 import { CommandNames } from "general-language-syntax";
 import { ContinueStatement } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class ContinueStatementVisitor extends NodeVisitor {

@@ -1,14 +1,22 @@
 import { CommandNames } from "general-language-syntax";
 import { ClassDeclaration, SyntaxKind } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
+
+const classWithoutNameComplaint = "A class must have a name.";
 
 export class ClassDeclarationVisitor extends NodeVisitor {
     public visit(node: ClassDeclaration) {
         if (node.name === undefined) {
-            return undefined;
+            return UnsupportedComplaint.forNode(node, this.sourceFile, classWithoutNameComplaint);
+        }
+
+        const bodyNodes = this.router.recurseIntoNodes(node.members);
+        if (bodyNodes instanceof UnsupportedComplaint) {
+            return bodyNodes;
         }
 
         const extensions: string[] = [];
@@ -42,7 +50,7 @@ export class ClassDeclarationVisitor extends NodeVisitor {
                 this.sourceFile,
                 [
                     new GlsLine(CommandNames.ClassStart, ...parameters),
-                    ...this.router.recurseIntoNodes(node.members),
+                    ...bodyNodes,
                     new GlsLine(CommandNames.ClassEnd)
                 ])
         ];
