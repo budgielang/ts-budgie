@@ -3,6 +3,7 @@
   "version": "0.1.2",
   "description": "Converts TypeScript code to General Language Syntax (GLS).",
   "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "build-all": "gulp src:tsc && gulp test:tsc",
     "test": "gulp test"
