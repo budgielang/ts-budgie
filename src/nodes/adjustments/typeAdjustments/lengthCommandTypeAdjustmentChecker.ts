@@ -1,6 +1,6 @@
 import { CommandNames } from "general-language-syntax";
 
-import { GlsLine } from "../../../glsLine";
+import { GlsLine } from "../../../output/glsLine";
 import { ITypeAdjustmentChecker } from "../types";
 
 const lengthCommands = new Set([

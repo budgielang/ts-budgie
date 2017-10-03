@@ -1,6 +1,6 @@
 import { CommentRange, SyntaxKind } from "typescript";
 
-import { Transformation } from "../transformation";
+import { Transformation } from "../output/transformation";
 import { visitMultiLineCommentTrivia } from "./visitMultiLineCommentTrivia";
 import { visitSingleLineCommentTrivia } from "./visitSingleLineCommentTrivia";
 

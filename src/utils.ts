@@ -1,13 +1,15 @@
+import { UnsupportedComplaint } from "./output/complaint";
+
 /**
- * Filters out undefined elements from a potentially undefined array.
+ * Filters out UnsupportedComplaint elements from an array.
  *
  * @param array   Array of potentially undefined elements.
- * @returns Either undefined if the array has an undefined element, or the array.
+ * @returns Either the first UnsupportedComplaint if the array has one, or the array.
  */
-export const filterOutUndefined = <T>(array: (T | undefined)[]): T[] | undefined => {
+export const filterOutUnsupportedComplaint = <T>(array: (T | UnsupportedComplaint)[]): T[] | UnsupportedComplaint => {
     for (const element of array) {
-        if (element === undefined) {
-            return undefined;
+        if (element instanceof UnsupportedComplaint) {
+            return element;
         }
     }
 

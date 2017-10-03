@@ -1,6 +1,6 @@
-import { GlsLine } from "./glsLine";
+import { GlsLine } from "../output/glsLine";
+import { Transformation } from "../output/transformation";
 import { LineIndenter } from "./lineIndenter";
-import { Transformation } from "./transformation";
 
 /**
  * Prints series of transformations as lines of GLS.
@@ -69,6 +69,10 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      */
     public printTransformations(sourceText: string, transformations: Transformation[]): (string | GlsLine)[] {
         const lines: (string | GlsLine)[] = [];
+
+        if (transformations.length === 0) {
+            return lines;
+        }
 
         lines.push(...this.printTransformation(sourceText, transformations[0]));
 

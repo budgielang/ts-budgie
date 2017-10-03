@@ -1,12 +1,18 @@
 import { CommandNames } from "general-language-syntax";
 import { InterfaceDeclaration, SourceFile } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class InterfaceDeclarationVisitor extends NodeVisitor {
     public visit(node: InterfaceDeclaration) {
+        const bodyNodes = this.router.recurseIntoNodes(node.members, node);
+        if (bodyNodes instanceof UnsupportedComplaint) {
+            return bodyNodes;
+        }
+
         const name = node.name.text;
         const extensions: string[] = [];
 
@@ -24,7 +30,7 @@ export class InterfaceDeclarationVisitor extends NodeVisitor {
                 this.sourceFile,
                 [
                     new GlsLine(CommandNames.InterfaceStart, name, ...extensions),
-                    ...this.router.recurseIntoNodes(node.members),
+                    ...bodyNodes,
                     new GlsLine(CommandNames.InterfaceEnd)
                 ])
         ];

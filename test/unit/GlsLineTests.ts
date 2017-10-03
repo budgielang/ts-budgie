@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import "mocha";
 
-import { GlsLine } from "../../lib/glsLine";
+import { GlsLine } from "../../lib/output/glsLine";
 
 describe("GlsLine", () => {
     describe("toString", () => {

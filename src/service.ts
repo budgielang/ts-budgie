@@ -1,16 +1,17 @@
 import { SourceFile, TypeChecker } from "typescript";
 
 import { Merger } from "./merger";
-import { Transformation } from "./transformation";
+import { UnsupportedComplaint } from "./output/complaint";
+import { Transformation } from "./output/transformation";
 
 /**
  * Retrieves source-to-GLS transforms from a file.
  *
  * @param sourceFile   Source file to transform.
  * @param typeChecker   Type checker for the source file.
- * @returns Transforms from the file.
+ * @returns Transformations from the file, or a complaint for unsupported syntax.
  */
-export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) => Transformation[];
+export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) => Transformation[] | UnsupportedComplaint;
 
 /**
  * Determines which of two transformations is earlier in their file.
@@ -31,9 +32,9 @@ export interface ITransformationService {
      *
      * @param sourceFile   Source file to transform.
      * @param typeChecker   Type checker for the file.
-     * @returns Transformations from the file.
+     * @returns Transformations from the file, or a complaint for unsupported syntax.
      */
-    transform(sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[];
+    transform(sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | UnsupportedComplaint;
 }
 
 /**
@@ -65,13 +66,18 @@ export class TransformationService {
      *
      * @param sourceFile   Source file to transform.
      * @param typeChecker   Type checker for the file.
-     * @returns Transformations from the file.
+     * @returns Transformations from the file, or a complaint for unsupported syntax.
      */
-    public transform(sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] {
+    public transform(sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | UnsupportedComplaint {
         const transformations: Transformation[][] = [];
 
         for (const transformer of this.transformers) {
-            transformations.push(transformer(sourceFile, typeChecker));
+            const transformed = transformer(sourceFile, typeChecker);
+            if (transformed instanceof UnsupportedComplaint) {
+                return transformed;
+            }
+
+            transformations.push(transformed);
         }
 
         return this.merger.merge(transformations);

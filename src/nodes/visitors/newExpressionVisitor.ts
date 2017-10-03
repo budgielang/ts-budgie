@@ -1,15 +1,16 @@
 import { CommandNames } from "general-language-syntax";
 import { Expression, NewExpression } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class NewExpressionVisitor extends NodeVisitor {
     public visit(node: NewExpression) {
         const newTypes = this.getNewTypes(node.expression);
-        if (newTypes.length !== 1) {
-            return undefined;
+        if (newTypes instanceof UnsupportedComplaint) {
+            return newTypes;
         }
 
         return [
@@ -22,14 +23,16 @@ export class NewExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getNewTypes(expression: Expression | undefined): (string | GlsLine)[] {
+    private getNewTypes(expression: Expression | undefined): (string | GlsLine)[] | UnsupportedComplaint {
         if (expression === undefined) {
             return [];
         }
 
         const returnValue = this.router.recurseIntoValue(expression);
-        return returnValue === undefined
-            ? []
-            : [returnValue];
+        if (returnValue instanceof UnsupportedComplaint) {
+            return returnValue;
+        }
+
+        return [returnValue];
     }
 }

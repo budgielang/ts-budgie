@@ -1,24 +1,27 @@
 import { CommandNames } from "general-language-syntax";
 import { WhileStatement } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { UnsupportedComplaint } from "../../index";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class WhileStatementVisitor extends NodeVisitor {
     public visit(node: WhileStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
-        if (expression === undefined) {
-            return undefined;
+        if (expression instanceof UnsupportedComplaint) {
+            return expression;
         }
 
         const transformations: Transformation[] = [];
         const { statement } = node;
 
         const thenBody = this.router.recurseIntoNode(statement);
-        if (thenBody !== undefined) {
-            transformations.push(...thenBody);
+        if (thenBody instanceof UnsupportedComplaint) {
+            return thenBody;
         }
+
+        transformations.push(...thenBody);
 
         return [
             Transformation.fromNode(

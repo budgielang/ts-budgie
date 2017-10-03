@@ -1,11 +1,11 @@
 import { CommandNames } from "general-language-syntax";
 import { Expression, PropertyAccessExpression, SyntaxKind } from "typescript";
 
-import { GlsLine } from "../../../glsLine";
-import { Transformation } from "../../../transformation";
-import { NodeVisitor } from "../../visitor";
+import { GlsLine } from "../../../output/glsLine";
+import { Transformation } from "../../../output/transformation";
+import { PropertyAccessChecker } from "./propertyAccessChecker";
 
-export class StringLengthAccessChecker extends NodeVisitor {
+export class StringLengthAccessChecker extends PropertyAccessChecker {
     public visit(node: PropertyAccessExpression): Transformation[] | undefined {
         if (!this.isString(node.expression) || node.name.getText(this.sourceFile) !== "length") {
             return undefined;

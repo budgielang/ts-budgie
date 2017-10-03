@@ -1,6 +1,6 @@
 import { CommandsBag, CommandsBagFactory } from "general-language-syntax";
 
-import { GlsLine } from "./glsLine";
+import { GlsLine } from "../output/glsLine";
 
 /**
  * Generates spaces equivalent to 4-space code tabbing.
@@ -32,6 +32,10 @@ export class LineIndenter {
      */
     public indent(lines: (string | GlsLine)[]): string[] {
         const output: string[] = [];
+        if (lines.length === 0) {
+            return output;
+        }
+
         let currentIndentation = 0;
 
         for (const line of lines) {

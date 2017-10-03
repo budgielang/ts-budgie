@@ -1,9 +1,10 @@
 import { CommandNames } from "general-language-syntax";
 import { CallExpression } from "typescript";
 
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { operators } from "../../parsing/aliases";
-import { Transformation } from "../../transformation";
 import { NodeVisitor } from "../visitor";
 
 export class CallExpressionVisitor extends NodeVisitor {

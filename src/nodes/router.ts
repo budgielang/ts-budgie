@@ -1,10 +1,11 @@
 import { CaseStyleConverterBag } from "general-language-syntax";
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
-import { GlsLine } from "../glsLine";
+import { UnsupportedComplaint } from "../output/complaint";
+import { GlsLine } from "../output/glsLine";
+import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
-import { ITransformationsPrinter } from "../printing";
-import { Transformation } from "../transformation";
+import { ITransformationsPrinter } from "../printing/transformationsPrinter";
 import { VisitorContext } from "./context";
 import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
@@ -57,7 +58,7 @@ export class NodeVisitRouter {
      * @param node   Node to retrieve transformations for.
      * @returns Output transformations for the node.
      */
-    public recurseIntoNode(node: Node): Transformation[] | undefined {
+    public recurseIntoNode(node: Node): Transformation[] | UnsupportedComplaint {
         const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
         if (creator === undefined) {
             return this.recurseIntoChildren(node);
@@ -72,10 +73,11 @@ export class NodeVisitRouter {
      * @param node   Node to transform.
      * @returns Transformed GLS output for the inline value.
      */
-    public recurseIntoValue(node: Node): string | GlsLine | undefined {
+    public recurseIntoValue(node: Node): string | GlsLine | UnsupportedComplaint {
         const subTransformations = this.recurseIntoNode(node);
-        if (subTransformations === undefined || subTransformations.length === 0) {
-            return undefined;
+
+        if (subTransformations instanceof UnsupportedComplaint) {
+            return subTransformations;
         }
 
         const { sourceFile } = this.dependencies;
@@ -83,23 +85,34 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for a node.
+     * Retrieves the GLS output for a set of nodes.
      *
      * @param node   Node to transform.
-     * @returns Transformed GLS output for the node.
+     * @param parent   Common parent of the nodes.
+     * @returns Transformed GLS output for the nodes.
      */
-    public recurseIntoNodes(nodes: ReadonlyArray<Node>): Transformation[] {
+    public recurseIntoNodes(nodes: ReadonlyArray<Node>, parent: Node): Transformation[] | UnsupportedComplaint {
         const transformations: Transformation[] = [];
+        let complaints: UnsupportedComplaint[] | undefined;
 
-        for (const child of nodes) {
-            const childTransformations = this.recurseIntoNode(child);
+        for (const node of nodes) {
+            const childTransformations = this.recurseIntoNode(node);
 
-            if (childTransformations !== undefined) {
+            if (childTransformations instanceof UnsupportedComplaint) {
+                if (complaints === undefined) {
+                    complaints = [childTransformations];
+                } else {
+                    complaints.push(childTransformations);
+                }
+            } else {
                 transformations.push(...childTransformations);
             }
+
         }
 
-        return transformations;
+        return complaints === undefined
+            ? transformations
+            : UnsupportedComplaint.forNode(parent, this.dependencies.sourceFile, complaints);
     }
 
     /**
@@ -108,7 +121,7 @@ export class NodeVisitRouter {
      * @param node   Node to transform the children of.
      * @returns Transformed GLS output for the node's children.
      */
-    public recurseIntoChildren(node: Node): Transformation[] {
-        return this.recurseIntoNodes(node.getChildren());
+    public recurseIntoChildren(node: Node): Transformation[] | UnsupportedComplaint {
+        return this.recurseIntoNodes(node.getChildren(), node);
     }
 }

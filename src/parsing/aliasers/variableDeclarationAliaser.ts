@@ -1,7 +1,6 @@
 import { VariableDeclaration } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { getDictionaryTypeNameFromNode } from "../dictionaries";
+import { GlsLine } from "../../output/glsLine";
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class VariableDeclarationAliaser extends RecursiveAliaser {

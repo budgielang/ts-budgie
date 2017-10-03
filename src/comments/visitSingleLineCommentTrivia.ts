@@ -1,8 +1,8 @@
 import { CommandNames } from "general-language-syntax";
 import { CommentRange } from "typescript";
 
-import { GlsLine } from "../glsLine";
-import { Transformation } from "../transformation";
+import { GlsLine } from "../output/glsLine";
+import { Transformation } from "../output/transformation";
 
 const parseCommentText = (commentText: string): string => {
     if (commentText.substring(0, "//".length) === "//") {

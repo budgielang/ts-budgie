@@ -1,7 +1,7 @@
 import { Node } from "typescript";
 
-import { GlsLine } from "../../glsLine";
-import { Transformation } from "../../transformation";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 /**

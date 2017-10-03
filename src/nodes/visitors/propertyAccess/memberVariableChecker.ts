@@ -1,18 +1,19 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
-
 import { CallExpression, Expression, Identifier, isCallExpression, PropertyAccessExpression } from "typescript";
-import { GlsLine } from "../../../glsLine";
-import { Transformation } from "../../../transformation";
-import { NodeVisitor } from "../../visitor";
 
-export class MemberVariableChecker extends NodeVisitor {
+import { UnsupportedComplaint } from "../../../output/complaint";
+import { GlsLine } from "../../../output/glsLine";
+import { Transformation } from "../../../output/transformation";
+import { PropertyAccessChecker } from "./propertyAccessChecker";
+
+export class MemberVariableChecker extends PropertyAccessChecker {
     public visit(node: PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined || isCallExpression(node.parent)) {
             return undefined;
         }
 
         const caller = this.router.recurseIntoValue(node.expression);
-        if (caller === undefined) {
+        if (caller instanceof UnsupportedComplaint) {
             return undefined;
         }
 

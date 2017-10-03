@@ -1,6 +1,7 @@
 import { ArrowFunction, FunctionDeclaration, MethodDeclaration, MethodSignature, Node } from "typescript";
 
-import { GlsLine } from "../glsLine";
+import { UnsupportedComplaint } from "../output/complaint";
+import { GlsLine } from "../output/glsLine";
 
 /**
  * Literals that may refer to a node's privacy.

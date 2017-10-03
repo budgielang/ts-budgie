@@ -1,9 +1,11 @@
 import { CommandNames } from "general-language-syntax";
 import { BinaryExpression, Expression, isBinaryExpression } from "typescript";
 
-import { GlsLine } from "../../glsLine";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { operators } from "../../parsing/aliases";
-import { Transformation } from "../../transformation";
+import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 const collectOperationContents = (node: BinaryExpression): (string | Expression)[] => {
@@ -29,9 +31,12 @@ const collectOperationContents = (node: BinaryExpression): (string | Expression)
 
 export class BinaryExpressionVisitor extends NodeVisitor {
     public visit(node: BinaryExpression) {
-        const contents = collectOperationContents(node)
-            .map((content) => this.recurseOnOperationContents(content))
-            .filter((content) => content !== undefined) as (string | GlsLine)[];
+        const contents = filterOutUnsupportedComplaint(
+                collectOperationContents(node)
+                    .map((content) => this.recurseOnOperationContents(content)));
+        if (contents instanceof UnsupportedComplaint) {
+            return contents;
+        }
 
         return [
             Transformation.fromNode(

@@ -1,4 +1,4 @@
-import { GlsLine } from "../../glsLine";
+import { GlsLine } from "../../output/glsLine";
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
 export interface ITypeAdjustmentChecker {

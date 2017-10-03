@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import { ClassDeclaration, ConstructorDeclaration, Node, SourceFile, TypeNode, VariableStatement } from "typescript";
 
-import { GlsLine } from "../../../../lib/glsLine";
+import { GlsLine } from "../../../../lib/output/glsLine";
 import { RootAliaser } from "../../../../lib/parsing/aliasers/rootAliaser";
 import { mountSourceText } from "../mounting";
 
