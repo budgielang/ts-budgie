@@ -46,7 +46,7 @@ export class Transformer {
      * @param sourceText   Source file to transform.
      * @returns GLS equivalent for the source file, or a complaint for unsupported syntax.
      */
-    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): (string | GlsLine)[] | UnsupportedComplaint {
+    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): string[] | UnsupportedComplaint {
         const transformed = this.getSourceFileTransforms(sourceFile, typeChecker);
         if (transformed instanceof UnsupportedComplaint) {
             return transformed;
@@ -61,7 +61,7 @@ export class Transformer {
      * @param sourceText   Source text to transform.
      * @returns GLS equivalent for the source text, or a complaint for unsupported syntax.
      */
-    public transformText(sourceText: string): (string | GlsLine)[] | UnsupportedComplaint {
+    public transformText(sourceText: string): string[] | UnsupportedComplaint {
         const transformed = this.getTextTransforms(sourceText);
         if (transformed instanceof UnsupportedComplaint) {
             return transformed;
