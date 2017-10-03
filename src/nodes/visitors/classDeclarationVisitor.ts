@@ -14,7 +14,7 @@ export class ClassDeclarationVisitor extends NodeVisitor {
             return UnsupportedComplaint.forNode(node, this.sourceFile, classWithoutNameComplaint);
         }
 
-        const bodyNodes = this.router.recurseIntoNodes(node.members);
+        const bodyNodes = this.router.recurseIntoNodes(node.members, node);
         if (bodyNodes instanceof UnsupportedComplaint) {
             return bodyNodes;
         }

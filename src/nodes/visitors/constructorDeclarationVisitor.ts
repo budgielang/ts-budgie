@@ -17,7 +17,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
 
         const bodyChildren = this.getBodyChildren(body);
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
-        const bodyNodes = this.router.recurseIntoNodes(bodyChildren);
+        const bodyNodes = this.router.recurseIntoNodes(bodyChildren, node);
         if (bodyNodes instanceof UnsupportedComplaint) {
             return bodyNodes;
         }

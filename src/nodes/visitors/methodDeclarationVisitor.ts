@@ -23,7 +23,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
             return parameters;
         }
 
-        const bodyNodes = this.router.recurseIntoNodes(node.body.statements);
+        const bodyNodes = this.router.recurseIntoNodes(node.body.statements, node.body);
         if (bodyNodes instanceof UnsupportedComplaint) {
             return bodyNodes;
         }

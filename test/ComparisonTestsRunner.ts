@@ -7,6 +7,7 @@ import { createSourceFile, ScriptTarget, SourceFile } from "typescript";
 
 import { createTransformer } from "../lib";
 import { UnsupportedComplaint } from "../lib/output/complaint";
+import { GlsLine } from "../lib/output/glsLine";
 import { findGlsFilesUnder, findGlsTestSourcesUnder } from "../util";
 
 /**
@@ -92,10 +93,10 @@ export class ComparisonTestsRunner {
         const expected = readFile(directoryPath, "expected.gls", "comment line");
 
         // Act
-        let actual = createTransformer().transformText(source);
+        let actual: (string | GlsLine)[] | UnsupportedComplaint = createTransformer().transformText(source);
         if (actual instanceof UnsupportedComplaint) {
             actual = [
-                `!!! ${actual.reason} !!!`
+                actual.toString()
             ];
         }
 

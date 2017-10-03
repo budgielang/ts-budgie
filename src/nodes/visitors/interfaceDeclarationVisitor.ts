@@ -8,7 +8,7 @@ import { NodeVisitor } from "../visitor";
 
 export class InterfaceDeclarationVisitor extends NodeVisitor {
     public visit(node: InterfaceDeclaration) {
-        const bodyNodes = this.router.recurseIntoNodes(node.members);
+        const bodyNodes = this.router.recurseIntoNodes(node.members, node);
         if (bodyNodes instanceof UnsupportedComplaint) {
             return bodyNodes;
         }

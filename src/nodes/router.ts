@@ -85,25 +85,34 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for a node.
+     * Retrieves the GLS output for a set of nodes.
      *
      * @param node   Node to transform.
-     * @returns Transformed GLS output for the node.
+     * @param parent   Common parent of the nodes.
+     * @returns Transformed GLS output for the nodes.
      */
-    public recurseIntoNodes(nodes: ReadonlyArray<Node>): Transformation[] | UnsupportedComplaint {
+    public recurseIntoNodes(nodes: ReadonlyArray<Node>, parent: Node): Transformation[] | UnsupportedComplaint {
         const transformations: Transformation[] = [];
+        let complaints: UnsupportedComplaint[] | undefined;
 
         for (const node of nodes) {
             const childTransformations = this.recurseIntoNode(node);
 
             if (childTransformations instanceof UnsupportedComplaint) {
-                return childTransformations;
+                if (complaints === undefined) {
+                    complaints = [childTransformations];
+                } else {
+                    complaints.push(childTransformations);
+                }
+            } else {
+                transformations.push(...childTransformations);
             }
 
-            transformations.push(...childTransformations);
         }
 
-        return transformations;
+        return complaints === undefined
+            ? transformations
+            : UnsupportedComplaint.forNode(parent, this.dependencies.sourceFile, complaints);
     }
 
     /**
@@ -113,6 +122,6 @@ export class NodeVisitRouter {
      * @returns Transformed GLS output for the node's children.
      */
     public recurseIntoChildren(node: Node): Transformation[] | UnsupportedComplaint {
-        return this.recurseIntoNodes(node.getChildren());
+        return this.recurseIntoNodes(node.getChildren(), node);
     }
 }

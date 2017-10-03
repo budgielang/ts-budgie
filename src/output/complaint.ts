@@ -14,7 +14,7 @@ export class UnsupportedComplaint {
     /**
      * Description of what's not supported.
      */
-    public readonly reason: string;
+    public readonly reason: string | UnsupportedComplaint[];
 
     /**
      * Initializes a new instance of the Transformation class.
@@ -22,7 +22,7 @@ export class UnsupportedComplaint {
      * @param range   Area in the source file to transform.
      * @param reason   Description of what's not supported.
      */
-    private constructor(range: IRange, reason: string) {
+    private constructor(range: IRange, reason: string | UnsupportedComplaint[]) {
         this.range = range;
         this.reason = reason;
     }
@@ -35,7 +35,7 @@ export class UnsupportedComplaint {
      * @param reason   Description of what's not supported.
      * @returns A new UnsupportedComplaint for the node.
      */
-    public static forNode(node: Node, sourceFile: SourceFile, reason: string): UnsupportedComplaint {
+    public static forNode(node: Node, sourceFile: SourceFile, reason: string | UnsupportedComplaint[]): UnsupportedComplaint {
         return new UnsupportedComplaint(
             {
                 end: node.getEnd(),
@@ -54,5 +54,16 @@ export class UnsupportedComplaint {
      */
     public static forUnsupportedTypeNode(node: Node, sourceFile: SourceFile): UnsupportedComplaint {
         return UnsupportedComplaint.forNode(node, sourceFile, "Could not parse unsupported type.");
+    }
+
+    /**
+     * @returns A friendly representation of this complaint.
+     */
+    public toString(): string {
+        const reason = typeof this.reason === "string"
+            ? [`[${this.range.start},${this.range.end}]: ${this.reason}`]
+            : this.reason;
+
+        return reason.join("\n");
     }
 }

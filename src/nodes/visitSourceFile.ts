@@ -21,5 +21,5 @@ export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker
         aliaser, casing, printer, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
     });
 
-    return router.recurseIntoNodes(sourceFile.statements);
+    return router.recurseIntoNodes(sourceFile.statements, sourceFile);
 };
