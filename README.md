@@ -1,6 +1,6 @@
 # TS-GLS - TypeScript to GLS compiler
 
-[![Build Status](https://travis-ci.org/HighSchoolHacking/TS-GLS.svg?)](https://travis-ci.org/HighSchoolHacking/TS-GLS)
+[![Build Status](https://travis-ci.org/general-language-syntax/TS-GLS.svg?)](https://travis-ci.org/general-language-syntax/TS-GLS)
 [![NPM version](https://badge.fury.io/js/ts-gls.svg)](http://badge.fury.io/js/ts-gls)
 
 Compiles TypeScript code to General Language Syntax (GLS).
