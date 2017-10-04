@@ -1,7 +1,5 @@
 import { CompilerHost, createProgram, createSourceFile, ResolvedModule, ScriptTarget, SourceFile, TypeChecker } from "typescript";
 
-/* tslint:disable completed-docs */
-
 const createSourceFilesMap = (sourceFiles: SourceFile[] | Map<string, SourceFile>) => {
     if (sourceFiles instanceof Map) {
         return sourceFiles;
@@ -75,12 +73,10 @@ export class StubCompilerHost implements CompilerHost {
     }
 
     public resolveModuleNames(): ResolvedModule[] {
-        throw new Error("Unsupported");
+        throw new Error(`resolveModuleNames is unsupported in a stub compiler.\n${new Error().stack}`);
     }
 
     public getDirectories(): string[] {
-        throw new Error("Unsupported");
+        throw new Error(`getDirectories is unsupported in a stub compiler.\n${new Error().stack}`);
     }
 }
-
-/* tslint:enable completed-docs */
