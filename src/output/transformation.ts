@@ -27,6 +27,7 @@ export class Transformation {
      *
      * @param range   Area in the source file to transform.
      * @param output   Output transformation.
+     * @param sourceFile   Source file of the transformation.
      */
     private constructor(range: IRange, output: IOutput) {
         this.range = range;
@@ -34,10 +35,12 @@ export class Transformation {
     }
 
     /**
-     * Initializes a new Transform for a comment range.
+     * Initializes a new Transformation for a comment range.
      *
      * @param range   Area in the source file to transform.
      * @param output   Output transformation.
+     * @param sourceFile   Source file of the transformation.
+     * @returns A new Transformation for the comment range.
      */
     public static fromCommentRange(range: CommentRange, output: IOutput): Transformation {
         return new Transformation(

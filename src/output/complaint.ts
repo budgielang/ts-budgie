@@ -3,6 +3,11 @@ import { Node, SourceFile } from "typescript";
 import { IRange } from "./range";
 
 /**
+ * Complaint text for an unsupported type.
+ */
+const unsupportedTypeComplaint = "Could not parse unsupported type.";
+
+/**
  * Explains why a range of source cannot be supported.
  */
 export class UnsupportedComplaint {
@@ -17,14 +22,21 @@ export class UnsupportedComplaint {
     public readonly reason: string | UnsupportedComplaint[];
 
     /**
+     * Source file of the complaint.
+     */
+    private readonly sourceFile: SourceFile;
+
+    /**
      * Initializes a new instance of the Transformation class.
      *
      * @param range   Area in the source file to transform.
      * @param reason   Description of what's not supported.
+     * @param sourceFile   Source file of the complaint.
      */
-    private constructor(range: IRange, reason: string | UnsupportedComplaint[]) {
+    private constructor(range: IRange, reason: string | UnsupportedComplaint[], sourceFile: SourceFile) {
         this.range = range;
         this.reason = reason;
+        this.sourceFile = sourceFile;
     }
 
     /**
@@ -41,7 +53,8 @@ export class UnsupportedComplaint {
                 end: node.getEnd(),
                 start: node.getStart(sourceFile)
             },
-            reason);
+            reason,
+            sourceFile);
     }
 
     /**
@@ -53,15 +66,16 @@ export class UnsupportedComplaint {
      * @returns A new UnsupportedComplaint for the node.
      */
     public static forUnsupportedTypeNode(node: Node, sourceFile: SourceFile): UnsupportedComplaint {
-        return UnsupportedComplaint.forNode(node, sourceFile, "Could not parse unsupported type.");
+        return UnsupportedComplaint.forNode(node, sourceFile, unsupportedTypeComplaint);
     }
 
     /**
      * @returns A friendly representation of this complaint.
      */
     public toString(): string {
+        const position = this.sourceFile.getLineAndCharacterOfPosition(this.range.start);
         const reason = typeof this.reason === "string"
-            ? [`[${this.range.start},${this.range.end}]: ${this.reason}`]
+            ? [`Line ${position.line}, column ${position.character}: ${this.reason}`]
             : this.reason;
 
         return reason.join("\n");

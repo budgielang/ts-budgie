@@ -1,4 +1,4 @@
 comment line
-[0,17]: GLS does not support namespaces.
-[19,33]: GLS does not support namespaces.
+Line 0, column 0: GLS does not support namespaces.
+Line 2, column 0: GLS does not support namespaces.
 comment line
