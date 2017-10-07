@@ -29,8 +29,8 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         }
 
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
-        const nameRaw = node.name.getText(this.sourceFile);
-        const name = this.casing.getConverter(CaseStyle.PascalCase).convert([nameRaw]);
+        const nameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
+        const name = this.casing.convertToCase(CaseStyle.PascalCase, nameSplit);
         const [commandStart, commandEnd] = this.getCommandNames(node);
 
         return [

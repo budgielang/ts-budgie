@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
@@ -13,12 +13,13 @@ import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | UnsupportedComplaint => {
     const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
+    const nameSplitter = new NameSplitter();
     const printer = new TransformationsPrinter();
     const visitorContext = new VisitorContext();
     const visitorCreatorsBag = new VisitorCreatorsBag();
 
     const router = new NodeVisitRouter({
-        aliaser, casing, printer, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
+        aliaser, casing, printer, nameSplitter, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
     });
 
     return router.recurseIntoNodes(sourceFile.statements, sourceFile);

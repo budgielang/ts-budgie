@@ -41,7 +41,8 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             : CommandNames.StaticFunction;
 
         const privacy = this.aliaser.getFriendlyPrivacyName(hostDeclaration);
-        const functionName = this.casing.getConverter(CaseStyle.PascalCase).convert([node.name.getText(this.sourceFile)]);
+        const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
+        const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);
 
         return [
             Transformation.fromNode(

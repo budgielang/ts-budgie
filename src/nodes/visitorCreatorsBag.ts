@@ -8,6 +8,7 @@ import { CallExpressionVisitor } from "./visitors/callExpressionVisitor";
 import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ConstructorDeclarationVisitor } from "./visitors/constructorDeclarationVisitor";
 import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
+import { ElementAccessExpressionVisitor } from "./visitors/elementAccessExpressionVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
@@ -40,6 +41,7 @@ const creators: IVisitorCreators = {
     [SyntaxKind.ClassExpression]: UnsupportedVisitor.withDescriptor("class expressions"),
     [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
+    [SyntaxKind.ElementAccessExpression]: ElementAccessExpressionVisitor,
     [SyntaxKind.FalseKeyword]: LiteralVisitor,
     [SyntaxKind.FirstLiteralToken]: LiteralVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,

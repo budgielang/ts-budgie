@@ -9,7 +9,7 @@ import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 interface IKnownMethodInfo {
     argsCount: number;
-    name: string;
+    commandName: string;
 }
 
 const knownMethodPairs = new Map<string, IKnownMethodInfo>([
@@ -17,28 +17,28 @@ const knownMethodPairs = new Map<string, IKnownMethodInfo>([
         "concat",
         {
             argsCount: 1,
-            name: "list add list"
+            commandName: CommandNames.ListAddList
         }
     ],
     [
         "pop",
         {
             argsCount: 0,
-            name: "list pop"
+            commandName: CommandNames.ListPop
         }
     ],
     [
-        "pop front",
+        "unshift",
         {
             argsCount: 0,
-            name: "list unshift",
+            commandName: CommandNames.ListPopFront
         }
     ],
     [
         "push",
         {
             argsCount: 1,
-            name: "list push"
+            commandName: CommandNames.ListPush
         }
     ],
 ]);
@@ -57,6 +57,11 @@ export class ArrayMemberFunctionChecker extends PropertyAccessChecker {
             return undefined;
         }
 
+        const expression = this.router.recurseIntoValue(node.expression);
+        if (expression instanceof UnsupportedComplaint) {
+            return undefined;
+        }
+
         const args = filterOutUnsupportedComplaint(
             node.parent.arguments
                 .map((arg) => this.router.recurseIntoValue(arg)));
@@ -69,7 +74,7 @@ export class ArrayMemberFunctionChecker extends PropertyAccessChecker {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(glsMethodPairing.name, ...args)
+                    new GlsLine(glsMethodPairing.commandName, expression, ...args)
                 ])
         ];
     }

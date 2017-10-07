@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
@@ -15,6 +15,7 @@ export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
     casing: CaseStyleConverterBag;
     printer: ITransformationsPrinter;
+    nameSplitter: NameSplitter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
     visitorContext: VisitorContext;
@@ -45,6 +46,7 @@ export class NodeVisitRouter {
         this.visitorsBag = new VisitorsBag({
             aliaser: dependencies.aliaser,
             casing: dependencies.casing,
+            nameSplitter: dependencies.nameSplitter,
             router: this,
             sourceFile: dependencies.sourceFile,
             typeChecker: dependencies.typeChecker,

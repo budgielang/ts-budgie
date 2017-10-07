@@ -18,8 +18,8 @@ export class MethodSignatureVisitor extends NodeVisitor {
             return parameters;
         }
 
-        const nameRaw = node.name.getText(this.sourceFile);
-        const name = this.casing.getConverter(CaseStyle.PascalCase).convert([nameRaw]);
+        const nameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
+        const name = this.casing.convertToCase(CaseStyle.PascalCase, nameSplit);
 
         return [
             Transformation.fromNode(

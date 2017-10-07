@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { Transformation } from "../../../output/transformation";
@@ -25,6 +25,11 @@ export abstract class PropertyAccessChecker {
      * Shared context for visitors in a file.
      */
     protected readonly context: VisitorContext;
+
+    /**
+     * Splits name strings into words.
+     */
+    protected readonly nameSplitter: NameSplitter;
 
     /**
      * Routes visitors for node types.
@@ -56,6 +61,7 @@ export abstract class PropertyAccessChecker {
         this.aliaser = dependencies.aliaser;
         this.casing = dependencies.casing;
         this.context = dependencies.visitorContext;
+        this.nameSplitter = dependencies.nameSplitter;
         this.router = dependencies.router;
         this.sourceFile = dependencies.sourceFile;
         this.typeChecker = dependencies.typeChecker;
