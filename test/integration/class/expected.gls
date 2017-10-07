@@ -11,15 +11,15 @@ class end
 class start : Klm extends Efg implements IHij
 class end
 
-class start : abstract Abc
+class start : abstract Klm
 class end
 
-class start : abstract Def extends Abc
+class start : abstract Nop extends Abc
 class end
 
-class start : abstract Efg implements IHij
+class start : abstract Qrs implements IHij
 class end
 
-class start : abstract Klm extends Efg implements IHij
+class start : abstract Tuv extends Efg implements IHij
 class end
 comment line
