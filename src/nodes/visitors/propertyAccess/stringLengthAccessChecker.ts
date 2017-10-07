@@ -21,13 +21,7 @@ export class StringLengthAccessChecker extends PropertyAccessChecker {
         ];
     }
 
-    private isString(node: Expression): boolean {
-        if (node.kind === SyntaxKind.StringLiteral) {
-            return true;
-        }
-
-        // The type checker is reporting "unknown" for the test case
-        // return false;
-        return true;
+    private isString(expression: Expression) {
+        return this.aliaser.getFriendlyTypeName(expression) === "string";
     }
 }

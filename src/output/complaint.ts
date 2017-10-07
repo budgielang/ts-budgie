@@ -75,7 +75,7 @@ export class UnsupportedComplaint {
     public toString(): string {
         const position = this.sourceFile.getLineAndCharacterOfPosition(this.range.start);
         const reason = typeof this.reason === "string"
-            ? [`Line ${position.line}, column ${position.character}: ${this.reason}`]
+            ? [`Line ${position.line + 1}, column ${position.character + 1}: ${this.reason}`]
             : this.reason;
 
         return reason.join("\n");

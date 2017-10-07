@@ -1,0 +1,8 @@
+comment line
+string substring length : "abc" 0
+string substring length : "abc" 3 7
+
+variable : def string "ghi"
+string substring length : def 7
+string substring length : def 14 21
+comment line
