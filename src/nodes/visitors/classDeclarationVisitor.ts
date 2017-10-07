@@ -1,4 +1,5 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames, KeywordNames } from "general-language-syntax";
+import { hasModifier } from "tsutils";
 import { ClassDeclaration, SyntaxKind } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
@@ -34,14 +35,20 @@ export class ClassDeclarationVisitor extends NodeVisitor {
             }
         }
 
-        const parameters = [node.name.text];
+        const parameters = [];
+
+        if (hasModifier(node.modifiers, SyntaxKind.AbstractKeyword)) {
+            parameters.push(KeywordNames.Abstract);
+        }
+
+        parameters.push(node.name.text);
 
         if (extensions.length !== 0) {
-            parameters.push("extends", ...extensions);
+            parameters.push(KeywordNames.Extends, ...extensions);
         }
 
         if (implementations.length !== 0) {
-            parameters.push("implements", ...implementations);
+            parameters.push(KeywordNames.Implements, ...implementations);
         }
 
         return [

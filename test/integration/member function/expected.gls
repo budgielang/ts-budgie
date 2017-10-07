@@ -13,4 +13,12 @@ class start : Abc
         member function : public { this } Explicits
     member function declare end
 class end
+
+class start : abstract Def
+    member function declare abstract : public Explicits string
+
+    member function declare abstract : public Implicits Abc
+
+    member function declare abstract : protected Parameters void first string second float
+class end
 comment line

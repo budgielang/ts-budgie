@@ -10,4 +10,16 @@ class end
 
 class start : Klm extends Efg implements IHij
 class end
+
+class start : abstract Abc
+class end
+
+class start : abstract Def extends Abc
+class end
+
+class start : abstract Efg implements IHij
+class end
+
+class start : abstract Klm extends Efg implements IHij
+class end
 comment line

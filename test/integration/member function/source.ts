@@ -13,4 +13,12 @@ class Abc {
         this.explicits();
     }
 }
+
+abstract class Def {
+    public abstract explicits(): string;
+
+    abstract implicits(): Abc;
+
+    protected abstract parameters(first: string, second: number): void;
+}
 //
