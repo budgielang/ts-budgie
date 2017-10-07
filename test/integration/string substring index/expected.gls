@@ -1,0 +1,8 @@
+comment line
+string substring index : "abc" 0
+string substring index : "abc" 3 7
+
+variable : def string "ghi"
+string substring index : def 7
+string substring index : def 14 21
+comment line

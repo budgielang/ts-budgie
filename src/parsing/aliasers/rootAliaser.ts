@@ -5,6 +5,7 @@ import * as ts from "typescript";
 import { INodeAliaser, IPrivacyName, IReturningNode, IRootAliaser } from "../../nodes/aliaser";
 import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
+import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
@@ -95,12 +96,12 @@ export class RootAliaser implements IRootAliaser {
 
         if (ts.isParameter(node) || ts.isVariableDeclaration(node)) {
             if (node.type !== undefined) {
-                return node.type.getText();
+                return parseRawTypeToGls(node.type.getText());
             }
         }
 
         if (ts.isTypeNode(node)) {
-            return node.getText(this.sourceFile);
+            return parseRawTypeToGls(node.getText(this.sourceFile));
         }
 
         return undefined;
@@ -119,6 +120,12 @@ export class RootAliaser implements IRootAliaser {
     }
 
     public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
+        // If the node explicitly mentions a return type, use that
+        if (node.type !== undefined) {
+            return this.getFriendlyTypeName(node.type);
+        }
+
+        // The rest of this logic attempts to use the type checker to get a computed type symbol
         const typeAtLocation = this.typeChecker.getTypeAtLocation(node);
         const signaturesOfType = this.typeChecker.getSignaturesOfType(typeAtLocation, ts.SignatureKind.Call);
         if (signaturesOfType.length !== 1) {

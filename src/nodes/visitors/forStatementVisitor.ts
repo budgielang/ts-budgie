@@ -51,10 +51,12 @@ export class ForStatementVisitor extends NodeVisitor {
         }
 
         const start = declaration.initializer.getText(this.sourceFile);
-        const realType = getNumericTypeNameFromUsages([
-            declaration.initializer.text,
-            end
-        ]);
+        const realType = typeof end === "string"
+            ? getNumericTypeNameFromUsages([
+                declaration.initializer.text,
+                end
+            ])
+            : "float";
 
         const bodyNodes = this.router.recurseIntoNode(node.statement);
         if (bodyNodes instanceof UnsupportedComplaint) {
@@ -76,11 +78,14 @@ export class ForStatementVisitor extends NodeVisitor {
     private getConditionEnd(target: string, condition: ts.Expression, sourceFile: ts.SourceFile) {
         if (!ts.isBinaryExpression(condition)
             || (condition.left as ts.Identifier).text !== target
-            || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken
-            || condition.right.kind !== ts.SyntaxKind.NumericLiteral) {
+            || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken) {
             return UnsupportedComplaint.forNode(condition, this.sourceFile, irregularComplaint);
         }
 
-        return condition.right.getText(sourceFile);
+        if (ts.isNumericLiteral(condition.right)) {
+            return condition.right.text;
+        }
+
+        return this.router.recurseIntoValue(condition.right);
     }
 }
