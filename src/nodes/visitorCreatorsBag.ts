@@ -17,8 +17,10 @@ import { LiteralVisitor } from "./visitors/literalVisitor";
 import { MethodDeclarationVisitor } from "./visitors/methodDeclarationVisitor";
 import { MethodSignatureVisitor } from "./visitors/methodSignatureVisitor";
 import { NewExpressionVisitor } from "./visitors/newExpressionVisitor";
+import { ObjectLiteralExpressionVisitor } from "./visitors/objectLiteralExpressionVisitor";
 import { ParenthesizedExpressionVisitor } from "./visitors/parenthesizedExpressionVisitor";
 import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpressionVisitor";
+import { PropertyAssignmentVisitor } from "./visitors/propertyAssignmentVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
 import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
@@ -54,7 +56,9 @@ const creators: IVisitorCreators = {
     [SyntaxKind.ModuleDeclaration]: UnsupportedVisitor.withDescriptor("namespaces"),
     [SyntaxKind.NewExpression]: NewExpressionVisitor,
     [SyntaxKind.NumericLiteral]: LiteralVisitor,
+    [SyntaxKind.ObjectLiteralExpression]: ObjectLiteralExpressionVisitor,
     [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
+    [SyntaxKind.PropertyAssignment]: PropertyAssignmentVisitor,
     [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
     [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
     [SyntaxKind.ReturnStatement]: ReturnStatementVisitor,

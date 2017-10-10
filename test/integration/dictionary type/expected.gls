@@ -1,3 +1,10 @@
 comment line
-variable : abc { dictionary type : string float }
+variable : shallowDelayed { dictionary type : string float } { dictionary new : string float }
+operation : { dictionary index : shallowDelayed "abc" } equals 3.5
+operation : { dictionary index : shallowDelayed "def" } equals 7
+
+variable start : shallowImmediate { dictionary type : string boolean } { dictionary new start : string boolean }
+    dictionary pair : "abc" false ,
+    dictionary pair : "def" true
+dictionary new end
 comment line

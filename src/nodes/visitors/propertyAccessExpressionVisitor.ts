@@ -7,6 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 import { ArrayMemberFunctionChecker } from "./propertyAccess/arrayMemberFunctionChecker";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
+import { DictionaryIndexAccessChecker } from "./propertyAccess/dictionaryIndexAccessChecker";
 import { MemberOrStaticFunctionChecker } from "./propertyAccess/memberOrStaticFunctionChecker";
 import { MemberVariableChecker } from "./propertyAccess/memberVariableChecker";
 import { PropertyAccessChecker } from "./propertyAccess/propertyAccessChecker";
@@ -19,6 +20,7 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
     private readonly checkers: PropertyAccessChecker[] = [
         new ArrayMemberFunctionChecker(this),
         new ConsoleLogAccessChecker(this),
+        new DictionaryIndexAccessChecker(this),
         new StringLengthAccessChecker(this),
         new StringMemberFunctionChecker(this),
         new MemberOrStaticFunctionChecker(this),

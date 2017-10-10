@@ -24,9 +24,9 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         }
 
         // A value may indicate to us better typing info than what we already have
-        const value = this.getValue(node);
-        if (value instanceof UnsupportedComplaint) {
-            return value;
+        const aliasedValue = this.getAliasedValue(node);
+        if (aliasedValue instanceof UnsupportedComplaint) {
+            return aliasedValue;
         }
 
         const typeModified = this.context.exitTypeCoercion();
@@ -36,8 +36,8 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // Some values may request a more specific intepreted type,
         // such as length commands switching from "float" to "int"
-        if (value !== undefined) {
-            const manualTypeAdjustment = getTypeAdjustment(interpretedType, value);
+        if (aliasedValue !== undefined) {
+            const manualTypeAdjustment = getTypeAdjustment(interpretedType, aliasedValue);
             if (manualTypeAdjustment !== undefined) {
                 interpretedType = manualTypeAdjustment;
             }
@@ -45,30 +45,61 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // If we don't know the interpreted type by now, just give up
         if (interpretedType === undefined) {
-            return UnsupportedComplaint.forNode(
-                node,
-                this.sourceFile,
-                "Could not determine type information.");
+            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
         }
 
-        const results: (string | GlsLine)[] = [name, interpretedType];
-        if (value !== undefined) {
-            results.push(value);
+        const firstResultsLineArgs: (string | GlsLine)[] = [name, interpretedType];
+        if (aliasedValue !== undefined) {
+            firstResultsLineArgs.push(aliasedValue);
         }
+
+        const lines: (string | GlsLine | Transformation)[] = [];
+
+        if (command === CommandNames.VariableStart) {
+            const fullValue = this.getFullValue(node);
+            if (fullValue instanceof UnsupportedComplaint) {
+                return fullValue;
+            }
+
+            if (fullValue !== undefined) {
+                this.appendFullValueToLines(fullValue, lines);
+            }
+        }
+
+        lines.unshift(new GlsLine(command, ...firstResultsLineArgs));
 
         return [
             Transformation.fromNode(
                 node,
                 this.sourceFile,
-                [
-                    new GlsLine(command, ...results)
-                ])
+                lines)
         ];
     }
 
-    private getValue(node: VariableDeclaration) {
-        return node.initializer === undefined
-            ? undefined
-            : this.router.recurseIntoValue(node.initializer);
+    private getAliasedValue(node: VariableDeclaration) {
+        if (node.initializer === undefined) {
+            return undefined;
+        }
+
+        return this.router.recurseIntoValue(node.initializer);
+    }
+
+    private getFullValue(node: VariableDeclaration) {
+        if (node.initializer === undefined) {
+            return undefined;
+        }
+
+        return this.router.recurseIntoNode(node.initializer);
+    }
+
+    private appendFullValueToLines(fullValue: (string | Transformation | GlsLine)[], lines: (string | GlsLine | Transformation)[]) {
+        // Full values start with "dictionary new start" or similar commands.
+        // This filters them out.
+        if (fullValue.length === 1 && fullValue[0] instanceof Transformation) {
+            this.appendFullValueToLines((fullValue[0] as Transformation).output, lines);
+            return;
+        }
+
+        lines.push(...fullValue.slice(1));
     }
 }
