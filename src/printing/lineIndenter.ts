@@ -40,7 +40,7 @@ export class LineIndenter {
 
         for (const line of lines) {
             if (typeof line === "string") {
-                output.push("");
+                output.push(line);
                 continue;
             }
 

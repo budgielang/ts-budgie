@@ -77,7 +77,6 @@ export class NodeVisitRouter {
      */
     public recurseIntoValue(node: Node): string | GlsLine | UnsupportedComplaint {
         const subTransformations = this.recurseIntoNode(node);
-
         if (subTransformations instanceof UnsupportedComplaint) {
             return subTransformations;
         }
@@ -125,5 +124,28 @@ export class NodeVisitRouter {
      */
     public recurseIntoChildren(node: Node): Transformation[] | UnsupportedComplaint {
         return this.recurseIntoNodes(node.getChildren(), node);
+    }
+
+    /**
+     * Retrieves the GLS output for a set of root file-level nodes.
+     *
+     * @param nodes   Nodes to transform.
+     * @param parent   Common parent of the nodes.
+     * @returns Transformed GLS output for the nodes.
+     */
+    public recurseIntoSourceFile(): (Transformation | UnsupportedComplaint)[] {
+        const results: (UnsupportedComplaint | Transformation)[] = [];
+
+        for (const node of this.dependencies.sourceFile.statements) {
+            const childTransformations = this.recurseIntoNode(node);
+
+            if (childTransformations instanceof UnsupportedComplaint) {
+                results.push(childTransformations);
+            } else {
+                results.push(...childTransformations);
+            }
+        }
+
+        return results;
     }
 }

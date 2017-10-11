@@ -4,7 +4,7 @@ import { CommentRange, SourceFile } from "typescript";
 import { Transformation } from "../output/transformation";
 import { commentVisitors } from "./visitor";
 
-export const visitEachComment = (sourceFile: SourceFile) => {
+export const visitEachComment = (sourceFile: SourceFile): Transformation[] => {
     const transformations: Transformation[] = [];
 
     const visitComment = (fullText: string, comment: CommentRange) => {

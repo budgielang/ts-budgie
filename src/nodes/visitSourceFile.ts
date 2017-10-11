@@ -10,7 +10,7 @@ import { NodeVisitRouter } from "./router";
 import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 
-export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker): Transformation[] | UnsupportedComplaint => {
+export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker): (Transformation | UnsupportedComplaint)[] => {
     const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
     const nameSplitter = new NameSplitter();
@@ -22,5 +22,5 @@ export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker
         aliaser, casing, printer, nameSplitter, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
     });
 
-    return router.recurseIntoNodes(sourceFile.statements, sourceFile);
+    return router.recurseIntoSourceFile();
 };

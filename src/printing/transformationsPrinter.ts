@@ -1,3 +1,4 @@
+import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { LineIndenter } from "./lineIndenter";
@@ -13,7 +14,7 @@ export interface ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent indented lines.
      */
-    printFile(sourceText: string, transformations: Transformation[]): string[];
+    printFile(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): string[];
 
     /**
      * Prints a series of transformations as lines of GLS and literal string lines.
@@ -22,7 +23,7 @@ export interface ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent GLS and literal string lines.
      */
-    printTransformations(sourceText: string, transformations: Transformation[]): (string | GlsLine)[];
+    printTransformations(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): (string | GlsLine)[];
 }
 
 /**
@@ -56,7 +57,7 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent indented lines.
      */
-    public printFile(sourceText: string, transformations: Transformation[]): string[] {
+    public printFile(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): string[] {
         return this.lineIndenter.indent(this.printTransformations(sourceText, transformations));
     }
 
@@ -67,7 +68,7 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent GLS and literal string lines.
      */
-    public printTransformations(sourceText: string, transformations: Transformation[]): (string | GlsLine)[] {
+    public printTransformations(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): (string | GlsLine)[] {
         const lines: (string | GlsLine)[] = [];
 
         if (transformations.length === 0) {
@@ -97,7 +98,11 @@ export class TransformationsPrinter implements ITransformationsPrinter {
      * @param transformation   A transformations.
      * @returns The transformation's equivalent GLS.
      */
-    private printTransformation(sourceText: string, transformation: Transformation): (string | GlsLine)[] {
+    private printTransformation(sourceText: string, transformation: Transformation | UnsupportedComplaint): (string | GlsLine)[] {
+        if (transformation instanceof UnsupportedComplaint) {
+            return [transformation.toString()];
+        }
+
         const lines: (string | GlsLine)[] = [];
         let previous: string | Transformation | GlsLine | undefined;
 

@@ -46,13 +46,10 @@ export class Transformer {
      * @param sourceText   Source file to transform.
      * @returns GLS equivalent for the source file, or a complaint for unsupported syntax.
      */
-    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): string[] | UnsupportedComplaint {
-        const transformed = this.getSourceFileTransforms(sourceFile, typeChecker);
-        if (transformed instanceof UnsupportedComplaint) {
-            return transformed;
-        }
-
-        return this.dependencies.printer.printFile(sourceFile.getFullText(sourceFile), transformed);
+    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): string[] {
+        return this.dependencies.printer.printFile(
+            sourceFile.getFullText(sourceFile),
+            this.getSourceFileTransforms(sourceFile, typeChecker));
     }
 
     /**
@@ -61,13 +58,8 @@ export class Transformer {
      * @param sourceText   Source text to transform.
      * @returns GLS equivalent for the source text, or a complaint for unsupported syntax.
      */
-    public transformText(sourceText: string): string[] | UnsupportedComplaint {
-        const transformed = this.getTextTransforms(sourceText);
-        if (transformed instanceof UnsupportedComplaint) {
-            return transformed;
-        }
-
-        return this.dependencies.printer.printFile(sourceText, transformed);
+    public transformText(sourceText: string): string[] {
+        return this.dependencies.printer.printFile(sourceText, this.getTextTransforms(sourceText));
     }
 
     /**
@@ -79,7 +71,7 @@ export class Transformer {
      */
     private getSourceFileTransforms(
         sourceFile: SourceFile,
-        typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()): Transformation[] | UnsupportedComplaint {
+        typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()): (Transformation | UnsupportedComplaint)[] {
         return this.dependencies.service.transform(sourceFile, typeChecker);
     }
 
@@ -89,7 +81,7 @@ export class Transformer {
      * @param sourceText   Source text to transform.
      * @returns Transformations for the source text, or a complaint for unsupported syntax.
      */
-    private getTextTransforms(sourceText: string): Transformation[] | UnsupportedComplaint {
+    private getTextTransforms(sourceText: string): (Transformation | UnsupportedComplaint)[] {
         return this.getSourceFileTransforms(
             createSourceFile("input.ts", sourceText, ScriptTarget.Latest));
     }
