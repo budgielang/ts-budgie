@@ -2,7 +2,7 @@ import { createProgram, Program, ScriptTarget, SourceFile } from "typescript";
 
 import { StubCompilerHost } from "./stubCompilerHost";
 
-export const createStubProgramForFiles = (sourceFiles: SourceFile[]) =>
+export const createProgramForFiles = (sourceFiles: SourceFile[]) =>
     createProgram(
         sourceFiles.map((sourceFile) => sourceFile.fileName),
         {
@@ -11,5 +11,5 @@ export const createStubProgramForFiles = (sourceFiles: SourceFile[]) =>
         },
         new StubCompilerHost(sourceFiles));
 
-export const createStubProgramForFile = (sourceFile: SourceFile) =>
-    createStubProgramForFiles([sourceFile]);
+export const createProgramForFile = (sourceFile: SourceFile) =>
+    createProgramForFiles([sourceFile]);

@@ -1,6 +1,6 @@
 import { createSourceFile, ScriptTarget, SourceFile, TypeChecker } from "typescript";
 
-import { createStubProgramForFile } from "./compiler/program";
+import { createProgramForFile } from "./compiler/program";
 import { UnsupportedComplaint } from "./output/complaint";
 import { GlsLine } from "./output/glsLine";
 import { Transformation } from "./output/transformation";
@@ -71,7 +71,7 @@ export class Transformer {
      */
     private getSourceFileTransforms(
         sourceFile: SourceFile,
-        typeChecker: TypeChecker = createStubProgramForFile(sourceFile).getTypeChecker()): (Transformation | UnsupportedComplaint)[] {
+        typeChecker: TypeChecker = createProgramForFile(sourceFile).getTypeChecker()): (Transformation | UnsupportedComplaint)[] {
         return this.dependencies.service.transform(sourceFile, typeChecker);
     }
 
