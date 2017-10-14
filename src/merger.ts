@@ -73,7 +73,7 @@ export class Merger<TData> {
      * @returns The next piece of data in sort order.
      */
     private getNext(lists: TData[][], mergePositions: number[]): TData {
-        let optimal: TData | undefined;
+        let optimal: { data: TData; list: number } | undefined;
         let i = 0;
 
         while (i < lists.length) {
@@ -85,14 +85,22 @@ export class Merger<TData> {
 
             const proposal = lists[i][mergePositions[i]];
 
-            if (optimal === undefined || this.betterThan(optimal, proposal)) {
-                optimal = proposal;
+            if (optimal === undefined || this.betterThan(optimal.data, proposal)) {
+                optimal = {
+                    data: proposal,
+                    list: i
+                };
             }
 
-            mergePositions[i] += 1;
             i += 1;
         }
 
-        return optimal as TData;
+        if (optimal === undefined) {
+            throw new Error("Runtime failure: could not merge transformations.");
+        }
+
+        mergePositions[optimal.list] += 1;
+
+        return optimal.data;
     }
 }
