@@ -55,6 +55,19 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
     }
 
     private getHostContainerAndSignature(node: ts.PropertyAccessExpression) {
+        const direct = this.getHostContainerAndSignatureOfNode(node);
+        if (direct !== undefined) {
+            return direct;
+        }
+
+        if (ts.isPropertyAccessExpression(node.expression)) {
+            return this.getHostContainerAndSignatureOfNode(node.expression);
+        }
+
+        return undefined;
+    }
+
+    private getHostContainerAndSignatureOfNode(node: ts.PropertyAccessExpression) {
         const classSymbol = this.typeChecker.getSymbolAtLocation(node.expression);
         if (classSymbol === undefined) {
             return undefined;
