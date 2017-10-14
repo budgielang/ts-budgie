@@ -7,6 +7,21 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "Convert GLS with CLI",
+            "program": "${workspaceRoot}/../GLS-CLI/bin/gls",
+            "args": [
+                "--language",
+                "Java",
+                "--tsconfig",
+                "${workspaceRoot}/../GLS/tsconfig.json",
+                "--exclude",
+                "${workspaceRoot}/../GLS/src/index.ts",
+                "${workspaceRoot}/../GLS/src/**/*.ts"
+            ]
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "Unit Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "args": [
