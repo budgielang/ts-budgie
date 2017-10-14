@@ -1,6 +1,7 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
+import { hasModifier } from "tsutils";
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
@@ -18,7 +19,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             return undefined;
         }
 
-        const { trueClassSymbol, hostContainer, hostSignature } = hostContainerAndSignature;
+        const { commandName, hostSignature, trueClassSymbol } = hostContainerAndSignature;
         if (hostSignature.declarations === undefined) {
             return undefined;
         }
@@ -36,9 +37,6 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         }
 
         const [hostDeclaration] = hostSignature.declarations;
-        const commandName = hostContainer === trueClassSymbol.members
-            ? CommandNames.MemberFunction
-            : CommandNames.StaticFunction;
 
         const privacy = this.aliaser.getFriendlyPrivacyName(hostDeclaration);
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
@@ -98,26 +96,25 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             ? classSymbol
             : declaredClassSymbol;
 
-        if (trueClassSymbol.members !== undefined) {
-            const memberSymbol = trueClassSymbol.members.get(escapedName);
-            if (memberSymbol !== undefined && memberSymbol.declarations !== undefined) {
-                return {
-                    trueClassSymbol,
-                    hostContainer: trueClassSymbol.members,
-                    hostSignature: memberSymbol
-                };
+        // Protected properties are only listed as augmented properties (not in .members)
+        const expressionType = this.typeChecker.getTypeAtLocation(expression);
+        const classProperties = this.typeChecker.getAugmentedPropertiesOfType(expressionType);
+        for (const classProperty of classProperties) {
+            if (classProperty.escapedName !== escapedName) {
+                continue;
             }
-        }
 
-        if (trueClassSymbol.exports !== undefined) {
-            const staticSymbol = trueClassSymbol.exports.get(escapedName);
-            if (staticSymbol !== undefined && staticSymbol.declarations !== undefined) {
-                return {
-                    trueClassSymbol,
-                    hostContainer: trueClassSymbol.exports,
-                    hostSignature: staticSymbol
-                };
+            if (classProperty.valueDeclaration === undefined) {
+                return undefined;
             }
+
+            return {
+                commandName: hasModifier(classProperty.valueDeclaration.modifiers, ts.SyntaxKind.StaticKeyword)
+                    ? CommandNames.StaticFunction
+                    : CommandNames.MemberFunction,
+                hostSignature: classProperty,
+                trueClassSymbol
+            };
         }
 
         return undefined;
