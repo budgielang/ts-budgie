@@ -18,7 +18,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             return undefined;
         }
 
-        const { classSymbol, hostContainer, hostSignature } = hostContainerAndSignature;
+        const { trueClassSymbol, hostContainer, hostSignature } = hostContainerAndSignature;
         if (hostSignature.declarations === undefined) {
             return undefined;
         }
@@ -36,7 +36,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         }
 
         const [hostDeclaration] = hostSignature.declarations;
-        const commandName = hostContainer === classSymbol.members
+        const commandName = hostContainer === trueClassSymbol.members
             ? CommandNames.MemberFunction
             : CommandNames.StaticFunction;
 
@@ -55,53 +55,86 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
     }
 
     private getHostContainerAndSignature(node: ts.PropertyAccessExpression) {
-        const direct = this.getHostContainerAndSignatureOfNode(node);
+        const direct = this.getHostContainerAndSignatureOfPropertyAccess(node.expression, node.name);
         if (direct !== undefined) {
             return direct;
         }
 
+        if (ts.isIdentifier(node.expression)) {
+            return this.getHostContainerAndSignatureOfPropertyAccess(node.expression, node.name);
+        }
+
         if (ts.isPropertyAccessExpression(node.expression)) {
-            return this.getHostContainerAndSignatureOfNode(node.expression);
+            return this.getHostContainerAndSignatureOfPropertyAccess(
+                node.expression.expression,
+                node.expression.name);
+        }
+
+        if (ts.isCallExpression(node.expression) && ts.isPropertyAccessExpression(node.expression.expression)) {
+            return this.getHostContainerAndSignatureOfPropertyAccess(
+                node.expression.expression.expression,
+                node.expression.expression.name);
         }
 
         return undefined;
     }
 
-    private getHostContainerAndSignatureOfNode(node: ts.PropertyAccessExpression) {
-        const classSymbol = this.typeChecker.getSymbolAtLocation(node.expression);
-        if (classSymbol === undefined) {
+    private getHostContainerAndSignatureOfPropertyAccess(expression: ts.Identifier | ts.LeftHandSideExpression, name: ts.Identifier) {
+        const nameSymbol = this.typeChecker.getSymbolAtLocation(name);
+        if (nameSymbol === undefined) {
             return undefined;
         }
 
-        const nameSymbol = this.typeChecker.getSymbolAtLocation(node.name);
-        if (nameSymbol === undefined) {
+        const classSymbol = this.getClassSymbol(expression, nameSymbol);
+        if (classSymbol === undefined) {
             return undefined;
         }
 
         const { escapedName } = nameSymbol;
 
-        if (classSymbol.members !== undefined) {
-            const memberSymbol = classSymbol.members.get(escapedName);
+        // If the class was imported from another file, this might be necessary to get the real type
+        const declaredClassSymbol = this.typeChecker.getDeclaredTypeOfSymbol(classSymbol).symbol;
+        const trueClassSymbol = declaredClassSymbol === undefined
+            ? classSymbol
+            : declaredClassSymbol;
+
+        if (trueClassSymbol.members !== undefined) {
+            const memberSymbol = trueClassSymbol.members.get(escapedName);
             if (memberSymbol !== undefined && memberSymbol.declarations !== undefined) {
                 return {
-                    classSymbol,
-                    hostContainer: classSymbol.members,
+                    trueClassSymbol,
+                    hostContainer: trueClassSymbol.members,
                     hostSignature: memberSymbol
                 };
             }
         }
 
-        if (classSymbol.exports !== undefined) {
-            const staticSymbol = classSymbol.exports.get(escapedName);
+        if (trueClassSymbol.exports !== undefined) {
+            const staticSymbol = trueClassSymbol.exports.get(escapedName);
             if (staticSymbol !== undefined && staticSymbol.declarations !== undefined) {
                 return {
-                    classSymbol,
-                    hostContainer: classSymbol.exports,
+                    trueClassSymbol,
+                    hostContainer: trueClassSymbol.exports,
                     hostSignature: staticSymbol
                 };
             }
         }
 
         return undefined;
+    }
+
+    private getClassSymbol(expression: ts.LeftHandSideExpression, nameSymbol: ts.Symbol): ts.Symbol | undefined {
+        // If the expression is a direct class usage, this will normally work
+        const direct = this.typeChecker.getSymbolAtLocation(expression);
+        if (direct !== undefined) {
+            return direct;
+        }
+
+        // Otherwise, we'll have to try to parse through the function's declarations
+        if (nameSymbol.valueDeclaration === undefined || nameSymbol.valueDeclaration.parent === undefined) {
+            return undefined;
+        }
+
+        return this.typeChecker.getTypeAtLocation(nameSymbol.valueDeclaration.parent).symbol;
     }
 }

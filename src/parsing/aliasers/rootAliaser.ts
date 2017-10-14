@@ -83,7 +83,7 @@ export class RootAliaser implements IRootAliaser {
         if (symbol !== undefined && symbol.valueDeclaration !== undefined) {
             const valueDeclaration = symbol.valueDeclaration;
 
-            if (ts.isVariableDeclaration(valueDeclaration)) {
+            if (ts.isParameter(valueDeclaration) || ts.isVariableDeclaration(valueDeclaration)) {
                 return this.getFriendlyTypeName(valueDeclaration);
             }
         }
