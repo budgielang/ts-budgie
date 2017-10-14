@@ -37,6 +37,10 @@ export class ClassDeclarationVisitor extends NodeVisitor {
 
         const parameters = [];
 
+        if (hasModifier(node.modifiers, SyntaxKind.ExportKeyword)) {
+            parameters.push(KeywordNames.Export);
+        }
+
         if (hasModifier(node.modifiers, SyntaxKind.AbstractKeyword)) {
             parameters.push(KeywordNames.Abstract);
         }
