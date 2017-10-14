@@ -1,0 +1,7 @@
+comment line
+import local : Root Subdirectory Def use Abc
+
+import local : Root Jkl use Ghi
+
+import local : Root Stu Vwx use Mno Pqr
+comment line

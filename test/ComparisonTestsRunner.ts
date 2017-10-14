@@ -93,12 +93,10 @@ export class ComparisonTestsRunner {
         const expected = readFile(directoryPath, "expected.gls", "comment line");
 
         // Act
-        let actual: (string | GlsLine)[] | UnsupportedComplaint = createTransformer().transformText(source);
-        if (actual instanceof UnsupportedComplaint) {
-            actual = [
-                actual.toString()
-            ];
-        }
+        const transformer = createTransformer();
+        const actual = transformer.transformText(source, {
+            fileName: "Root/Subdirectory/source.ts"
+        });
 
         // Asserted
         expect(actual.join("\n").split("\n")).to.be.deep.equal(expected.split("\n"));

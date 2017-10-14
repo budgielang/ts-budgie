@@ -12,6 +12,7 @@ import { ElementAccessExpressionVisitor } from "./visitors/elementAccessExpressi
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
+import { ImportDeclarationVisitor } from "./visitors/importDeclarationVisitor";
 import { InterfaceDeclarationVisitor } from "./visitors/interfaceDeclarationVisitor";
 import { LiteralVisitor } from "./visitors/literalVisitor";
 import { MethodDeclarationVisitor } from "./visitors/methodDeclarationVisitor";
@@ -44,12 +45,14 @@ const creators: IVisitorCreators = {
     [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
     [SyntaxKind.ElementAccessExpression]: ElementAccessExpressionVisitor,
+    [SyntaxKind.ExportDeclaration]: UnsupportedVisitor.withDescriptor("exports"),
     [SyntaxKind.FalseKeyword]: LiteralVisitor,
     [SyntaxKind.FirstLiteralToken]: LiteralVisitor,
     [SyntaxKind.ForStatement]: ForStatementVisitor,
     [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
     [SyntaxKind.Identifier]: LiteralVisitor,
     [SyntaxKind.IfStatement]: IfStatementVisitor,
+    [SyntaxKind.ImportDeclaration]: ImportDeclarationVisitor,
     [SyntaxKind.InterfaceDeclaration]: InterfaceDeclarationVisitor,
     [SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
     [SyntaxKind.MethodSignature]: MethodSignatureVisitor,

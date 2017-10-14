@@ -23,6 +23,22 @@ export interface ITransformerDependencies {
 }
 
 /**
+ * Extra options for text transformations.
+ */
+export interface ITextTransformationOptions {
+    fileName: string;
+    scriptTarget: ScriptTarget;
+}
+
+/**
+ * Default extra text transformation options.
+ */
+const defaultTextTransformationOptions: ITextTransformationOptions = {
+    fileName: "input.ts",
+    scriptTarget: ScriptTarget.Latest,
+};
+
+/**
  * Transforms TypeScript to GLS.
  */
 export class Transformer {
@@ -56,10 +72,11 @@ export class Transformer {
      * Transforms source text to GLS.
      *
      * @param sourceText   Source text to transform.
+     * @param options   Extra options to customize compilation.
      * @returns GLS equivalent for the source text, or a complaint for unsupported syntax.
      */
-    public transformText(sourceText: string): string[] {
-        return this.dependencies.printer.printFile(sourceText, this.getTextTransforms(sourceText));
+    public transformText(sourceText: string, options: Partial<ITextTransformationOptions> = {}): string[] {
+        return this.dependencies.printer.printFile(sourceText, this.getTextTransforms(sourceText, options));
     }
 
     /**
@@ -79,10 +96,13 @@ export class Transformer {
      * Creates transformations for source text.
      *
      * @param sourceText   Source text to transform.
+     * @param options   Extra options for the text transformation.
      * @returns Transformations for the source text, or a complaint for unsupported syntax.
      */
-    private getTextTransforms(sourceText: string): (Transformation | UnsupportedComplaint)[] {
+    private getTextTransforms(sourceText: string, options: Partial<ITextTransformationOptions>): (Transformation | UnsupportedComplaint)[] {
+        const optionsFull: ITextTransformationOptions = { ...defaultTextTransformationOptions, ...options };
+
         return this.getSourceFileTransforms(
-            createSourceFile("input.ts", sourceText, ScriptTarget.Latest));
+            createSourceFile(optionsFull.fileName, sourceText, optionsFull.scriptTarget));
     }
 }
