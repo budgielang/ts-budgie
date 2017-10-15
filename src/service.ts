@@ -1,6 +1,5 @@
 import { SourceFile, TypeChecker } from "typescript";
 
-import { Merger } from "./merger";
 import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 
@@ -42,11 +41,6 @@ export interface ITransformationService {
  */
 export class TransformationService {
     /**
-     * Merges sorted lists of transforms.
-     */
-    private readonly merger: Merger<Transformation | UnsupportedComplaint>;
-
-    /**
      * Transformations to retrieve source-to-GLS transforms from a file.
      */
     private readonly transformers: ITransformer[];
@@ -57,7 +51,6 @@ export class TransformationService {
      * @param transformers   Transformations to retrieve source-to-GLS transforms from a file.
      */
     public constructor(transformers: ITransformer[]) {
-        this.merger = new Merger(isTransformationEarlierThan);
         this.transformers = transformers;
     }
 
@@ -69,12 +62,12 @@ export class TransformationService {
      * @returns Transformations from the file, or a complaint for unsupported syntax.
      */
     public transform(sourceFile: SourceFile, typeChecker: TypeChecker): (Transformation | UnsupportedComplaint)[] {
-        const transformations: (UnsupportedComplaint | Transformation)[][] = [];
+        const transformations: (UnsupportedComplaint | Transformation)[] = [];
 
         for (const transformer of this.transformers) {
-            transformations.push(transformer(sourceFile, typeChecker));
+            transformations.push(...transformer(sourceFile, typeChecker));
         }
 
-        return this.merger.merge(transformations);
+        return transformations;
     }
 }
