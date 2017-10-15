@@ -1,14 +1,23 @@
 import { CommandNames } from "general-language-syntax";
-import { Block, ConstructorDeclaration, ParameterDeclaration, Statement } from "typescript";
+import { Block, ConstructorDeclaration, isClassDeclaration, Node, ParameterDeclaration, Statement } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
+const cannotFindClassNameComplaint = "Cannot find class name for constructor.";
+
+const noClassNameComplaint = "Classes must have names.";
+
 export class ConstructorDeclarationVisitor extends NodeVisitor {
     public visit(node: ConstructorDeclaration) {
         const { body, parameters } = node;
+
+        const className = this.getParentClassName(node);
+        if (className instanceof UnsupportedComplaint) {
+            return className;
+        }
 
         const parsedParameters = this.parseParameters(parameters);
         if (parsedParameters instanceof UnsupportedComplaint) {
@@ -27,7 +36,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.ConstructorStart, privacy, ...parsedParameters),
+                    new GlsLine(CommandNames.ConstructorStart, privacy, className, ...parsedParameters),
                     ...bodyNodes,
                     new GlsLine(CommandNames.ConstructorEnd),
                 ])
@@ -56,5 +65,21 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         }
 
         return parsedParameters;
+    }
+
+    private getParentClassName(originalNode: ConstructorDeclaration, currentNode: Node = originalNode): string | UnsupportedComplaint {
+        if (isClassDeclaration(currentNode)) {
+            if (currentNode.name === undefined) {
+                return UnsupportedComplaint.forNode(originalNode, this.sourceFile, noClassNameComplaint);
+            }
+
+            return currentNode.name.text;
+        }
+
+        if (currentNode.parent === undefined) {
+            return UnsupportedComplaint.forNode(originalNode, this.sourceFile, cannotFindClassNameComplaint);
+        }
+
+        return this.getParentClassName(originalNode, currentNode.parent);
     }
 }

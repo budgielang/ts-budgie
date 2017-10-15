@@ -8,7 +8,7 @@ class start : Abc
 
     member variable declare : private array { list type : string } { list initialize : string "ghi" }
 
-    constructor start : public
+    constructor start : public Abc
         operation : { member variable : protected { this } infinite } equals { new : Abc }
         operation : { member variable : private { this } array } equals { list initialize : string "jkl" }
     constructor end
