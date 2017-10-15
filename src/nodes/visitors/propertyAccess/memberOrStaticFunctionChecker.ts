@@ -31,7 +31,9 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
 
         const args = filterOutUnsupportedComplaint(
             node.parent.arguments.map(
-                (arg) => this.router.recurseIntoValue(arg)));
+                (arg) => arg === node
+                    ? node.name.text
+                    : this.router.recurseIntoValue(arg)));
         if (args instanceof UnsupportedComplaint) {
             return undefined;
         }
