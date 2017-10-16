@@ -7,19 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { getNumericTypeNameFromUsages } from "../../parsing/numerics";
 import { NodeVisitor } from "../visitor";
 
-const isIncrementorIncreasingByOne = (target: string, incrementor: ts.Expression) => {
-    if (ts.isPostfixUnaryExpression(incrementor) || ts.isPrefixUnaryExpression(incrementor)) {
-        return true;
-    }
-
-    if (ts.isBinaryExpression(incrementor)) {
-        return incrementor.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken
-            && (incrementor.left as ts.Identifier).text === target
-            && (incrementor.right as ts.Identifier).text === "1";
-    }
-
-    return false;
-};
+const forLoopsMustBeAdditiveComplaint = "For loops over numbers must change the iterator with addition.";
 
 const irregularComplaint = "Could not parse irregular for loop.";
 
@@ -41,8 +29,9 @@ export class ForStatementVisitor extends NodeVisitor {
         }
 
         const name = (declaration.name as ts.Identifier).text;
-        if (!isIncrementorIncreasingByOne(name, incrementor)) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, irregularComplaint);
+        const incrementorText = this.getIncrementorIfNotOne(name, incrementor);
+        if (incrementorText instanceof UnsupportedComplaint) {
+            return incrementorText;
         }
 
         const end = this.getConditionEnd(name, condition, this.sourceFile);
@@ -63,16 +52,39 @@ export class ForStatementVisitor extends NodeVisitor {
             return bodyNodes;
         }
 
+        const parameters = [name, realType, start, end];
+        if (incrementorText !== undefined) {
+            parameters.push(incrementorText);
+        }
+
         return [
             Transformation.fromNode(
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.ForNumbersStart, name, realType, start, end),
+                    new GlsLine(CommandNames.ForNumbersStart, ...parameters),
                     ...bodyNodes,
                     new GlsLine(CommandNames.ForNumbersEnd)
                 ])
-    ];
+        ];
+    }
+
+    private getIncrementorIfNotOne(target: string, incrementor: ts.Expression) {
+        if (ts.isPostfixUnaryExpression(incrementor) || ts.isPrefixUnaryExpression(incrementor)) {
+            return undefined;
+        }
+
+        if (ts.isBinaryExpression(incrementor)
+            && incrementor.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken
+            && (incrementor.left as ts.Identifier).text === target) {
+            const right = incrementor.right as ts.Identifier;
+
+            return right.text === "1"
+                ? undefined
+                : right.text;
+        }
+
+        return UnsupportedComplaint.forNode(incrementor, this.sourceFile, forLoopsMustBeAdditiveComplaint);
     }
 
     private getConditionEnd(target: string, condition: ts.Expression, sourceFile: ts.SourceFile) {
