@@ -1,3 +1,8 @@
+const escapeSpecialCharacters = (arg: string) =>
+    arg
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
+
 /**
  * Wraps a command argument if it has any spaces.
  *
@@ -14,7 +19,7 @@ const wrapArg = (arg: string) => arg.indexOf(" ") === -1 ? arg : `(${arg})`;
  */
 const formatArg = (arg: string | GlsLine) =>
     typeof arg === "string"
-        ? wrapArg(arg)
+        ? escapeSpecialCharacters(wrapArg(arg))
         : `{ ${arg} }`;
 
 /**

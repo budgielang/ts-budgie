@@ -1,10 +1,10 @@
-import { VariableDeclaration } from "typescript";
+import { PropertyDeclaration, VariableDeclaration } from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { RecursiveAliaser } from "./recursiveAliaser";
 
-export class VariableDeclarationAliaser extends RecursiveAliaser {
-    public getFriendlyTypeName(node: VariableDeclaration): string | GlsLine | undefined {
+export class PropertyOrVariableDeclarationAliaser extends RecursiveAliaser {
+    public getFriendlyTypeName(node: PropertyDeclaration | VariableDeclaration): string | GlsLine | undefined {
         if (node.type !== undefined) {
             return this.recurseOntoNode(node.type);
         }

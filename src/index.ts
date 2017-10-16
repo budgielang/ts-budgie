@@ -34,10 +34,10 @@ const defaultOptions: ITsGlsOptions = {
  * @returns A TypeScrip-to-GLS code transformer.
  */
 export const createTransformer = (options: Partial<ITsGlsOptions> = {}) => {
-    const fullOptions = { ...defaultOptions, options };
+    const fullOptions = { ...defaultOptions, ...options };
 
     const transformers: ITransformer[] = [visitSourceFile];
-    if (options.skipComments !== true) {
+    if (fullOptions.skipComments !== true) {
         transformers.push(visitEachComment);
     }
 

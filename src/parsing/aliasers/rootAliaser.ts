@@ -9,9 +9,9 @@ import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
+import { PropertyOrVariableDeclarationAliaser } from "./propertyOrVariableDeclarationAliaser";
 import { TypeLiteralAliaser } from "./typeLiteralAliaser";
 import { TypeNameAliaser } from "./typeNameAliaser";
-import { VariableDeclarationAliaser } from "./variableDeclarationAliaser";
 
 type INodeChildPasser = (node: ts.Node) => ts.Node;
 
@@ -23,6 +23,12 @@ interface IIntrinsicSignatureReturnType extends ts.Type {
      */
     intrinsicName: string;
 }
+
+const recursiveFriendlyValueDeclarationTypes = new Set<ts.SyntaxKind>([
+    ts.SyntaxKind.Parameter,
+    ts.SyntaxKind.PropertyDeclaration,
+    ts.SyntaxKind.VariableDeclaration
+]);
 
 export class RootAliaser implements IRootAliaser {
     private readonly flagResolver: TypeFlagsResolver;
@@ -54,7 +60,7 @@ export class RootAliaser implements IRootAliaser {
             [ts.SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
             [ts.SyntaxKind.StringLiteral, new TypeNameAliaser("string")],
-            [ts.SyntaxKind.VariableDeclaration, new VariableDeclarationAliaser(typeChecker, this.getFriendlyTypeName)],
+            [ts.SyntaxKind.VariableDeclaration, new PropertyOrVariableDeclarationAliaser(typeChecker, this.getFriendlyTypeName)],
         ]);
     }
 
@@ -80,19 +86,26 @@ export class RootAliaser implements IRootAliaser {
         // TypeScript won't give up expression nodes' types, but if they have a type symbol
         // we can use it to find their value declaration
         const symbol = this.typeChecker.getSymbolAtLocation(node);
+
         if (symbol !== undefined && symbol.valueDeclaration !== undefined) {
             const valueDeclaration = symbol.valueDeclaration;
 
-            if (ts.isParameter(valueDeclaration) || ts.isVariableDeclaration(valueDeclaration)) {
+            if (recursiveFriendlyValueDeclarationTypes.has(valueDeclaration.kind)) {
                 return this.getFriendlyTypeName(valueDeclaration);
             }
         }
 
+        // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
+        const typeSymbol = this.typeChecker.getTypeAtLocation(node).symbol;
+        if (typeSymbol !== undefined && typeSymbol.valueDeclaration !== undefined) {
+            return typeSymbol.name;
+        }
+
         // By now, this is probably a node with a non-primitive type, such as a class instance.
 
-        if (ts.isParameter(node) || ts.isVariableDeclaration(node)) {
+        if (ts.isParameter(node) || ts.isPropertyDeclaration(node) || ts.isVariableDeclaration(node)) {
             if (node.type !== undefined) {
-                return parseRawTypeToGls(node.type.getText());
+                return this.getFriendlyTypeName(node.type);
             }
         }
 

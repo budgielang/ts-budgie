@@ -93,7 +93,9 @@ export class ComparisonTestsRunner {
         const expected = readFile(directoryPath, "expected.gls", "comment line");
 
         // Act
-        const transformer = createTransformer();
+        const transformer = createTransformer({
+            skipComments: false
+        });
         const actual = transformer.transformText(source, {
             fileName: "Root/Subdirectory/source.ts"
         });
