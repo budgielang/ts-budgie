@@ -37,7 +37,7 @@ export const createTransformer = (options: Partial<ITsGlsOptions> = {}) => {
     const fullOptions = { ...defaultOptions, ...options };
 
     const transformers: ITransformer[] = [visitSourceFile];
-    if (fullOptions.skipComments !== true) {
+    if (!fullOptions.skipComments) {
         transformers.push(visitEachComment);
     }
 

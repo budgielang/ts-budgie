@@ -95,12 +95,6 @@ export class RootAliaser implements IRootAliaser {
             }
         }
 
-        // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
-        const typeSymbol = this.typeChecker.getTypeAtLocation(node).symbol;
-        if (typeSymbol !== undefined && typeSymbol.valueDeclaration !== undefined) {
-            return typeSymbol.name;
-        }
-
         // By now, this is probably a node with a non-primitive type, such as a class instance.
 
         if (ts.isParameter(node) || ts.isPropertyDeclaration(node) || ts.isVariableDeclaration(node)) {
@@ -111,6 +105,12 @@ export class RootAliaser implements IRootAliaser {
 
         if (ts.isTypeNode(node)) {
             return parseRawTypeToGls(node.getText(this.sourceFile));
+        }
+
+        // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
+        const typeSymbol = this.typeChecker.getTypeAtLocation(node).symbol;
+        if (typeSymbol !== undefined && typeSymbol.valueDeclaration !== undefined) {
+            return typeSymbol.name;
         }
 
         return undefined;
