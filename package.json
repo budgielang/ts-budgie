@@ -31,16 +31,16 @@
   "devDependencies": {
     "@types/chai": "^4.0.4",
     "@types/minimatch": "^3.0.1",
-    "@types/mocha": "^2.2.43",
-    "@types/node": "^8.0.31",
-    "browserify": "^14.4.0",
+    "@types/mocha": "^2.2.44",
+    "@types/node": "^8.0.50",
+    "browserify": "^14.5.0",
     "chai": "^4.1.2",
     "del": "^3.0.0",
     "gulp": "^3.9.1",
     "gulp-mocha": "^4.3.1",
     "gulp-sourcemaps": "^2.6.1",
     "gulp-tslint": "^8.1.2",
-    "gulp-typescript": "^3.2.2",
+    "gulp-typescript": "^3.2.3",
     "gulp-uglify": "^3.0.0",
     "merge2": "^1.2.0",
     "minimatch": "^3.0.4",
@@ -48,7 +48,7 @@
     "run-sequence": "^2.2.0",
     "source-map-support": "^0.5.0",
     "tsify": "^3.0.3",
-    "tslint": "^5.7.0",
+    "tslint": "^5.8.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.1.0"
   },
@@ -56,7 +56,7 @@
     "@types/mz": "0.0.32",
     "general-language-syntax": "^0.3.22",
     "mz": "^2.7.0",
-    "tsutils": "^2.11.2",
-    "typescript": "^2.5.3"
+    "tsutils": "^2.12.2",
+    "typescript": "^2.6.1"
   }
 }
