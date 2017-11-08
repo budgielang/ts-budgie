@@ -104,7 +104,7 @@ export class RootAliaser implements IRootAliaser {
         }
 
         if (ts.isTypeNode(node)) {
-            return parseRawTypeToGls(node.getText(this.sourceFile));
+            return parseRawTypeToGls(node.getText());
         }
 
         // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't

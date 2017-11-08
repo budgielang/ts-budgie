@@ -3,6 +3,7 @@ import { StringLiteral } from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { wrapWithQuotes } from "../../parsing/strings";
 import { NodeVisitor } from "./../visitor";
 
 export class StringLiteralVisitor extends NodeVisitor {
@@ -12,7 +13,7 @@ export class StringLiteralVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    `"${node.text}"`
+                    wrapWithQuotes(node.getText(this.sourceFile))
                 ])
         ];
     }

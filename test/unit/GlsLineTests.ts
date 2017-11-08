@@ -70,5 +70,16 @@ describe("GlsLine", () => {
             // Assert
             expect(printed).to.be.equal("command : { inner : (abc def) }");
         });
+
+        it("escapes a starting bracket within a string", () => {
+            // Arrange
+            const line = new GlsLine("command", '"{"');
+
+            // Act
+            const printed = line.toString();
+
+            // Assert
+            expect(printed).to.be.equal('command : ("{")');
+        });
     });
 });

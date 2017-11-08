@@ -3,13 +3,25 @@ const escapeSpecialCharacters = (arg: string) =>
         .replace(/\r/g, "\\r")
         .replace(/\n/g, "\\n");
 
+const textWrapIndicators = new Set<string>([
+    "{", "(", " "
+]);
+
 /**
  * Wraps a command argument if it has any spaces.
  *
  * @param arg   Argument to a GLS command.
  * @returns The argument, wrapped if necessary.
  */
-const wrapArg = (arg: string) => arg.indexOf(" ") === -1 ? arg : `(${arg})`;
+const wrapArg = (arg: string) => {
+    for (const indicator of Array.from(textWrapIndicators)) {
+        if (arg.indexOf(indicator) !== -1) {
+            return `(${arg})`;
+        }
+    }
+
+    return arg;
+};
 
 /**
  * Formats a string or recursive GLS command argument.
