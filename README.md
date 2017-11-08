@@ -1,5 +1,7 @@
 # TS-GLS - TypeScript to GLS compiler
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/general-language-syntax/TS-GLS.svg)](https://greenkeeper.io/)
+
 [![Build Status](https://travis-ci.org/general-language-syntax/TS-GLS.svg?)](https://travis-ci.org/general-language-syntax/TS-GLS)
 [![NPM version](https://badge.fury.io/js/ts-gls.svg)](http://badge.fury.io/js/ts-gls)
 
