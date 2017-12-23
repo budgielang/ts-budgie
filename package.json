@@ -50,7 +50,7 @@
     "tsify": "^3.0.3",
     "tslint": "^5.8.0",
     "vinyl-buffer": "^1.0.0",
-    "vinyl-source-stream": "^1.1.0"
+    "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
     "@types/mz": "0.0.32",
