@@ -36,22 +36,22 @@ export class ComparisonTestsRunner {
     /**
      * Friendly directory path to read tests under.
      */
-    private section: string;
+    private readonly section: string;
 
     /**
      * Minimatchers for command groups to run.
      */
-    private testToRun: Set<string>;
+    private readonly testToRun: Set<string>;
 
     /**
      * Disk root path for the section.
      */
-    private rootPath: string;
+    private readonly rootPath: string;
 
     /**
      * Command tests to be run within the section.
      */
-    private commandTests: Map<string, string[]>;
+    private readonly commandTests: Map<string, string[]>;
 
     /**
      * Initializes a new instance of the ComparisonTestsRunner class.

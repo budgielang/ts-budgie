@@ -18,7 +18,7 @@ const collectOperationContents = (node: BinaryExpression): (string | Expression)
         contents.push(left);
     }
 
-    contents.push(operators[node.operatorToken.kind]);
+    contents.push((operators as { [i: number]: string })[node.operatorToken.kind]);
 
     if (isBinaryExpression(right)) {
         contents.push(...collectOperationContents(right));
