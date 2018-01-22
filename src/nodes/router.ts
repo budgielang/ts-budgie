@@ -1,5 +1,5 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
-import { Node, SourceFile, SyntaxKind, TypeChecker } from "typescript";
+import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
@@ -7,7 +7,6 @@ import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { ITransformationsPrinter } from "../printing/transformationsPrinter";
 import { VisitorContext } from "./context";
-import { NodeVisitor } from "./visitor";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 

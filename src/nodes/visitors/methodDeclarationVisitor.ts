@@ -1,6 +1,6 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
-import { MethodDeclaration, ParameterDeclaration, SignatureKind, SyntaxKind } from "typescript";
+import { MethodDeclaration, ParameterDeclaration, SyntaxKind } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";

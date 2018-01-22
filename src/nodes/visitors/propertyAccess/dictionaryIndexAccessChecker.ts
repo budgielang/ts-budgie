@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { Expression, PropertyAccessExpression, SyntaxKind } from "typescript";
+import { Expression, PropertyAccessExpression } from "typescript";
 
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";

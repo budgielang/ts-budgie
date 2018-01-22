@@ -1,5 +1,5 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
-import { MethodSignature, ParameterDeclaration, SignatureKind, SyntaxKind } from "typescript";
+import { MethodSignature, ParameterDeclaration } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";

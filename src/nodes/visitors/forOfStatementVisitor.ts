@@ -6,7 +6,6 @@ import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { getListValueType } from "../../parsing/lists";
-import { getNumericTypeNameFromUsages, isNumericTypeName } from "../../parsing/numerics";
 import { NodeVisitor } from "../visitor";
 
 export class ForOfStatementVisitor extends NodeVisitor {

@@ -1,5 +1,4 @@
-import { CommandNames } from "general-language-syntax";
-import { IndexSignatureDeclaration, isIndexSignatureDeclaration, TypeLiteralNode } from "typescript";
+import { TypeLiteralNode } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { Transformation } from "../../output/transformation";

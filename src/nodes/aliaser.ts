@@ -1,6 +1,5 @@
 import { ArrowFunction, FunctionDeclaration, MethodDeclaration, MethodSignature, Node } from "typescript";
 
-import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 
 /**

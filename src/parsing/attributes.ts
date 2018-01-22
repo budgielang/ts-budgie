@@ -1,4 +1,3 @@
-import { CommandNames } from "general-language-syntax";
 import { SourceFile, VariableDeclaration } from "typescript";
 
 export const isVariableDeclarationMultiline = (node: VariableDeclaration, sourceFile: SourceFile) => {

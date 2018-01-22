@@ -1,6 +1,4 @@
-import { SourceFile, TypeChecker } from "typescript";
 
-import { NodeVisitRouter } from "./router";
 import { INodeVisitorDependencies, NodeVisitor } from "./visitor";
 
 /**

@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { IfStatement, SourceFile, Statement } from "typescript";
+import { IfStatement, Statement } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";

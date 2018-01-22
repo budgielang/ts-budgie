@@ -1,10 +1,9 @@
-import { CommandNames, KeywordNames } from "general-language-syntax";
+import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
-import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 export class ObjectLiteralExpressionVisitor extends NodeVisitor {

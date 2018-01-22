@@ -1,9 +1,8 @@
 import { CommandNames } from "general-language-syntax";
-import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, TypeLiteralNode } from "typescript";
+import { IndexSignatureDeclaration, isIndexSignatureDeclaration, TypeLiteralNode } from "typescript";
 
 import { GlsLine } from "../output/glsLine";
 import { IRecurseOntoNode } from "./aliasers/recursiveAliaser";
-import { RootAliaser } from "./aliasers/rootAliaser";
 
 const getParameterValueType = (typeMember: IndexSignatureDeclaration, recurseOntoNode: IRecurseOntoNode) => {
     if (typeMember.type === undefined) {

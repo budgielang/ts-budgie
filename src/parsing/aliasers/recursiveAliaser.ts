@@ -1,5 +1,4 @@
-import { CommandNames } from "general-language-syntax";
-import { IndexSignatureDeclaration, isIndexSignatureDeclaration, Node, TypeChecker, TypeLiteralNode } from "typescript";
+import { Node, TypeChecker } from "typescript";
 
 import { INodeAliaser } from "../../nodes/aliaser";
 import { GlsLine } from "../../output/glsLine";

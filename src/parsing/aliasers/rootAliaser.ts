@@ -1,4 +1,3 @@
-import { CommandNames } from "general-language-syntax";
 import { hasModifier } from "tsutils";
 import * as ts from "typescript";
 

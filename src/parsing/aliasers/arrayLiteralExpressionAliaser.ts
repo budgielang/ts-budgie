@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { ArrayLiteralExpression, Expression, Node } from "typescript";
+import { ArrayLiteralExpression, Expression } from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { RecursiveAliaser } from "./recursiveAliaser";

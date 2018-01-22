@@ -13,16 +13,6 @@ import { Transformation } from "./output/transformation";
 export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) => (Transformation | UnsupportedComplaint)[];
 
 /**
- * Determines which of two transformations is earlier in their file.
- *
- * @param left   A file transformation.
- * @param right   A file transformation.
- * @returns Whether the first transformation is earlier than the second.
- */
-const isTransformationEarlierThan = (left: Transformation, right: Transformation) =>
-    left.range.start < right.range.start;
-
-/**
  * Retrieves and merges source-to-GLS transforms from files.
  */
 export interface ITransformationService {

@@ -1,7 +1,5 @@
 import { NewExpression, SourceFile } from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
-
 export class NewExpressionAliaser {
     private readonly sourceFile: SourceFile;
 

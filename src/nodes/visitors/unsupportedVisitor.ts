@@ -1,4 +1,4 @@
-import { Node, SyntaxKind } from "typescript";
+import { Node } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { NodeVisitor } from "../visitor";

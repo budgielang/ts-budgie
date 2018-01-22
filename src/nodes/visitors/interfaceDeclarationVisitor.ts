@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { InterfaceDeclaration, SourceFile } from "typescript";
+import { InterfaceDeclaration } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";

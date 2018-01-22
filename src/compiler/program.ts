@@ -8,11 +8,11 @@ const defaultOptions = {
     lib: ["es5", "es2015.collection"]
 };
 
-export const createProgramForFiles = (sourceFiles: SourceFile[], options: CompilerOptions = defaultOptions) =>
+export const createProgramForFiles = (sourceFiles: SourceFile[], options: CompilerOptions = defaultOptions): Program =>
     createProgram(
         sourceFiles.map((sourceFile) => sourceFile.fileName),
         options,
         new StubCompilerHost(options, sourceFiles));
 
-export const createProgramForFile = (sourceFile: SourceFile, options?: CompilerOptions) =>
+export const createProgramForFile = (sourceFile: SourceFile, options?: CompilerOptions): Program =>
     createProgramForFiles([sourceFile], options);

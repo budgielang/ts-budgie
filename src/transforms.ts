@@ -2,10 +2,9 @@ import { createSourceFile, ScriptTarget, SourceFile, TypeChecker } from "typescr
 
 import { createProgramForFile } from "./compiler/program";
 import { UnsupportedComplaint } from "./output/complaint";
-import { GlsLine } from "./output/glsLine";
 import { Transformation } from "./output/transformation";
-import { ITransformationsPrinter, TransformationsPrinter } from "./printing/transformationsPrinter";
-import { ITransformationService, TransformationService } from "./service";
+import { ITransformationsPrinter } from "./printing/transformationsPrinter";
+import { ITransformationService } from "./service";
 
 /**
  * Dependencies to initialize a new instance of the Transformer class.

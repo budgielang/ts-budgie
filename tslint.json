@@ -15,6 +15,7 @@
         "no-submodule-imports": false,
         "no-unbound-method": false,
         "no-unnecessary-class": false,
+        "no-unnecessary-type-assertion": false,
         "no-unsafe-any": false,
         "no-unused-variable": false,
         "object-literal-key-quotes": false,

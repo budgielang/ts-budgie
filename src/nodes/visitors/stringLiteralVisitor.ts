@@ -1,7 +1,5 @@
-import { CommandNames } from "general-language-syntax";
 import { StringLiteral } from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { wrapWithQuotes } from "../../parsing/strings";
 import { NodeVisitor } from "./../visitor";
