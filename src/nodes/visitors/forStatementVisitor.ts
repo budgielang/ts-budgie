@@ -24,7 +24,7 @@ export class ForStatementVisitor extends NodeVisitor {
         }
 
         const declaration = initializer.declarations[0];
-        if (declaration.initializer === undefined || !ts.isNumericLiteral(declaration.initializer)) {
+        if (declaration.initializer === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, irregularComplaint);
         }
 

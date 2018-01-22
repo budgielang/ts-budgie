@@ -10,4 +10,9 @@ for numbers end
 
 for numbers start : i int 0 10 2
 for numbers end
+
+variable : start float 0
+
+for numbers start : i int start 10
+for numbers end
 comment line

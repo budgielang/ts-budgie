@@ -6,6 +6,7 @@ import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
+import { ElementAccessExpressionAliaser } from "./elementAccessExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { PropertyOrVariableDeclarationAliaser } from "./propertyOrVariableDeclarationAliaser";
@@ -51,6 +52,7 @@ export class RootAliaser implements IRootAliaser {
         this.typesWithKnownTypeNames = new Map<ts.SyntaxKind, INodeAliaser>([
             [ts.SyntaxKind.ArrayLiteralExpression, new ArrayLiteralExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.BooleanKeyword, new TypeNameAliaser("boolean")],
+            [ts.SyntaxKind.ElementAccessExpression, new ElementAccessExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.NewExpression, new NewExpressionAliaser(this.sourceFile)],
             [ts.SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],

@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { VariableDeclaration } from "typescript";
+import { VariableDeclaration, SyntaxKind } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -12,10 +12,6 @@ export class VariableDeclarationVisitor extends NodeVisitor {
     public visit(node: VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);
         let interpretedType = this.aliaser.getFriendlyTypeName(node);
-
-        const command = isVariableDeclarationMultiline(node, this.sourceFile)
-            ? CommandNames.VariableStart
-            : CommandNames.Variable;
 
         // If we have a type, tell the value parser to use it
         // This is necessary for some commands, such as lists
@@ -54,6 +50,9 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         }
 
         const lines: (string | GlsLine | Transformation)[] = [];
+        const command = isVariableDeclarationMultiline(node, this.sourceFile)
+            ? CommandNames.VariableStart
+            : CommandNames.Variable;
 
         if (command === CommandNames.VariableStart) {
             const fullValue = this.getFullValue(node);
