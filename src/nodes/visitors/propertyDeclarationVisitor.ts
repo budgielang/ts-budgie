@@ -37,7 +37,7 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
                 node,
                 this.sourceFile,
                 [
-                    new GlsLine(CommandNames.MemberVariableDeclare, ...results)
+                    new GlsLine(this.getGlsCommand(node), ...results)
                 ])
         ];
     }
@@ -60,5 +60,13 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         }
 
         return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+    }
+
+    private getGlsCommand(node: PropertyDeclaration) {
+        if (hasModifier(node.modifiers, SyntaxKind.StaticKeyword)) {
+            return CommandNames.StaticVariableDeclare;
+        }
+
+        return CommandNames.MemberVariableDeclare;
     }
 }
