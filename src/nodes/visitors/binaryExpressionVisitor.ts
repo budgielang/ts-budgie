@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { BinaryExpression, Expression, isBinaryExpression } from "typescript";
+import { BinaryExpression, Expression, isBinaryExpression, SyntaxKind } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -31,6 +31,17 @@ const collectOperationContents = (node: BinaryExpression): (string | Expression)
 
 export class BinaryExpressionVisitor extends NodeVisitor {
     public visit(node: BinaryExpression) {
+        if (node.operatorToken.kind === SyntaxKind.InstanceOfKeyword) {
+            return [
+                Transformation.fromNode(
+                    node,
+                    this.sourceFile,
+                    [
+                        new GlsLine(CommandNames.InstanceOf, node.left.getText(this.sourceFile), node.right.getText(this.sourceFile)),
+                    ]),
+            ];
+        }
+
         const contents = filterOutUnsupportedComplaint(
                 collectOperationContents(node)
                     .map((content) => this.recurseOnOperationContents(content)));
