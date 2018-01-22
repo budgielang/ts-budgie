@@ -1,0 +1,8 @@
+{
+    "editor.renderWhitespace": "all",
+    "editor.tabSize": 4,
+    "editor.trimAutoWhitespace": true,
+    "python.linting.pylintEnabled": false,
+    "tslint.alwaysShowRuleFailuresAsWarnings": true,
+    "tslint.autoFixOnSave": true
+}
