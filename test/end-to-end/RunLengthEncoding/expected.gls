@@ -1,0 +1,31 @@
+comment line
+class start : export RunLengthEncoder
+    member function declare start : public Encode string input string
+        variable : result string ""
+        variable : i int 0
+
+        while start : { operation : i (less than) { string length : input } }
+            variable : repeats int { member function : private { this } CountRepeatsOfLetter input i }
+            operation : result (increase by) { string index : input i } plus repeats
+
+            operation : i (increase by) repeats
+        while end
+
+        return : result
+    member function declare end
+
+    member function declare start : private CountRepeatsOfLetter int input string start int
+        variable : i int start
+
+        while start : { operation : i (less than) { string length : input } }
+            if start : { operation : { string index : input i } (not equal to) { string index : input start } }
+                return : { operation : i minus start }
+            if end
+
+            operation : i (increase by) 1
+        while end
+
+        return : { operation : { string length : input } minus start }
+    member function declare end
+class end
+comment line

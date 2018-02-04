@@ -1,7 +1,7 @@
 import { CommandNames } from "general-language-syntax";
 
 import { GlsLine } from "../../../output/glsLine";
-import { ITypeAdjustmentChecker } from "../types";
+import { ITypeAdjustmentAttemptInfo, ITypeAdjustmentChecker } from "../types";
 
 const lengthCommands = new Set([
     CommandNames.ArrayLength,
@@ -10,12 +10,12 @@ const lengthCommands = new Set([
 ]);
 
 export class LengthCommandTypeAdjustmentChecker implements ITypeAdjustmentChecker {
-    public attempt(originalType: string | GlsLine | undefined, actualValue: string | GlsLine): string | GlsLine | undefined {
-        if (originalType !== "float" || typeof actualValue === "string") {
+    public attempt(info: ITypeAdjustmentAttemptInfo): string | GlsLine | undefined {
+        if (!(info.actualValue instanceof GlsLine) || info.originalType !== "float") {
             return undefined;
         }
 
-        const { command } = actualValue;
+        const { command } = info.actualValue;
         if (!lengthCommands.has(command)) {
             return undefined;
         }

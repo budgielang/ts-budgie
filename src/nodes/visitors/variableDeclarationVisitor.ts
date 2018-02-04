@@ -32,11 +32,13 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // Some values may request a more specific intepreted type,
         // such as length commands switching from "float" to "int"
-        if (aliasedValue !== undefined) {
-            const manualTypeAdjustment = getTypeAdjustment(interpretedType, aliasedValue);
-            if (manualTypeAdjustment !== undefined) {
-                interpretedType = manualTypeAdjustment;
-            }
+        const manualTypeAdjustment = getTypeAdjustment({
+            originalType: interpretedType,
+            actualValue: aliasedValue,
+            node,
+        });
+        if (manualTypeAdjustment !== undefined) {
+            interpretedType = manualTypeAdjustment;
         }
 
         // If we don't know the interpreted type by now, just give up
