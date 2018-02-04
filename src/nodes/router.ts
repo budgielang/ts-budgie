@@ -5,7 +5,7 @@ import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
-import { ITransformationsPrinter } from "../printing/transformationsPrinter";
+import { TransformationsPrinter } from "../printing/transformationsPrinter";
 import { VisitorContext } from "./context";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
@@ -13,7 +13,7 @@ import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
     casing: CaseStyleConverterBag;
-    printer: ITransformationsPrinter;
+    printer: TransformationsPrinter;
     nameSplitter: NameSplitter;
     sourceFile: SourceFile;
     typeChecker: TypeChecker;
@@ -107,7 +107,6 @@ export class NodeVisitRouter {
             } else {
                 transformations.push(...childTransformations);
             }
-
         }
 
         return complaints === undefined

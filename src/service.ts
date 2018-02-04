@@ -15,20 +15,6 @@ export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) =>
 /**
  * Retrieves and merges source-to-GLS transforms from files.
  */
-export interface ITransformationService {
-    /**
-     * Retrieves transforms from a file.
-     *
-     * @param sourceFile   Source file to transform.
-     * @param typeChecker   Type checker for the file.
-     * @returns Transformations from the file, or a complaint for unsupported syntax.
-     */
-    transform(sourceFile: SourceFile, typeChecker: TypeChecker): (Transformation | UnsupportedComplaint)[];
-}
-
-/**
- * Retrieves and merges source-to-GLS transforms from files.
- */
 export class TransformationService {
     /**
      * Transformations to retrieve source-to-GLS transforms from a file.

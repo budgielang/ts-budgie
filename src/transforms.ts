@@ -1,24 +1,36 @@
-import { createSourceFile, ScriptTarget, SourceFile, TypeChecker } from "typescript";
+import * as ts from "typescript";
 
-import { createProgramForFile } from "./compiler/program";
+import { createProgramForFiles } from "./compiler/program";
+import { StubLanguageServiceHost } from "./compiler/stubLanguageServiceHost";
 import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
-import { ITransformationsPrinter } from "./printing/transformationsPrinter";
-import { ITransformationService } from "./service";
+import { TransformationsPrinter } from "./printing/transformationsPrinter";
+import { TransformationService } from "./service";
+import { arrayToMap } from "./utils";
 
 /**
  * Dependencies to initialize a new instance of the Transformer class.
  */
 export interface ITransformerDependencies {
     /**
+     * TypeScript compiler options to transform with.
+     */
+    compilerOptions: ts.CompilerOptions;
+
+    /**
      * Prints series of transformations as lines of GLS.
      */
-    printer: ITransformationsPrinter;
+    printer: TransformationsPrinter;
 
     /**
      * Retrieves and merges source-to-GLS transforms from a file.
      */
-    service: ITransformationService;
+    service: TransformationService;
+
+    /**
+     * Source files that may be transformed and referenced.
+     */
+    sourceFiles: ts.SourceFile[];
 }
 
 /**
@@ -26,7 +38,7 @@ export interface ITransformerDependencies {
  */
 export interface ITextTransformationOptions {
     fileName: string;
-    scriptTarget: ScriptTarget;
+    scriptTarget: ts.ScriptTarget;
 }
 
 /**
@@ -34,8 +46,10 @@ export interface ITextTransformationOptions {
  */
 const defaultTextTransformationOptions: ITextTransformationOptions = {
     fileName: "input.ts",
-    scriptTarget: ScriptTarget.Latest,
+    scriptTarget: ts.ScriptTarget.Latest,
 };
+
+const getSourceFileName = (sourceFile: ts.SourceFile) => sourceFile.fileName;
 
 /**
  * Transforms TypeScript to GLS.
@@ -46,6 +60,8 @@ export class Transformer {
      */
     private readonly dependencies: ITransformerDependencies;
 
+    private readonly typeChecker: ts.TypeChecker;
+
     /**
      * Initializes a new instance of the Transformer class.
      *
@@ -53,6 +69,7 @@ export class Transformer {
      */
     public constructor(dependencies: ITransformerDependencies) {
         this.dependencies = dependencies;
+        this.typeChecker = createProgramForFiles(dependencies.sourceFiles).getTypeChecker();
     }
 
     /**
@@ -61,21 +78,10 @@ export class Transformer {
      * @param sourceText   Source file to transform.
      * @returns GLS equivalent for the source file, or a complaint for unsupported syntax.
      */
-    public transformSourceFile(sourceFile: SourceFile, typeChecker?: TypeChecker): string[] {
+    public transformSourceFile(sourceFile: ts.SourceFile): string[] {
         return this.dependencies.printer.printFile(
-            sourceFile.getFullText(sourceFile),
-            this.getSourceFileTransforms(sourceFile, typeChecker));
-    }
-
-    /**
-     * Transforms source text to GLS.
-     *
-     * @param sourceText   Source text to transform.
-     * @param options   Extra options to customize compilation.
-     * @returns GLS equivalent for the source text, or a complaint for unsupported syntax.
-     */
-    public transformText(sourceText: string, options: Partial<ITextTransformationOptions> = {}): string[] {
-        return this.dependencies.printer.printFile(sourceText, this.getTextTransforms(sourceText, options));
+            sourceFile.text,
+            this.getSourceFileTransforms(sourceFile));
     }
 
     /**
@@ -85,23 +91,7 @@ export class Transformer {
      * @param typeChecker   Type checker for the source file.
      * @returns Transformations for the file, or a complaint for unsupported syntax.
      */
-    private getSourceFileTransforms(
-        sourceFile: SourceFile,
-        typeChecker: TypeChecker = createProgramForFile(sourceFile).getTypeChecker()): (Transformation | UnsupportedComplaint)[] {
-        return this.dependencies.service.transform(sourceFile, typeChecker);
-    }
-
-    /**
-     * Creates transformations for source text.
-     *
-     * @param sourceText   Source text to transform.
-     * @param options   Extra options for the text transformation.
-     * @returns Transformations for the source text, or a complaint for unsupported syntax.
-     */
-    private getTextTransforms(sourceText: string, options: Partial<ITextTransformationOptions>): (Transformation | UnsupportedComplaint)[] {
-        const optionsFull: ITextTransformationOptions = { ...defaultTextTransformationOptions, ...options };
-
-        return this.getSourceFileTransforms(
-            createSourceFile(optionsFull.fileName, sourceText, optionsFull.scriptTarget));
+    private getSourceFileTransforms(sourceFile: ts.SourceFile): (Transformation | UnsupportedComplaint)[] {
+        return this.dependencies.service.transform(sourceFile, this.typeChecker);
     }
 }

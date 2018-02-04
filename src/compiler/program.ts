@@ -1,18 +1,17 @@
-import { CompilerOptions, createProgram, Program, ScriptTarget, SourceFile } from "typescript";
+import * as ts from "typescript";
 
 import { StubCompilerHost } from "./stubCompilerHost";
 
-const defaultOptions = {
+const defaultOptions: ts.CompilerOptions = {
     allowJs: false,
-    // Maybe: declaration: true,
-    lib: ["es5", "es2015.collection"]
+    noLib: true,
 };
 
-export const createProgramForFiles = (sourceFiles: SourceFile[], options: CompilerOptions = defaultOptions): Program =>
-    createProgram(
+export const createProgramForFiles = (sourceFiles: ts.SourceFile[], options: ts.CompilerOptions = defaultOptions): ts.Program =>
+    ts.createProgram(
         sourceFiles.map((sourceFile) => sourceFile.fileName),
         options,
         new StubCompilerHost(options, sourceFiles));
 
-export const createProgramForFile = (sourceFile: SourceFile, options?: CompilerOptions): Program =>
+export const createProgramForFile = (sourceFile: ts.SourceFile, options?: ts.CompilerOptions): ts.Program =>
     createProgramForFiles([sourceFile], options);

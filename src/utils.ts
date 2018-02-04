@@ -15,3 +15,16 @@ export const filterOutUnsupportedComplaint = <T>(array: (T | UnsupportedComplain
 
     return array as T[];
 };
+
+export const arrayToMap = <TKey, TValue>(
+    values: TValue[],
+    getKey: (value: TValue) => TKey,
+): Map<TKey, TValue> => {
+    const result = new Map();
+
+    for (const value of values) {
+        result.set(getKey(value), value);
+    }
+
+    return result;
+};
