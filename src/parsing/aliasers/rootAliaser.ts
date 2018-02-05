@@ -3,6 +3,7 @@ import * as ts from "typescript";
 
 import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser";
 import { GlsLine } from "../../output/glsLine";
+import { findReturnsStatementsOfFunction } from "../../utils";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
@@ -130,7 +131,13 @@ export class RootAliaser implements RootAliaser {
     }
 
     public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
-        // todo: check each return statement and find a common type among them
+        // First, if we know there's a common type among returns, we use it
+        const returnStatements = findReturnsStatementsOfFunction(node);
+        const commonReturnType = this.findCommonReturnType(returnStatements);
+        if (commonReturnType !== undefined) {
+            return commonReturnType;
+        }
+
         // If the node explicitly mentions a return type, use that
         if (node.type !== undefined) {
             return this.getFriendlyTypeName(node.type);
@@ -152,5 +159,31 @@ export class RootAliaser implements RootAliaser {
         }
 
         return (signatureReturnType as IIntrinsicSignatureReturnType).intrinsicName;
+    }
+
+    private findCommonReturnType(returnStatements: ts.ReturnStatement[]) {
+        if (returnStatements.length === 0) {
+            return "void";
+        }
+
+        if (returnStatements[0].expression === undefined) {
+            return undefined;
+        }
+
+        const first = returnStatements[0];
+        if (first.expression === undefined) {
+            return undefined;
+        }
+
+        const commonReturnType = this.getFriendlyTypeName(first.expression);
+
+        for (let i = 1; i < returnStatements.length; i += 1) {
+            const nextStatement = returnStatements[i];
+            if (nextStatement.expression === undefined || this.getFriendlyTypeName(nextStatement.expression) !== commonReturnType) {
+                return undefined;
+            }
+        }
+
+        return commonReturnType;
     }
 }
