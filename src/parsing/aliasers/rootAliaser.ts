@@ -1,7 +1,7 @@
-import { hasModifier } from "tsutils";
+import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { INodeAliaser, IPrivacyName, IReturningNode, IRootAliaser } from "../../nodes/aliaser";
+import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser";
 import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
@@ -30,7 +30,7 @@ const recursiveFriendlyValueDeclarationTypes = new Set<ts.SyntaxKind>([
     ts.SyntaxKind.VariableDeclaration
 ]);
 
-export class RootAliaser implements IRootAliaser {
+export class RootAliaser implements RootAliaser {
     private readonly flagResolver: TypeFlagsResolver;
     private readonly passThroughTypes: Map<ts.SyntaxKind, INodeChildPasser>;
     private readonly sourceFile: ts.SourceFile;
@@ -55,7 +55,7 @@ export class RootAliaser implements IRootAliaser {
             [ts.SyntaxKind.ElementAccessExpression, new ElementAccessExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.NewExpression, new NewExpressionAliaser(this.sourceFile)],
-            [ts.SyntaxKind.NumberKeyword, new TypeNameAliaser("float")],
+            [ts.SyntaxKind.NumberKeyword, new NumericAliaser()],
             [ts.SyntaxKind.NumericLiteral, new NumericAliaser()],
             [ts.SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
@@ -118,11 +118,11 @@ export class RootAliaser implements IRootAliaser {
     }
 
     public getFriendlyPrivacyName(node: ts.Node): IPrivacyName {
-        if (hasModifier(node.modifiers, ts.SyntaxKind.PrivateKeyword)) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.PrivateKeyword)) {
             return "private";
         }
 
-        if (hasModifier(node.modifiers, ts.SyntaxKind.ProtectedKeyword)) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.ProtectedKeyword)) {
             return "protected";
         }
 
@@ -130,6 +130,7 @@ export class RootAliaser implements IRootAliaser {
     }
 
     public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
+        // todo: check each return statement and find a common type among them
         // If the node explicitly mentions a return type, use that
         if (node.type !== undefined) {
             return this.getFriendlyTypeName(node.type);

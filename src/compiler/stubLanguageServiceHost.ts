@@ -1,7 +1,5 @@
 import * as ts from "typescript";
 
-import { arrayToMap } from "../utils";
-
 export class StubLanguageServiceHost implements ts.LanguageServiceHost {
     private readonly compilerOptions: ts.CompilerOptions;
     private readonly sourceFilesByName: Map<string, ts.SourceFile>;

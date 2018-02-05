@@ -1,6 +1,8 @@
+import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
+import { RootAliaser } from "../../parsing/aliasers/rootAliaser";
 import { FloatToIntTypeAdjustmentChecker } from "./typeAdjustments/floatToIntTypeAdjustmentChecker";
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
@@ -21,28 +23,51 @@ export interface ITypeAdjustmentAttemptInfo {
     originalType: string | GlsLine | undefined;
 }
 
+/**
+ * Tries to find more specific types for variable declarations.
+ */
 export interface ITypeAdjustmentChecker {
+    /**
+     * Tries to find a more specific type for a variable declaration.
+     *
+     * @param info   Info on the variable declaration.
+     * @returns More specific type for the variable declaration, if available.
+     */
     attempt(info: ITypeAdjustmentAttemptInfo): string | GlsLine | undefined;
 }
 
-const checkers = [
-    new LengthCommandTypeAdjustmentChecker(),
-    new FloatToIntTypeAdjustmentChecker(),
-];
-
 /**
- * Tries to find a more specific type for a variable declaration.
- *
- * @param info   Info on the variable declaration.
- * @returns More specific type for the variable declaration, if available.
+ * Tries to find more specific types for variable declarations.
  */
-export const getTypeAdjustment = (info: ITypeAdjustmentAttemptInfo): GlsLine | string | undefined => {
-    for (const checker of checkers) {
-        const adjustedType = checker.attempt(info);
-        if (adjustedType !== undefined) {
-            return adjustedType;
-        }
+export class TypeAdjuster implements ITypeAdjustmentChecker {
+    private readonly aliaser: RootAliaser;
+    private readonly checkers: ITypeAdjustmentChecker[];
+    private readonly variableUsage: Map<ts.Identifier, tsutils.VariableInfo>;
+
+    public constructor(aliaser: RootAliaser, variableUsage: Map<ts.Identifier, tsutils.VariableInfo>) {
+        this.aliaser = aliaser;
+        this.variableUsage = variableUsage;
+
+        this.checkers = [
+            new LengthCommandTypeAdjustmentChecker(),
+            new FloatToIntTypeAdjustmentChecker(aliaser, this.variableUsage),
+        ];
     }
 
-    return undefined;
-};
+    /**
+     * Tries to find a more specific type for a variable declaration.
+     *
+     * @param info   Info on the variable declaration.
+     * @returns More specific type for the variable declaration, if available.
+     */
+    public attempt(info: ITypeAdjustmentAttemptInfo): GlsLine | string | undefined {
+        for (const checker of this.checkers) {
+            const adjustedType = checker.attempt(info);
+            if (adjustedType !== undefined) {
+                return adjustedType;
+            }
+        }
+
+        return undefined;
+    }
+}

@@ -5,10 +5,15 @@ import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { isVariableDeclarationMultiline } from "../../parsing/attributes";
-import { getTypeAdjustment } from "../adjustments/types";
+import { TypeAdjuster } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
 export class VariableDeclarationVisitor extends NodeVisitor {
+    /**
+     * ...
+     */
+    private readonly typeAdjuster = new TypeAdjuster(this.aliaser, this.variableUsage);
+
     public visit(node: VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);
         let interpretedType = this.aliaser.getFriendlyTypeName(node);
@@ -32,7 +37,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // Some values may request a more specific intepreted type,
         // such as length commands switching from "float" to "int"
-        const manualTypeAdjustment = getTypeAdjustment({
+        const manualTypeAdjustment = this.typeAdjuster.attempt({
             originalType: interpretedType,
             actualValue: aliasedValue,
             node,

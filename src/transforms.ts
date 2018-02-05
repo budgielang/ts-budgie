@@ -6,7 +6,6 @@ import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 import { TransformationsPrinter } from "./printing/transformationsPrinter";
 import { TransformationService } from "./service";
-import { arrayToMap } from "./utils";
 
 /**
  * Dependencies to initialize a new instance of the Transformer class.
