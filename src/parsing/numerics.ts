@@ -24,6 +24,3 @@ export const getNumericTypeNameFromUsages = (usages: (number | string | GlsLine)
 
     return "int";
 };
-
-export const getNumericTypeNameFromNode = (node: NumericLiteral) =>
-    getNumericTypeNameFromUsages([node.text]);

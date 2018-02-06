@@ -5,6 +5,7 @@ src/**/*.map
 src/**/*.d.ts
 test/**/*.js
 test/**/*.js.map
-test/unit/**/*.js
-util/*.js
+test/**/*.d.ts
 util/**/*.js
+util/**/*.d.ts
+util/**/*.js.map

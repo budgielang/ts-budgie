@@ -19,7 +19,7 @@ export interface ITsGlsOptions {
     /**
      *
      */
-    compilerOptions: ts.CompilerOptions;
+    compilerOptions?: ts.CompilerOptions;
 
     /**
      * Whether to visit comments in addition to content nodes.
@@ -46,7 +46,9 @@ export const createTransformer = (options: ITsGlsOptions) => {
     }
 
     return new Transformer({
-        compilerOptions: options.compilerOptions,
+        compilerOptions: options.compilerOptions === undefined
+            ? {}
+            : options.compilerOptions,
         printer: new TransformationsPrinter(),
         service: new TransformationService(transformers),
         sourceFiles: options.sourceFiles,

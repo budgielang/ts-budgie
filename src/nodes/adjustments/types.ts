@@ -3,7 +3,6 @@ import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { RootAliaser } from "../../parsing/aliasers/rootAliaser";
-import { FloatToIntTypeAdjustmentChecker } from "./typeAdjustments/floatToIntTypeAdjustmentChecker";
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
 export interface ITypeAdjustmentAttemptInfo {
@@ -50,7 +49,6 @@ export class TypeAdjuster implements ITypeAdjustmentChecker {
 
         this.checkers = [
             new LengthCommandTypeAdjustmentChecker(),
-            new FloatToIntTypeAdjustmentChecker(aliaser, this.variableUsage),
         ];
     }
 

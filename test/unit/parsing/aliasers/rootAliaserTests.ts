@@ -69,10 +69,10 @@ describe("RootAliaser", () => {
                 getVariableDeclarationType);
         });
 
-        it("defaults a dictionary numeric type to float", () => {
+        it("defaults a dictionary numeric type to int", () => {
             assertTypeNameBecomes(
                 "let foo: { [i: string]: number };",
-                "dictionary type : string float",
+                "dictionary type : string int",
                 getVariableDeclarationType);
         });
     });

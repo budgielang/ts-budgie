@@ -7,7 +7,9 @@ import { findReturnsStatementsOfFunction } from "../../utils";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
+import { BinaryExpressionAliaser } from "./binaryExpressionAliaser";
 import { ElementAccessExpressionAliaser } from "./elementAccessExpressionAliaser";
+import { IdentifierAliaser } from "./IdentifierAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { PropertyOrVariableDeclarationAliaser } from "./propertyOrVariableDeclarationAliaser";
@@ -56,8 +58,8 @@ export class RootAliaser implements RootAliaser {
             [ts.SyntaxKind.ElementAccessExpression, new ElementAccessExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.NewExpression, new NewExpressionAliaser(this.sourceFile)],
-            [ts.SyntaxKind.NumberKeyword, new NumericAliaser()],
-            [ts.SyntaxKind.NumericLiteral, new NumericAliaser()],
+            [ts.SyntaxKind.NumberKeyword, new NumericAliaser(this.sourceFile)],
+            [ts.SyntaxKind.NumericLiteral, new NumericAliaser(this.sourceFile)],
             [ts.SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.StringKeyword, new TypeNameAliaser("string")],
