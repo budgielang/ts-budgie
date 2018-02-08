@@ -10,7 +10,7 @@ import { NodeVisitor } from "../visitor";
 
 export class VariableDeclarationVisitor extends NodeVisitor {
     /**
-     * ...
+     * Tries to find more specific types for variable declarations.
      */
     private readonly typeAdjuster = new TypeAdjuster(this.aliaser, this.variableUsage);
 

@@ -79,4 +79,4 @@ Folders under `/test/integration` and `/test/end-to-end` will contain a `.ts` fi
 These are verified during `npm run test test`.
 
 You can run specific tests using their run task (`npm run test:run:integration` or `npm run test:run:end-to-end`).
-Specify `--command`(s) to only run tests within groups that case-insensitive [minimatch](https://www.npmjs.com/package/minimatch) them (e.g. `npm run test:run:end-to-end --command *array* *list*`).
+Specify `--command`(s) to only run tests within groups that case-insensitive [minimatch](https://www.npmjs.com/package/minimatch) them (e.g. `npm run test:run:end-to-end -- --command *array* *list*`).

@@ -19,23 +19,3 @@ export const filterOutUnsupportedComplaint = <T>(array: (T | UnsupportedComplain
 
     return array as T[];
 };
-
-export const findReturnsStatementsOfFunction = (returningNode: IReturningNode): ts.ReturnStatement[] => {
-    const returnStatements: ts.ReturnStatement[] = [];
-
-    const walk = (node: ts.Node) => {
-        if (tsutils.isFunctionScopeBoundary(node)) {
-            return;
-        }
-
-        if (ts.isReturnStatement(node)) {
-            returnStatements.push(node);
-        }
-
-        ts.forEachChild(node, walk);
-    };
-
-    ts.forEachChild(returningNode, walk);
-
-    return returnStatements;
-};

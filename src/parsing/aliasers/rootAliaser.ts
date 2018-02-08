@@ -2,8 +2,8 @@ import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
 import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser";
+import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
-import { findReturnsStatementsOfFunction } from "../../utils";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
@@ -58,7 +58,6 @@ export class RootAliaser implements RootAliaser {
             [ts.SyntaxKind.ElementAccessExpression, new ElementAccessExpressionAliaser(typeChecker, this.getFriendlyTypeName)],
             [ts.SyntaxKind.FalseKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.NewExpression, new NewExpressionAliaser(this.sourceFile)],
-            [ts.SyntaxKind.NumberKeyword, new NumericAliaser(this.sourceFile)],
             [ts.SyntaxKind.NumericLiteral, new NumericAliaser(this.sourceFile)],
             [ts.SyntaxKind.TrueKeyword, new TypeNameAliaser("boolean")],
             [ts.SyntaxKind.TypeLiteral, new TypeLiteralAliaser(typeChecker, this.getFriendlyTypeName)],
@@ -133,13 +132,6 @@ export class RootAliaser implements RootAliaser {
     }
 
     public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
-        // First, if we know there's a common type among returns, we use it
-        const returnStatements = findReturnsStatementsOfFunction(node);
-        const commonReturnType = this.findCommonReturnType(returnStatements);
-        if (commonReturnType !== undefined) {
-            return commonReturnType;
-        }
-
         // If the node explicitly mentions a return type, use that
         if (node.type !== undefined) {
             return this.getFriendlyTypeName(node.type);
