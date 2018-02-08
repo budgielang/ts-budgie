@@ -1,7 +1,6 @@
 import * as ts from "typescript";
 
 import { createProgramForFiles } from "./compiler/program";
-import { StubLanguageServiceHost } from "./compiler/stubLanguageServiceHost";
 import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 import { TransformationsPrinter } from "./printing/transformationsPrinter";

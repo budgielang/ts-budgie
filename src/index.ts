@@ -17,7 +17,7 @@ export * from "./transforms";
  */
 export interface ITsGlsOptions {
     /**
-     *
+     * TypeScript compiler options to run with (not recommended).
      */
     compilerOptions?: ts.CompilerOptions;
 
@@ -27,7 +27,7 @@ export interface ITsGlsOptions {
     skipComments?: boolean;
 
     /**
-     *
+     * Source files to load into the program.
      */
     sourceFiles: ts.SourceFile[];
 }
