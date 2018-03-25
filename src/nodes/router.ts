@@ -1,11 +1,12 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
-import { Node, SourceFile, TypeChecker } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
-import { ITransformationsPrinter } from "../printing/transformationsPrinter";
+import { TransformationsPrinter } from "../printing/transformationsPrinter";
 import { VisitorContext } from "./context";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
@@ -13,10 +14,11 @@ import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";
 export interface INodeVisitRouterDependencies {
     aliaser: RootAliaser;
     casing: CaseStyleConverterBag;
-    printer: ITransformationsPrinter;
+    printer: TransformationsPrinter;
     nameSplitter: NameSplitter;
-    sourceFile: SourceFile;
-    typeChecker: TypeChecker;
+    sourceFile: ts.SourceFile;
+    typeChecker: ts.TypeChecker;
+    variableUsage: Map<ts.Identifier, tsutils.VariableInfo>;
     visitorContext: VisitorContext;
     visitorCreatorsBag: VisitorCreatorsBag;
 }
@@ -49,6 +51,7 @@ export class NodeVisitRouter {
             router: this,
             sourceFile: dependencies.sourceFile,
             typeChecker: dependencies.typeChecker,
+            variableUsage: dependencies.variableUsage,
             visitorContext: dependencies.visitorContext,
         });
     }
@@ -59,7 +62,7 @@ export class NodeVisitRouter {
      * @param node   Node to retrieve transformations for.
      * @returns Output transformations for the node.
      */
-    public recurseIntoNode(node: Node): Transformation[] | UnsupportedComplaint {
+    public recurseIntoNode(node: ts.Node): Transformation[] | UnsupportedComplaint {
         const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
         if (creator === undefined) {
             return this.recurseIntoChildren(node);
@@ -74,7 +77,7 @@ export class NodeVisitRouter {
      * @param node   Node to transform.
      * @returns Transformed GLS output for the inline value.
      */
-    public recurseIntoValue(node: Node): string | GlsLine | UnsupportedComplaint {
+    public recurseIntoValue(node: ts.Node): string | GlsLine | UnsupportedComplaint {
         const subTransformations = this.recurseIntoNode(node);
         if (subTransformations instanceof UnsupportedComplaint) {
             return subTransformations;
@@ -91,7 +94,7 @@ export class NodeVisitRouter {
      * @param parent   Common parent of the nodes.
      * @returns Transformed GLS output for the nodes.
      */
-    public recurseIntoNodes(nodes: ReadonlyArray<Node>, parent: Node): Transformation[] | UnsupportedComplaint {
+    public recurseIntoNodes(nodes: ReadonlyArray<ts.Node>, parent: ts.Node): Transformation[] | UnsupportedComplaint {
         const transformations: Transformation[] = [];
         let complaints: UnsupportedComplaint[] | undefined;
 
@@ -107,7 +110,6 @@ export class NodeVisitRouter {
             } else {
                 transformations.push(...childTransformations);
             }
-
         }
 
         return complaints === undefined
@@ -121,7 +123,7 @@ export class NodeVisitRouter {
      * @param node   Node to transform the children of.
      * @returns Transformed GLS output for the node's children.
      */
-    public recurseIntoChildren(node: Node): Transformation[] | UnsupportedComplaint {
+    public recurseIntoChildren(node: ts.Node): Transformation[] | UnsupportedComplaint {
         return this.recurseIntoNodes(node.getChildren(), node);
     }
 

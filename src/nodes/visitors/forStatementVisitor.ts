@@ -42,7 +42,7 @@ export class ForStatementVisitor extends NodeVisitor {
         const start = declaration.initializer.getText(this.sourceFile);
         const realType = typeof end === "string"
             ? getNumericTypeNameFromUsages([
-                declaration.initializer.text,
+                start,
                 end
             ])
             : "float";

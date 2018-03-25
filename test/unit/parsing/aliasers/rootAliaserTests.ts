@@ -2,8 +2,8 @@ import { expect } from "chai";
 import "mocha";
 import { ClassDeclaration, ConstructorDeclaration, Node, SourceFile, TypeNode, VariableStatement } from "typescript";
 
-import { GlsLine } from "../../../../lib/output/glsLine";
-import { RootAliaser } from "../../../../lib/parsing/aliasers/rootAliaser";
+import { GlsLine } from "../../../../src/output/glsLine";
+import { RootAliaser } from "../../../../src/parsing/aliasers/rootAliaser";
 import { mountSourceText } from "../mounting";
 
 type INodeGetter = (sourceFile: SourceFile) => Node;

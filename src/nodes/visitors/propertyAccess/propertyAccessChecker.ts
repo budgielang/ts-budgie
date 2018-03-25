@@ -2,7 +2,7 @@ import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import { Node, SourceFile, TypeChecker } from "typescript";
 
 import { Transformation } from "../../../output/transformation";
-import { IRootAliaser } from "../../aliaser";
+import { RootAliaser } from "../../../parsing/aliasers/rootAliaser";
 import { VisitorContext } from "../../context";
 import { NodeVisitRouter } from "../../router";
 import { INodeVisitorDependencies, NodeVisitor } from "../../visitor";
@@ -14,7 +14,7 @@ export abstract class PropertyAccessChecker {
     /**
      * Generates GLS-friendly names for nodes.
      */
-    protected readonly aliaser: IRootAliaser;
+    protected readonly aliaser: RootAliaser;
 
     /**
      * Transforms words between cases.

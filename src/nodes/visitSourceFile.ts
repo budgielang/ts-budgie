@@ -1,5 +1,6 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
-import { SourceFile, TypeChecker } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
 import { Transformation } from "../output/transformation";
@@ -9,16 +10,25 @@ import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 
-export const visitSourceFile = (sourceFile: SourceFile, typeChecker: TypeChecker): (Transformation | UnsupportedComplaint)[] => {
+export const visitSourceFile = (sourceFile: ts.SourceFile, typeChecker: ts.TypeChecker): (Transformation | UnsupportedComplaint)[] => {
     const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
     const nameSplitter = new NameSplitter();
     const printer = new TransformationsPrinter();
+    const variableUsage = tsutils.collectVariableUsage(sourceFile);
     const visitorContext = new VisitorContext();
     const visitorCreatorsBag = new VisitorCreatorsBag();
 
     const router = new NodeVisitRouter({
-        aliaser, casing, printer, nameSplitter, sourceFile, typeChecker, visitorContext, visitorCreatorsBag
+        aliaser,
+        casing,
+        printer,
+        nameSplitter,
+        sourceFile,
+        typeChecker,
+        variableUsage,
+        visitorContext,
+        visitorCreatorsBag
     });
 
     return router.recurseIntoSourceFile();

@@ -24,24 +24,3 @@ export interface INodeAliaser {
      */
     getFriendlyTypeName(node: Node): string | GlsLine | undefined;
 }
-
-/**
- * Generates GLS-friendly names for nodes.
- */
-export interface IRootAliaser extends INodeAliaser {
-    /**
-     * Generates a GLS-friendly name for a node's privacy.
-     *
-     * @param node   Node to generate a name of.
-     * @returns GLS-equivalent output name of the node's privacy.
-     */
-    getFriendlyPrivacyName(node: Node): IPrivacyName;
-
-    /**
-     * Generates a GLS-friendly name for a node's return type.
-     *
-     * @param node   Node to generate a name of.
-     * @returns GLS-equivalent output name of the node's return type.
-     */
-    getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined;
-}

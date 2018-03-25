@@ -1,19 +1,21 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
-import { Node, SourceFile, TypeChecker } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../output/complaint";
 import { Transformation } from "../output/transformation";
-import { IRootAliaser } from "./aliaser";
+import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
 
 export interface INodeVisitorDependencies {
-    aliaser: IRootAliaser;
+    aliaser: RootAliaser;
     casing: CaseStyleConverterBag;
     nameSplitter: NameSplitter;
     router: NodeVisitRouter;
-    sourceFile: SourceFile;
-    typeChecker: TypeChecker;
+    sourceFile: ts.SourceFile;
+    typeChecker: ts.TypeChecker;
+    variableUsage: Map<ts.Identifier, tsutils.VariableInfo>;
     visitorContext: VisitorContext;
 }
 
@@ -24,7 +26,7 @@ export abstract class NodeVisitor {
     /**
      * Generates GLS-friendly names for nodes.
      */
-    protected readonly aliaser: IRootAliaser;
+    protected readonly aliaser: RootAliaser;
 
     /**
      * Transforms words between cases.
@@ -49,12 +51,17 @@ export abstract class NodeVisitor {
     /**
      * Source file for nodes.
      */
-    protected readonly sourceFile: SourceFile;
+    protected readonly sourceFile: ts.SourceFile;
 
     /**
      * Type checker for the source file.
      */
-    protected readonly typeChecker: TypeChecker;
+    protected readonly typeChecker: ts.TypeChecker;
+
+    /**
+     * Uses of each variable within the source file.
+     */
+    protected readonly variableUsage: Map<ts.Identifier, tsutils.VariableInfo>;
 
     /**
      * Initializes a new instance of the NodeVisitor class.
@@ -75,6 +82,7 @@ export abstract class NodeVisitor {
         this.router = dependencies.router;
         this.sourceFile = dependencies.sourceFile;
         this.typeChecker = dependencies.typeChecker;
+        this.variableUsage = dependencies.variableUsage;
     }
 
     /**
@@ -83,5 +91,5 @@ export abstract class NodeVisitor {
      * @param node   Node to transform.
      * @returns Transformations for the node, or a complaint for unsupported syntax.
      */
-    public abstract visit(node: Node): Transformation[] | UnsupportedComplaint;
+    public abstract visit(node: ts.Node): Transformation[] | UnsupportedComplaint;
 }

@@ -1,3 +1,7 @@
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
+
+import { IReturningNode } from "./nodes/aliaser";
 import { UnsupportedComplaint } from "./output/complaint";
 
 /**

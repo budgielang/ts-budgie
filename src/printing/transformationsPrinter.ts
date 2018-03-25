@@ -4,29 +4,6 @@ import { Transformation } from "../output/transformation";
 import { LineIndenter } from "./lineIndenter";
 
 /**
- * Prints series of transformations as lines of GLS.
- */
-export interface ITransformationsPrinter {
-    /**
-     * Prints a series of transformations as indented lines.
-     *
-     * @param sourceText   Full source text from the transforming file.
-     * @param transformations   A series of transformations.
-     * @returns The transformations' equivalent indented lines.
-     */
-    printFile(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): string[];
-
-    /**
-     * Prints a series of transformations as lines of GLS and literal string lines.
-     *
-     * @param sourceText   Full source text from the transforming file.
-     * @param transformations   A series of transformations.
-     * @returns The transformations' equivalent GLS and literal string lines.
-     */
-    printTransformations(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): (string | GlsLine)[];
-}
-
-/**
  * Counts the GLS endlines within a range of text.
  *
  * @param text   Range of text from a source file.
@@ -44,7 +21,7 @@ const countEndlinesWithin = (text: string): number => {
 /**
  * Prints series of transformations as lines of GLS.
  */
-export class TransformationsPrinter implements ITransformationsPrinter {
+export class TransformationsPrinter {
     /**
      * Indents GLS lines using their command metadata.
      */
