@@ -55,7 +55,7 @@
   "dependencies": {
     "general-language-syntax": "^0.3.22",
     "mz": "^2.7.0",
-    "tsutils": "^2.17.0",
+    "tsutils": "^3.0.0",
     "typescript": "^2.6.2"
   }
 }
