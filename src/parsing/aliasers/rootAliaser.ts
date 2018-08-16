@@ -2,14 +2,11 @@ import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
 import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser";
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
-import { BinaryExpressionAliaser } from "./binaryExpressionAliaser";
 import { ElementAccessExpressionAliaser } from "./elementAccessExpressionAliaser";
-import { IdentifierAliaser } from "./IdentifierAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
 import { NumericAliaser } from "./numericAliaser";
 import { PropertyOrVariableDeclarationAliaser } from "./propertyOrVariableDeclarationAliaser";
@@ -155,29 +152,4 @@ export class RootAliaser implements RootAliaser {
         return (signatureReturnType as IIntrinsicSignatureReturnType).intrinsicName;
     }
 
-    private findCommonReturnType(returnStatements: ts.ReturnStatement[]) {
-        if (returnStatements.length === 0) {
-            return "void";
-        }
-
-        if (returnStatements[0].expression === undefined) {
-            return undefined;
-        }
-
-        const first = returnStatements[0];
-        if (first.expression === undefined) {
-            return undefined;
-        }
-
-        const commonReturnType = this.getFriendlyTypeName(first.expression);
-
-        for (let i = 1; i < returnStatements.length; i += 1) {
-            const nextStatement = returnStatements[i];
-            if (nextStatement.expression === undefined || this.getFriendlyTypeName(nextStatement.expression) !== commonReturnType) {
-                return undefined;
-            }
-        }
-
-        return commonReturnType;
-    }
 }

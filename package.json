@@ -7,17 +7,17 @@
   "scripts": {
     "src": "npm run src:tsc && npm run src:tslint",
     "src:tsc": "tsc -p .",
-    "src:tslint": "tslint -c tslint.json -p tsconfig.json",
+    "src:tslint": "tslint -c tslint.json -p tsconfig.json -t stylish",
     "test": "npm run test:tsc && npm run test:tslint && npm run test:run",
     "test:tsc": "tsc -p test",
-    "test:tslint": "tslint -c tslint.json -p test/tsconfig.json",
+    "test:tslint": "tslint -c tslint.json -p test/tsconfig.json -t stylish",
     "test:run": "npm run test:run:unit && npm run test:run:integration && npm run test:run:end-to-end",
     "test:run:unit": "mocha test/unit/**/*.js",
     "test:run:integration": "mocha test/integration.js",
     "test:run:end-to-end": "mocha test/end-to-end.js",
     "util": "npm run util:tsc && npm run util:tslint",
     "util:tsc": "tsc -p util",
-    "util:tslint": "tslint -c tslint.json -p util/tsconfig.json",
+    "util:tslint": "tslint -c tslint.json -p util/tsconfig.json -t stylish",
     "verify": "npm run src && npm run util && npm run test"
   },
   "repository": {
@@ -41,21 +41,21 @@
   },
   "homepage": "https://github.com/highschoolhacking/TS-GLS#readme",
   "devDependencies": {
-    "@types/chai": "^4.1.0",
+    "@types/chai": "^4.1.4",
     "@types/minimatch": "^3.0.3",
-    "@types/mocha": "^5.1.0",
+    "@types/mocha": "^5.2.5",
     "@types/mz": "0.0.32",
-    "@types/node": "^10.0.3",
-    "browserify": "^16.0.0",
+    "@types/node": "^10.7.1",
+    "browserify": "^16.2.2",
     "chai": "^4.1.2",
     "minimatch": "^3.0.4",
-    "mocha": "^5.0.0",
-    "tslint": "5.9.1"
+    "mocha": "^5.2.0",
+    "tslint": "5.11.0"
   },
   "dependencies": {
     "general-language-syntax": "^0.3.22",
     "mz": "^2.7.0",
     "tsutils": "^3.0.0",
-    "typescript": "^2.6.2"
+    "typescript": "^3.0.1"
   }
 }

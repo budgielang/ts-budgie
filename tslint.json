@@ -4,6 +4,7 @@
         "array-type": [true, "array"],
         "completed-docs": false,
         "comment-format": false,
+        "file-name-casing": false,
         "linebreak-style": false,
         "no-magic-numbers": [true, -1, 0, 1, 2, 3],
         "max-line-length": [true, 140],
@@ -21,6 +22,7 @@
         "object-literal-key-quotes": false,
         "object-literal-sort-keys": false,
         "prefer-function-over-method": false,
+        "strict-type-predicates": false,
         "trailing-comma": false,
         "typedef": false
     }
