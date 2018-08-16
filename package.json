@@ -1,6 +1,6 @@
 {
   "name": "ts-gls",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Converts TypeScript code to General Language Syntax (GLS).",
   "main": "src/index.js",
   "typings": "src/index.d.ts",
