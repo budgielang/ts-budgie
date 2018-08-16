@@ -27,7 +27,8 @@ export class StubCompilerHost implements ts.CompilerHost {
         return "";
     }
 
-    public getSourceFile(fileName: string, languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
+    // tslint:disable-next-line:variable-name
+    public getSourceFile(fileName: string, _languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
         const sourceFile = this.sourceFiles.get(fileName);
         if (sourceFile !== undefined) {
             return sourceFile;

@@ -1,9 +1,6 @@
-import { CommandNames } from "general-language-syntax";
 import { PropertyAccessExpression } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
-import { GlsLine } from "../../output/glsLine";
-import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 import { ArrayMemberFunctionChecker } from "./propertyAccess/arrayMemberFunctionChecker";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
@@ -28,8 +25,6 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
     ];
 
     public visit(node: PropertyAccessExpression) {
-        const { expression, name } = node;
-
         for (const checker of this.checkers) {
             const checkedResult = checker.visit(node);
 

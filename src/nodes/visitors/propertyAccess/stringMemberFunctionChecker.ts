@@ -7,11 +7,6 @@ import { Transformation } from "../../../output/transformation";
 import { filterOutUnsupportedComplaint } from "../../../utils";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
-interface IKnownMethodInfo {
-    argsCount: number;
-    name: string;
-}
-
 const knownMethodPairs = new Map<string, string>([
     ["substr", CommandNames.StringSubstringLength],
     ["substring", CommandNames.StringSubstringIndex],

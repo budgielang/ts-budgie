@@ -1,5 +1,3 @@
-import { NumericLiteral } from "typescript";
-
 import { GlsLine } from "../output/glsLine";
 
 export type NumericType = "float" | "int";

@@ -34,7 +34,7 @@ export class ForStatementVisitor extends NodeVisitor {
             return incrementorText;
         }
 
-        const end = this.getConditionEnd(name, condition, this.sourceFile);
+        const end = this.getConditionEnd(name, condition);
         if (end instanceof UnsupportedComplaint) {
             return end;
         }
@@ -87,7 +87,7 @@ export class ForStatementVisitor extends NodeVisitor {
         return UnsupportedComplaint.forNode(incrementor, this.sourceFile, forLoopsMustBeAdditiveComplaint);
     }
 
-    private getConditionEnd(target: string, condition: ts.Expression, sourceFile: ts.SourceFile) {
+    private getConditionEnd(target: string, condition: ts.Expression) {
         if (!ts.isBinaryExpression(condition)
             || (condition.left as ts.Identifier).text !== target
             || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken) {

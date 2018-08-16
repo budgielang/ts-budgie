@@ -10,6 +10,8 @@
         "noImplicitAny": true,
         "noImplicitReturns": true,
         "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "pretty": true,
         "sourceMap": true,
         "strict": true

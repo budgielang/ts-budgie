@@ -1,8 +1,6 @@
-import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
-import { RootAliaser } from "../../parsing/aliasers/rootAliaser";
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
 export interface ITypeAdjustmentAttemptInfo {
@@ -39,18 +37,9 @@ export interface ITypeAdjustmentChecker {
  * Tries to find more specific types for variable declarations.
  */
 export class TypeAdjuster implements ITypeAdjustmentChecker {
-    private readonly aliaser: RootAliaser;
-    private readonly checkers: ITypeAdjustmentChecker[];
-    private readonly variableUsage: Map<ts.Identifier, tsutils.VariableInfo>;
-
-    public constructor(aliaser: RootAliaser, variableUsage: Map<ts.Identifier, tsutils.VariableInfo>) {
-        this.aliaser = aliaser;
-        this.variableUsage = variableUsage;
-
-        this.checkers = [
-            new LengthCommandTypeAdjustmentChecker(),
-        ];
-    }
+    private readonly checkers = [
+        new LengthCommandTypeAdjustmentChecker(),
+    ];
 
     /**
      * Tries to find a more specific type for a variable declaration.

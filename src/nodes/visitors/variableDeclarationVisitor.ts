@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { SyntaxKind, VariableDeclaration } from "typescript";
+import { VariableDeclaration } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -12,7 +12,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
     /**
      * Tries to find more specific types for variable declarations.
      */
-    private readonly typeAdjuster = new TypeAdjuster(this.aliaser, this.variableUsage);
+    private readonly typeAdjuster = new TypeAdjuster();
 
     public visit(node: VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);

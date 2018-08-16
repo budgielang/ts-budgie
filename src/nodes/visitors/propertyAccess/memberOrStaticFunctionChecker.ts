@@ -19,7 +19,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             return undefined;
         }
 
-        const { commandName, hostSignature, trueClassSymbol } = hostContainerAndSignature;
+        const { commandName, hostSignature } = hostContainerAndSignature;
         if (hostSignature.declarations === undefined) {
             return undefined;
         }

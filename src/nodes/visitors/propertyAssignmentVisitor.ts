@@ -1,4 +1,4 @@
-import { CommandNames, KeywordNames } from "general-language-syntax";
+import { CommandNames } from "general-language-syntax";
 import { ObjectLiteralExpression, PropertyAssignment } from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
@@ -14,7 +14,7 @@ export class PropertyAssignmentVisitor extends NodeVisitor {
             return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
         }
 
-        const [keyType, valueType] = coercion.args;
+        const [keyType] = coercion.args;
 
         const key = this.router.recurseIntoValue(node.name);
         if (key instanceof UnsupportedComplaint) {

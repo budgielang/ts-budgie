@@ -40,16 +40,6 @@ export interface ITextTransformationOptions {
 }
 
 /**
- * Default extra text transformation options.
- */
-const defaultTextTransformationOptions: ITextTransformationOptions = {
-    fileName: "input.ts",
-    scriptTarget: ts.ScriptTarget.Latest,
-};
-
-const getSourceFileName = (sourceFile: ts.SourceFile) => sourceFile.fileName;
-
-/**
  * Transforms TypeScript to GLS.
  */
 export class Transformer {

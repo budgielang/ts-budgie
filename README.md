@@ -66,6 +66,7 @@ To build from scratch, install Node.js and run the following commands:
 
 ```
 npm install
+npm install general-language-syntax --no-save
 npm run verify
 ```
 

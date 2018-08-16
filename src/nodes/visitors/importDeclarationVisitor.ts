@@ -14,8 +14,6 @@ const noNamespaceImportsComplaint = "Namespace imports are not supported.";
 const noPackageImportsComplaint = "Package imports are not yet supported.";
 
 export class ImportDeclarationVisitor extends NodeVisitor {
-    private readonly sourcePathComponents = this.sourceFile.fileName.split(/\/|\\/g);
-
     public visit(node: ImportDeclaration) {
         if (node.importClause === undefined || node.importClause.namedBindings === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, noImportClauseComplaint);
