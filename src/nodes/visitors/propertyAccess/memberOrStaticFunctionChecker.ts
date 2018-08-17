@@ -1,4 +1,4 @@
-import { CaseStyle, CommandNames } from "general-language-syntax";
+import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { hasModifier } from "tsutils";
@@ -12,6 +12,11 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
     public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined || !ts.isCallExpression(node.parent)) {
             return undefined;
+        }
+
+        // Handles the edge case of new Class().method
+        if (ts.isCallExpression(node.expression) || ts.isNewExpression(node.expression)) {
+            return this.handleCallOrNewExpression(node, node.expression, node.parent);
         }
 
         const hostContainerAndSignature = this.getHostContainerAndSignature(node);
@@ -50,6 +55,43 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
                 this.sourceFile,
                 [
                     new GlsLine(commandName, privacy, caller, functionName, ...args)
+                ])
+        ];
+    }
+
+    /**
+     * Handles the edges case of:
+     * methodCall().method()
+     * new Class().method()
+     */
+    private handleCallOrNewExpression(
+        node: ts.PropertyAccessExpression,
+        expression: ts.CallExpression | ts.NewExpression,
+        parent: ts.CallExpression,
+    ): Transformation[] | undefined {
+        const newGlsLineCall = this.router.recurseIntoValue(expression);
+        if (newGlsLineCall instanceof UnsupportedComplaint) {
+            return undefined;
+        }
+
+        const args = filterOutUnsupportedComplaint(
+            parent.arguments.map(
+                (arg) => arg === node
+                    ? node.name.text
+                    : this.router.recurseIntoValue(arg)));
+        if (args instanceof UnsupportedComplaint) {
+            return undefined;
+        }
+
+        const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
+        const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);
+
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    new GlsLine(CommandNames.MemberFunction, KeywordNames.Public, newGlsLineCall, functionName, ...args)
                 ])
         ];
     }
