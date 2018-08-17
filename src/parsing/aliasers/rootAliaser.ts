@@ -77,8 +77,8 @@ export class RootAliaser implements RootAliaser {
 
         // We use the real type checker last because our checks can know the difference
         // between seemingly identical types, such as "float" or "int" within "number"
-        const { flags } = this.typeChecker.getTypeAtLocation(node);
-        const resolvedFlagType = this.flagResolver.resolve(flags);
+        const typeAtLocation = this.typeChecker.getTypeAtLocation(node);
+        const resolvedFlagType = this.flagResolver.resolve(typeAtLocation.flags);
         if (resolvedFlagType !== undefined) {
             return resolvedFlagType;
         }
@@ -108,7 +108,7 @@ export class RootAliaser implements RootAliaser {
         }
 
         // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
-        const typeSymbol = this.typeChecker.getTypeAtLocation(node).symbol;
+        const typeSymbol = typeAtLocation.symbol;
         if (typeSymbol !== undefined && typeSymbol.valueDeclaration !== undefined) {
             return typeSymbol.name;
         }
