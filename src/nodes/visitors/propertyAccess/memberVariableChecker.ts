@@ -8,7 +8,7 @@ import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class MemberVariableChecker extends PropertyAccessChecker {
     public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
-        if (node.parent === undefined || ts.isCallExpression(node.parent)) {
+        if (node.parent === undefined || ts.isCallExpression(node)) {
             return undefined;
         }
 
