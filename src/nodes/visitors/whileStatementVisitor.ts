@@ -1,7 +1,7 @@
 import { CommandNames } from "general-language-syntax";
 import { WhileStatement } from "typescript";
 
-import { UnsupportedComplaint } from "../../index";
+import { UnsupportedComplaint } from "../..";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";

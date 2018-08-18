@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 
-import { StubCompilerHost } from "./stubCompilerHost";
+import { InMemoryCompilerHost } from "./inMemoryCompilerHost";
 
 const defaultOptions: ts.CompilerOptions = {
     allowJs: false,
@@ -11,7 +11,7 @@ export const createProgramForFiles = (sourceFiles: ts.SourceFile[], options: ts.
     ts.createProgram(
         sourceFiles.map((sourceFile) => sourceFile.fileName),
         options,
-        new StubCompilerHost(options, sourceFiles));
+        new InMemoryCompilerHost(sourceFiles));
 
 export const createProgramForFile = (sourceFile: ts.SourceFile, options?: ts.CompilerOptions): ts.Program =>
     createProgramForFiles([sourceFile], options);

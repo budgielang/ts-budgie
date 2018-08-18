@@ -35,7 +35,7 @@ export interface ITsGlsOptions {
 /**
  * Creates a TypeScript-to-GLS code transformer.
  *
- * @returns A TypeScrip-to-GLS code transformer.
+ * @returns A TypeScript-to-GLS code transformer.
  */
 export const createTransformer = (options: ITsGlsOptions) => {
     const transformers: ITransformer[] = [visitSourceFile];
