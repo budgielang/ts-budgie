@@ -12,6 +12,7 @@ const knownMethodPairs = new Map<string, string>([
     ["substring", CommandNames.StringSubstringIndex],
     ["toLowerCase", CommandNames.StringCaseLower],
     ["toUpperCase", CommandNames.StringCaseUpper],
+    ["trim", CommandNames.StringTrim],
 ]);
 
 export class StringMemberFunctionChecker extends PropertyAccessChecker {
