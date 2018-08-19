@@ -1,10 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames, KeywordNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
-import { isVariableDeclarationMultiline } from "../../parsing/attributes";
 import { TypeAdjuster } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
@@ -19,8 +18,27 @@ interface IIntrinsicType extends ts.Type {
  * For very obvious types, we allow direct typeChecker usage to get simple names.
  */
 const allowedIntrinsicNames = new Set([
+    KeywordNames.String,
     "boolean", "number", "string",
 ]);
+
+/**
+ * Command names that indicate a variable needs to start and end with separate commands.
+ */
+const multilineInitializerTypes = new Set([
+    CommandNames.DictionaryNewStart,
+]);
+
+/**
+ * @returns Whether a variable declaration is of a type that has a Start and corresponding End.
+ */
+const isInitializerMultilineNecessary = (initializerType: string | GlsLine | undefined) => {
+    if (!(initializerType instanceof GlsLine)) {
+        return false;
+    }
+
+    return multilineInitializerTypes.has(initializerType.command);
+};
 
 export class VariableDeclarationVisitor extends NodeVisitor {
     /**
@@ -83,7 +101,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         }
 
         const lines: (string | GlsLine | Transformation)[] = [];
-        const command = isVariableDeclarationMultiline(node, this.sourceFile)
+        const command = isInitializerMultilineNecessary(firstResultsLineArgs[2])
             ? CommandNames.VariableStart
             : CommandNames.Variable;
 
