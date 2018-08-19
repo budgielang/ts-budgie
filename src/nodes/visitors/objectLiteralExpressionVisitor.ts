@@ -29,14 +29,14 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
             return this.getDirectNodeTypePair(node.left);
         }
 
-        if (ts.isVariableDeclaration(node)) {
+        if (ts.isVariableDeclaration(node) || ts.isPropertyDeclaration(node)) {
             return this.getDirectNodeTypePair(node);
         }
 
         return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
     }
 
-    private getDirectNodeTypePair(node: ts.Expression | ts.VariableDeclaration) {
+    private getDirectNodeTypePair(node: ts.Expression | ts.PropertyDeclaration | ts.VariableDeclaration) {
         const typeName = this.aliaser.getFriendlyTypeName(node);
         if (!(typeName instanceof GlsLine) || typeName.command !== CommandNames.DictionaryType) {
             return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
