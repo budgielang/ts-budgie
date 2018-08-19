@@ -151,5 +151,4 @@ export class RootAliaser implements RootAliaser {
 
         return (signatureReturnType as IIntrinsicSignatureReturnType).intrinsicName;
     }
-
 }

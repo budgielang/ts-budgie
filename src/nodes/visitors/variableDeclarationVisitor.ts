@@ -8,6 +8,20 @@ import { isVariableDeclarationMultiline } from "../../parsing/attributes";
 import { TypeAdjuster } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
+interface IIntrinsicType extends ts.Type {
+    /**
+     * @remarks This is private within TypeScript, and might change in the future.
+     */
+    intrinsicName: string;
+}
+
+/**
+ * For very obvious types, we allow direct typeChecker usage to get simple names.
+ */
+const allowedIntrinsicNames = new Set([
+    "boolean", "number", "string",
+]);
+
 export class VariableDeclarationVisitor extends NodeVisitor {
     /**
      * Tries to find more specific types for variable declarations.
@@ -45,6 +59,11 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         });
         if (manualTypeAdjustment !== undefined) {
             interpretedType = manualTypeAdjustment;
+        }
+
+        // By now, we've finished doing fancy checks, but the type checker might just directly know
+        if (interpretedType === undefined) {
+            interpretedType = this.getFriendlyTypeAtLocation(node);
         }
 
         // As a last ditch effort, it may be that we're seeing the result of a GLS line
@@ -103,6 +122,14 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         }
 
         return this.router.recurseIntoNode(node.initializer);
+    }
+
+    private getFriendlyTypeAtLocation(node: ts.VariableDeclaration): string | undefined {
+        const { intrinsicName } = this.typeChecker.getTypeAtLocation(node) as IIntrinsicType;
+
+        return allowedIntrinsicNames.has(intrinsicName)
+            ? intrinsicName
+            : undefined;
     }
 
     private appendFullValueToLines(fullValue: (string | Transformation | GlsLine)[], lines: (string | GlsLine | Transformation)[]) {

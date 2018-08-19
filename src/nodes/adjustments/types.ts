@@ -72,6 +72,12 @@ export class TypeAdjuster implements ITypeAdjustmentChecker {
         return undefined;
     }
 
+    /**
+     * Tries to find a more specific type based on a known GLS command.
+     *
+     * @param line   GLS command line.
+     * @returns Known type of that command line, if available.
+     */
     public getKnownTypeOfGlsLine(line: GlsLine): string | undefined {
         return knownGlsLineTypes.get(line.command);
     }
