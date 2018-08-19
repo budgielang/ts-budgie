@@ -66,7 +66,7 @@ export class UnsupportedComplaint {
      * @returns A new UnsupportedComplaint for the node.
      */
     public static forUnsupportedTypeNode(node: Node, sourceFile: SourceFile): UnsupportedComplaint {
-        return this.forNode(node, sourceFile, unsupportedTypeComplaint + " " + new Error().stack);
+        return this.forNode(node, sourceFile, unsupportedTypeComplaint);
     }
 
     /**

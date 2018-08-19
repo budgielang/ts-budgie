@@ -9,6 +9,8 @@ import { ClassDeclarationVisitor } from "./visitors/classDeclarationVisitor";
 import { ConstructorDeclarationVisitor } from "./visitors/constructorDeclarationVisitor";
 import { ContinueStatementVisitor } from "./visitors/continueStatementVisitor";
 import { ElementAccessExpressionVisitor } from "./visitors/elementAccessExpressionVisitor";
+import { EnumDeclarationVisitor } from "./visitors/enumDeclarationVisitor";
+import { EnumMemberVisitor } from "./visitors/enumMemberVisitor";
 import { ForOfStatementVisitor } from "./visitors/forOfStatementVisitor";
 import { ForStatementVisitor } from "./visitors/forStatementVisitor";
 import { IfStatementVisitor } from "./visitors/ifStatementVisitor";
@@ -45,6 +47,8 @@ const creators: IVisitorCreators = {
     [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
     [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
     [SyntaxKind.ElementAccessExpression]: ElementAccessExpressionVisitor,
+    [SyntaxKind.EnumDeclaration]: EnumDeclarationVisitor,
+    [SyntaxKind.EnumMember]: EnumMemberVisitor,
     [SyntaxKind.ExportDeclaration]: UnsupportedVisitor.withDescriptor("exports"),
     [SyntaxKind.FalseKeyword]: LiteralVisitor,
     [SyntaxKind.FirstLiteralToken]: LiteralVisitor,
