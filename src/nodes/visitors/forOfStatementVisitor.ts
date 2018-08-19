@@ -20,8 +20,8 @@ export class ForOfStatementVisitor extends NodeVisitor {
             return container;
         }
 
-        const expressionType = this.aliaser.getFriendlyTypeName(node.expression);
-        if (expressionType === undefined) {
+        const expressionType = this.router.recurseIntoValue(node.expression);
+        if (expressionType instanceof UnsupportedComplaint) {
             return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
         }
 

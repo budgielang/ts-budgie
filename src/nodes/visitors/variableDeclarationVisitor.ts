@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { VariableDeclaration } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -14,7 +14,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
      */
     private readonly typeAdjuster = new TypeAdjuster();
 
-    public visit(node: VariableDeclaration) {
+    public visit(node: ts.VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);
         let interpretedType = this.aliaser.getFriendlyTypeName(node);
 
@@ -30,6 +30,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             return aliasedValue;
         }
 
+        // After recursing into the node, see if we've found a more specific type (coercion)
         const typeModified = this.context.exitTypeCoercion();
         if (typeModified !== undefined) {
             interpretedType = typeModified;
@@ -44,6 +45,12 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         });
         if (manualTypeAdjustment !== undefined) {
             interpretedType = manualTypeAdjustment;
+        }
+
+        // As a last ditch effort, it may be that we're seeing the result of a GLS line
+        // If it's a command that we explicitly know to return a type, we can use that
+        if (interpretedType === undefined && aliasedValue instanceof GlsLine) {
+            interpretedType = this.typeAdjuster.getKnownTypeOfGlsLine(aliasedValue);
         }
 
         // If we don't know the interpreted type by now, just give up
@@ -82,7 +89,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private getAliasedValue(node: VariableDeclaration) {
+    private getAliasedValue(node: ts.VariableDeclaration) {
         if (node.initializer === undefined) {
             return undefined;
         }
@@ -90,7 +97,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         return this.router.recurseIntoValue(node.initializer);
     }
 
-    private getFullValue(node: VariableDeclaration) {
+    private getFullValue(node: ts.VariableDeclaration) {
         if (node.initializer === undefined) {
             return undefined;
         }

@@ -4,8 +4,8 @@ import { Transformation } from "../../output/transformation";
 import { wrapWithQuotes } from "../../parsing/strings";
 import { NodeVisitor } from "../visitor";
 
-export class StringLiteralVisitor extends NodeVisitor {
-    public visit(node: ts.StringLiteral) {
+export class SuperKeywordVisitor extends NodeVisitor {
+    public visit(node: ts.Expression) {
         return [
             Transformation.fromNode(
                 node,

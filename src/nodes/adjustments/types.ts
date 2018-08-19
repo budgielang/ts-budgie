@@ -1,5 +1,6 @@
 import * as ts from "typescript";
 
+import { CommandNames } from "../../../node_modules/general-language-syntax";
 import { GlsLine } from "../../output/glsLine";
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
@@ -34,6 +35,19 @@ export interface ITypeAdjustmentChecker {
 }
 
 /**
+ * GLS commands with known return types, keyed to those return types.
+ */
+const knownGlsLineTypes = new Map<string, string>([
+    [CommandNames.StringCaseLower, "string"],
+    [CommandNames.StringCaseUpper, "string"],
+    [CommandNames.StringFormat, "string"],
+    [CommandNames.StringLength, "int"],
+    [CommandNames.StringSubstringIndex, "string"],
+    [CommandNames.StringSubstringLength, "string"],
+    [CommandNames.StringTrim, "string"],
+]);
+
+/**
  * Tries to find more specific types for variable declarations.
  */
 export class TypeAdjuster implements ITypeAdjustmentChecker {
@@ -56,5 +70,9 @@ export class TypeAdjuster implements ITypeAdjustmentChecker {
         }
 
         return undefined;
+    }
+
+    public getKnownTypeOfGlsLine(line: GlsLine): string | undefined {
+        return knownGlsLineTypes.get(line.command);
     }
 }
