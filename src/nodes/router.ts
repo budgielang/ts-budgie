@@ -72,22 +72,6 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for an inline value.
-     *
-     * @param node   Node to transform.
-     * @returns Transformed GLS output for the inline value.
-     */
-    public recurseIntoValue(node: ts.Node): string | GlsLine | UnsupportedComplaint {
-        const subTransformations = this.recurseIntoNode(node);
-        if (subTransformations instanceof UnsupportedComplaint) {
-            return subTransformations;
-        }
-
-        const { sourceFile } = this.dependencies;
-        return this.dependencies.printer.printTransformations(sourceFile.getText(sourceFile), subTransformations)[0];
-    }
-
-    /**
      * Retrieves the GLS output for a set of nodes.
      *
      * @param node   Node to transform.
@@ -115,6 +99,43 @@ export class NodeVisitRouter {
         return complaints === undefined
             ? transformations
             : UnsupportedComplaint.forNode(parent, this.dependencies.sourceFile, complaints);
+    }
+
+    /**
+     * Retrieves the GLS output for an inline value.
+     *
+     * @param node   Node to transform.
+     * @returns Transformed GLS output for the inline value.
+     */
+    public recurseIntoValue(node: ts.Node): string | GlsLine | UnsupportedComplaint {
+        const subTransformations = this.recurseIntoNode(node);
+        if (subTransformations instanceof UnsupportedComplaint) {
+            return subTransformations;
+        }
+
+        const { sourceFile } = this.dependencies;
+        return this.dependencies.printer.printTransformations(sourceFile.getText(sourceFile), subTransformations)[0];
+    }
+
+    /**
+     * Retrieves the GLS output for a set of inline values.
+     *
+     * @param nodes   Nodes to transform.
+     * @returns Transformed GLS output for the inline values.
+     */
+    public recurseIntoValues(nodes: ts.NodeArray<ts.Node>): (string | GlsLine)[] | UnsupportedComplaint {
+        const values: (string | GlsLine)[] = [];
+
+        for (const node of nodes) {
+            const value = this.recurseIntoValue(node);
+            if (value instanceof UnsupportedComplaint) {
+                return value;
+            }
+
+            values.push(value);
+        }
+
+        return values;
     }
 
     /**

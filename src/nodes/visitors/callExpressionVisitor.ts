@@ -1,9 +1,33 @@
-import { CallExpression } from "typescript";
+import * as ts from "typescript";
 
+import { CommandNames } from "../../../node_modules/general-language-syntax";
+import { UnsupportedComplaint } from "../../output/complaint";
+import { GlsLine } from "../../output/glsLine";
+import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class CallExpressionVisitor extends NodeVisitor {
-    public visit(node: CallExpression) {
+    public visit(node: ts.CallExpression) {
+        if (node.expression.kind === ts.SyntaxKind.SuperKeyword) {
+            return this.visitSuperConstructor(node);
+        }
+
         return this.router.recurseIntoNode(node.expression);
+    }
+
+    private visitSuperConstructor(node: ts.CallExpression) {
+        const args = this.router.recurseIntoValues(node.arguments);
+        if (args instanceof UnsupportedComplaint) {
+            return args;
+        }
+
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    new GlsLine(CommandNames.SuperConstructor, ...args),
+                ]),
+        ];
     }
 }
