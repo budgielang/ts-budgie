@@ -8,6 +8,7 @@ import { filterOutUnsupportedComplaint } from "../../../utils";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 const knownMethodPairs = new Map<string, string>([
+    ["indexOf", CommandNames.StringIndexOf],
     ["substr", CommandNames.StringSubstringLength],
     ["substring", CommandNames.StringSubstringIndex],
     ["toLowerCase", CommandNames.StringCaseLower],

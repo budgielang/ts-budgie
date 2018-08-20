@@ -19,7 +19,9 @@ interface IIntrinsicType extends ts.Type {
  */
 const allowedIntrinsicNames = new Set([
     KeywordNames.String,
-    "boolean", "number", "string",
+    "boolean",
+    "number",
+    "string",
 ]);
 
 /**

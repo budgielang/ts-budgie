@@ -41,6 +41,7 @@ const knownGlsLineTypes = new Map<string, string>([
     [CommandNames.StringCaseLower, "string"],
     [CommandNames.StringCaseUpper, "string"],
     [CommandNames.StringFormat, "string"],
+    [CommandNames.StringIndexOf, "string"],
     [CommandNames.StringLength, "int"],
     [CommandNames.StringSubstringIndex, "string"],
     [CommandNames.StringSubstringLength, "string"],
