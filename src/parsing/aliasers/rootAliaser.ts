@@ -67,7 +67,10 @@ export class RootAliaser implements RootAliaser {
     public getFriendlyTypeName = (node: ts.Node): string | GlsLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
-            return knownTypeNameConverter.getFriendlyTypeName(node);
+            const typeNameConverted = knownTypeNameConverter.getFriendlyTypeName(node);
+            if (typeNameConverted !== undefined) {
+                return typeNameConverted;
+            }
         }
 
         const passThroughType = this.passThroughTypes.get(node.kind);
@@ -109,7 +112,7 @@ export class RootAliaser implements RootAliaser {
 
         // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
         const typeSymbol = typeAtLocation.symbol;
-        if (typeSymbol !== undefined && typeSymbol.valueDeclaration !== undefined) {
+        if (typeSymbol !== undefined && typeSymbol.name !== "unknown") {
             return typeSymbol.name;
         }
 
