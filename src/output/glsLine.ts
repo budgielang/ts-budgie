@@ -3,6 +3,9 @@ const escapeSpecialCharacters = (arg: string) =>
         .replace(/\r/g, "\\r")
         .replace(/\n/g, "\\n");
 
+const escapeParenthesis = (arg: string) =>
+    arg.replace(/\)/g, "\\)");
+
 const textWrapIndicators = new Set<string>([
     "{", "(", " "
 ]);
@@ -16,7 +19,7 @@ const textWrapIndicators = new Set<string>([
 const wrapArg = (arg: string) => {
     for (const indicator of Array.from(textWrapIndicators)) {
         if (arg.indexOf(indicator) !== -1) {
-            return `(${arg})`;
+            return `(${escapeParenthesis(arg)})`;
         }
     }
 

@@ -49,6 +49,17 @@ describe("GlsLine", () => {
             expect(printed).to.be.equal("command : (abc def) ghi (jkl mno)");
         });
 
+        it("escapes a wrapped parenthesis", () => {
+            // Arrange
+            const line = new GlsLine("command", "(abc (def) ghi)");
+
+            // Act
+            const printed = line.toString();
+
+            // Assert
+            expect(printed).to.be.equal("command : ((abc (def\\) ghi\\))");
+        });
+
         it("recursively includes a GlsLine", () => {
             // Arrange
             const line = new GlsLine("command", new GlsLine("inner"));

@@ -5,6 +5,7 @@ import { NodeVisitor } from "../visitor";
 import { ArrayMemberFunctionChecker } from "./propertyAccess/arrayMemberFunctionChecker";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
 import { DictionaryIndexAccessChecker } from "./propertyAccess/dictionaryIndexAccessChecker";
+import { HasOwnPropertyAccessChecker } from "./propertyAccess/hasOwnPropertyAccessChecker";
 import { MemberOrStaticFunctionChecker } from "./propertyAccess/memberOrStaticFunctionChecker";
 import { MemberVariableChecker } from "./propertyAccess/memberVariableChecker";
 import { PropertyAccessChecker } from "./propertyAccess/propertyAccessChecker";
@@ -18,6 +19,7 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
         new ArrayMemberFunctionChecker(this),
         new ConsoleLogAccessChecker(this),
         new DictionaryIndexAccessChecker(this),
+        new HasOwnPropertyAccessChecker(this),
         new StringLengthAccessChecker(this),
         new StringMemberFunctionChecker(this),
         new MemberOrStaticFunctionChecker(this),
