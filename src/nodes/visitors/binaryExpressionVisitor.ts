@@ -57,14 +57,33 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private collectOperationContents(node: ts.BinaryExpression): (string | ts.Expression | UnsupportedComplaint)[] {
-        const contents: (string | ts.Expression | UnsupportedComplaint)[] = [];
+    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine | UnsupportedComplaint)[] {
         const { left, right } = node;
+
+        if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
+            return [
+                new GlsLine(
+                    CommandNames.InstanceOf,
+                    left.getText(this.sourceFile),
+                    right.getText(this.sourceFile)),
+            ];
+        }
+
+        if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
+            return [
+                new GlsLine(
+                    CommandNames.DictionaryContainsKey,
+                    left.getText(this.sourceFile),
+                    right.getText(this.sourceFile)),
+            ];
+        }
+
+        const contents: (string | GlsLine | UnsupportedComplaint)[] = [];
 
         if (ts.isBinaryExpression(left)) {
             contents.push(...this.collectOperationContents(left));
         } else {
-            contents.push(left);
+            contents.push(this.router.recurseIntoValue(left));
         }
 
         if (node.operatorToken.kind in operators) {
@@ -76,14 +95,14 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (ts.isBinaryExpression(right)) {
             contents.push(...this.collectOperationContents(right));
         } else {
-            contents.push(right);
+            contents.push(this.router.recurseIntoValue(right));
         }
 
         return contents;
     }
 
-    private recurseOnOperationContents(content: string | ts.Expression | UnsupportedComplaint) {
-        return typeof content === "string" || content instanceof UnsupportedComplaint
+    private recurseOnOperationContents(content: string | GlsLine | UnsupportedComplaint) {
+        return typeof content === "string" || content instanceof GlsLine || content instanceof UnsupportedComplaint
             ? content
             : this.router.recurseIntoValue(content);
     }
