@@ -64,7 +64,7 @@ export class RootAliaser implements RootAliaser {
         ]);
     }
 
-    public getFriendlyTypeName = (node: ts.Node): string | GlsLine | undefined => {
+    public readonly getFriendlyTypeName = (node: ts.Node): string | GlsLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
             const typeNameConverted = knownTypeNameConverter.getFriendlyTypeName(node);

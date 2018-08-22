@@ -4,7 +4,7 @@ import { createProgramForFiles } from "./compiler/program";
 import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 import { TransformationsPrinter } from "./printing/transformationsPrinter";
-import { TransformationService } from "./service";
+import { IContextOptions, TransformationService } from "./service";
 
 /**
  * Dependencies to initialize a new instance of the Transformer class.
@@ -14,6 +14,11 @@ export interface ITransformerDependencies {
      * TypeScript compiler options to transform with.
      */
     compilerOptions: ts.CompilerOptions;
+
+    /**
+     * Constant conversion options for visiting nodes.
+     */
+    contextOptions: IContextOptions;
 
     /**
      * Prints series of transformations as lines of GLS.
@@ -29,14 +34,6 @@ export interface ITransformerDependencies {
      * Source files that may be transformed and referenced.
      */
     sourceFiles: ts.SourceFile[];
-}
-
-/**
- * Extra options for text transformations.
- */
-export interface ITextTransformationOptions {
-    fileName: string;
-    scriptTarget: ts.ScriptTarget;
 }
 
 /**
@@ -80,6 +77,10 @@ export class Transformer {
      * @returns Transformations for the file, or a complaint for unsupported syntax.
      */
     private getSourceFileTransforms(sourceFile: ts.SourceFile): (Transformation | UnsupportedComplaint)[] {
-        return this.dependencies.service.transform(sourceFile, this.typeChecker);
+        return this.dependencies.service.transform({
+            contextOptions: this.dependencies.contextOptions,
+            sourceFile,
+            typeChecker: this.typeChecker,
+        });
     }
 }

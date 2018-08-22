@@ -1,13 +1,14 @@
 import * as utils from "tsutils";
-import { CommentRange, SourceFile } from "typescript";
+import * as ts from "typescript";
 
 import { Transformation } from "../output/transformation";
+import { ITransformerSettings } from "../service";
 import { commentVisitors } from "./visitor";
 
-export const visitEachComment = (sourceFile: SourceFile): Transformation[] => {
+export const visitEachComment = ({ sourceFile }: ITransformerSettings): Transformation[] => {
     const transformations: Transformation[] = [];
 
-    const visitComment = (fullText: string, comment: CommentRange) => {
+    const visitComment = (fullText: string, comment: ts.CommentRange) => {
         const childTransformations = commentVisitors[comment.kind](fullText, comment);
 
         if (childTransformations !== undefined) {

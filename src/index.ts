@@ -17,9 +17,19 @@ export * from "./transforms";
  */
 export interface ITsGlsOptions {
     /**
+     * Base or root directory to ignore from the beginning of file paths, such as "src/", if not "".
+     */
+    baseDirectory?: string;
+
+    /**
      * TypeScript compiler options to run with (not recommended).
      */
     compilerOptions?: ts.CompilerOptions;
+
+    /**
+     * Namespace before path names, such as "Gls", if not "".
+     */
+    namespace?: string;
 
     /**
      * Whether to visit comments in addition to content nodes.
@@ -49,6 +59,14 @@ export const createTransformer = (options: ITsGlsOptions) => {
         compilerOptions: options.compilerOptions === undefined
             ? {}
             : options.compilerOptions,
+        contextOptions: {
+            baseDirectory: options.baseDirectory === undefined
+                ? ""
+                : options.baseDirectory,
+            outputNamespace: options.namespace === undefined
+                ? ""
+                : options.namespace,
+        },
         printer: new TransformationsPrinter(),
         service: new TransformationService(transformers),
         sourceFiles: options.sourceFiles,

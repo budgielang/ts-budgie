@@ -1,4 +1,5 @@
 import { GlsLine } from "../output/glsLine";
+import { IContextOptions } from "../service";
 
 /**
  * Shared context for visitors in a file.
@@ -8,6 +9,20 @@ export class VisitorContext {
      * Current type coercion, if any.
      */
     private typeCoercion?: string | GlsLine;
+
+    /**
+     * Constant conversion options for visiting nodes.
+     */
+    public readonly options: IContextOptions;
+
+    /**
+     * Initializes a new instance of the VisitorContext class.
+     *
+     * @param options   Constant conversion options for visiting nodes.
+     */
+    public constructor(options: IContextOptions) {
+        this.options = options;
+    }
 
     /**
      * @returns The current type coercion, if any exists.

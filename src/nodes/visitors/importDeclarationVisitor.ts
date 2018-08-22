@@ -13,6 +13,8 @@ const noNamespaceImportsComplaint = "Namespace imports are not supported.";
 
 const noPackageImportsComplaint = "Package imports are not yet supported.";
 
+const noBaseDirectoryComplaint = "Import directory goes out of bounds of the base directory.";
+
 export class ImportDeclarationVisitor extends NodeVisitor {
     public visit(node: ImportDeclaration) {
         if (node.importClause === undefined || node.importClause.namedBindings === undefined) {
@@ -49,10 +51,18 @@ export class ImportDeclarationVisitor extends NodeVisitor {
 
         const sourceDir = path.dirname(this.sourceFile.fileName);
         const packagePath = packagePathRaw.replace(/"|'|`/g, "");
-        const pathResolved = path.join(sourceDir, packagePath);
+        const pathResolved = path.posix.join(sourceDir, packagePath);
 
-        return pathResolved
-            .split(/\/|\\/g)
+        if (pathResolved.indexOf(this.context.options.baseDirectory) === -1) {
+            return UnsupportedComplaint.forNode(node, this.sourceFile, noBaseDirectoryComplaint);
+        }
+
+        const pathWithNamespace = path.posix.join(
+            this.context.options.outputNamespace,
+            pathResolved.substring(this.context.options.baseDirectory.length));
+
+        return pathWithNamespace
+            .split(/\//g)
             .map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, [pathComponent]));
     }
 }

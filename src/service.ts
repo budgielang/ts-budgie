@@ -1,7 +1,42 @@
-import { SourceFile, TypeChecker } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
+
+/**
+ * Constant conversion options for visiting nodes.
+ */
+export interface IContextOptions {
+    /**
+     * Base or root directory to ignore from the beginning of file paths, such as "src/".
+     */
+    baseDirectory: string;
+
+    /**
+     * Namespace before path names, such as "Gls".
+     */
+    outputNamespace: string;
+}
+
+/**
+ * Settings to transform a file.
+ */
+export interface ITransformerSettings {
+    /**
+     * Constant transformation options for visiting nodes.
+     */
+    contextOptions: IContextOptions;
+
+    /**
+     * Source file to transform.
+     */
+    sourceFile: ts.SourceFile;
+
+    /**
+     * Type checker for the source file.
+     */
+    typeChecker: ts.TypeChecker;
+}
 
 /**
  * Retrieves source-to-GLS transforms from a file.
@@ -10,7 +45,7 @@ import { Transformation } from "./output/transformation";
  * @param typeChecker   Type checker for the source file.
  * @returns Transformations from the file, or a complaint for unsupported syntax.
  */
-export type ITransformer = (sourceFile: SourceFile, typeChecker: TypeChecker) => (Transformation | UnsupportedComplaint)[];
+export type ITransformer = (settings: ITransformerSettings) => (Transformation | UnsupportedComplaint)[];
 
 /**
  * Retrieves and merges source-to-GLS transforms from files.
@@ -37,11 +72,11 @@ export class TransformationService {
      * @param typeChecker   Type checker for the file.
      * @returns Transformations from the file, or a complaint for unsupported syntax.
      */
-    public transform(sourceFile: SourceFile, typeChecker: TypeChecker): (Transformation | UnsupportedComplaint)[] {
+    public transform(settings: ITransformerSettings): (Transformation | UnsupportedComplaint)[] {
         const transformations: (UnsupportedComplaint | Transformation)[] = [];
 
         for (const transformer of this.transformers) {
-            transformations.push(...transformer(sourceFile, typeChecker));
+            transformations.push(...transformer(settings));
         }
 
         return transformations;
