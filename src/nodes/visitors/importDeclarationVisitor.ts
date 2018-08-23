@@ -7,13 +7,13 @@ import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
+const noBaseDirectoryComplaint = "Import directory goes out of bounds of the base directory.";
+
 const noImportClauseComplaint = "Import declarations must import items.";
 
 const noNamespaceImportsComplaint = "Namespace imports are not supported.";
 
 const noPackageImportsComplaint = "Package imports are not yet supported.";
-
-const noBaseDirectoryComplaint = "Import directory goes out of bounds of the base directory.";
 
 export class ImportDeclarationVisitor extends NodeVisitor {
     public visit(node: ImportDeclaration) {

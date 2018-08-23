@@ -29,7 +29,7 @@ export interface ITsGlsOptions {
     /**
      * Namespace before path names, such as "Gls", if not "".
      */
-    namespace?: string;
+    outputNamespace?: string;
 
     /**
      * Whether to visit comments in addition to content nodes.
@@ -63,9 +63,9 @@ export const createTransformer = (options: ITsGlsOptions) => {
             baseDirectory: options.baseDirectory === undefined
                 ? ""
                 : options.baseDirectory,
-            outputNamespace: options.namespace === undefined
+            outputNamespace: options.outputNamespace === undefined
                 ? ""
-                : options.namespace,
+                : options.outputNamespace,
         },
         printer: new TransformationsPrinter(),
         service: new TransformationService(transformers),
