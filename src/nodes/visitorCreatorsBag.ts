@@ -1,4 +1,4 @@
-import { SyntaxKind } from "typescript";
+import * as ts from "typescript";
 
 import { NodeVisitor } from "./visitor";
 import { ArrayLiteralExpressionVisitor } from "./visitors/arrayLiteralExpressionVisitor";
@@ -38,45 +38,45 @@ interface IVisitorCreators {
 }
 
 const creators: IVisitorCreators = {
-    [SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
-    [SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
-    [SyntaxKind.BreakStatement]: BreakStatementVisitor,
-    [SyntaxKind.CallExpression]: CallExpressionVisitor,
-    [SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
-    [SyntaxKind.ClassExpression]: UnsupportedVisitor.withDescriptor("class expressions"),
-    [SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
-    [SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
-    [SyntaxKind.ElementAccessExpression]: ElementAccessExpressionVisitor,
-    [SyntaxKind.EnumDeclaration]: EnumDeclarationVisitor,
-    [SyntaxKind.EnumMember]: EnumMemberVisitor,
-    [SyntaxKind.ExportDeclaration]: UnsupportedVisitor.withDescriptor("exports"),
-    [SyntaxKind.FalseKeyword]: LiteralVisitor,
-    [SyntaxKind.FirstLiteralToken]: LiteralVisitor,
-    [SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
-    [SyntaxKind.ForStatement]: ForStatementVisitor,
-    [SyntaxKind.Identifier]: LiteralVisitor,
-    [SyntaxKind.IfStatement]: IfStatementVisitor,
-    [SyntaxKind.ImportDeclaration]: ImportDeclarationVisitor,
-    [SyntaxKind.InterfaceDeclaration]: InterfaceDeclarationVisitor,
-    [SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
-    [SyntaxKind.MethodSignature]: MethodSignatureVisitor,
-    [SyntaxKind.ModuleDeclaration]: UnsupportedVisitor.withDescriptor("namespaces"),
-    [SyntaxKind.NewExpression]: NewExpressionVisitor,
-    [SyntaxKind.NumericLiteral]: LiteralVisitor,
-    [SyntaxKind.ObjectLiteralExpression]: ObjectLiteralExpressionVisitor,
-    [SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
-    [SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
-    [SyntaxKind.PropertyAssignment]: PropertyAssignmentVisitor,
-    [SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
-    [SyntaxKind.ReturnStatement]: ReturnStatementVisitor,
-    [SyntaxKind.StringLiteral]: StringLiteralVisitor,
-    [SyntaxKind.SuperKeyword]: UnsupportedVisitor.withDescriptor("super"),
-    [SyntaxKind.SwitchStatement]: UnsupportedVisitor.withDescriptor("switch"),
-    [SyntaxKind.ThisKeyword]: ThisExpressionVisitor,
-    [SyntaxKind.TrueKeyword]: LiteralVisitor,
-    [SyntaxKind.TypeLiteral]: TypeLiteralVisitor,
-    [SyntaxKind.VariableDeclaration]: VariableDeclarationVisitor,
-    [SyntaxKind.WhileStatement]: WhileStatementVisitor,
+    [ts.SyntaxKind.ArrayLiteralExpression]: ArrayLiteralExpressionVisitor,
+    [ts.SyntaxKind.BinaryExpression]: BinaryExpressionVisitor,
+    [ts.SyntaxKind.BreakStatement]: BreakStatementVisitor,
+    [ts.SyntaxKind.CallExpression]: CallExpressionVisitor,
+    [ts.SyntaxKind.ClassDeclaration]: ClassDeclarationVisitor,
+    [ts.SyntaxKind.ClassExpression]: UnsupportedVisitor.withDescriptor("class expressions"),
+    [ts.SyntaxKind.Constructor]: ConstructorDeclarationVisitor,
+    [ts.SyntaxKind.ContinueKeyword]: ContinueStatementVisitor,
+    [ts.SyntaxKind.ElementAccessExpression]: ElementAccessExpressionVisitor,
+    [ts.SyntaxKind.EnumDeclaration]: EnumDeclarationVisitor,
+    [ts.SyntaxKind.EnumMember]: EnumMemberVisitor,
+    [ts.SyntaxKind.ExportDeclaration]: UnsupportedVisitor.withDescriptor("exports"),
+    [ts.SyntaxKind.FalseKeyword]: LiteralVisitor,
+    [ts.SyntaxKind.FirstLiteralToken]: LiteralVisitor,
+    [ts.SyntaxKind.ForOfStatement]: ForOfStatementVisitor,
+    [ts.SyntaxKind.ForStatement]: ForStatementVisitor,
+    [ts.SyntaxKind.Identifier]: LiteralVisitor,
+    [ts.SyntaxKind.IfStatement]: IfStatementVisitor,
+    [ts.SyntaxKind.ImportDeclaration]: ImportDeclarationVisitor,
+    [ts.SyntaxKind.InterfaceDeclaration]: InterfaceDeclarationVisitor,
+    [ts.SyntaxKind.MethodDeclaration]: MethodDeclarationVisitor,
+    [ts.SyntaxKind.MethodSignature]: MethodSignatureVisitor,
+    [ts.SyntaxKind.ModuleDeclaration]: UnsupportedVisitor.withDescriptor("namespaces"),
+    [ts.SyntaxKind.NewExpression]: NewExpressionVisitor,
+    [ts.SyntaxKind.NumericLiteral]: LiteralVisitor,
+    [ts.SyntaxKind.ObjectLiteralExpression]: ObjectLiteralExpressionVisitor,
+    [ts.SyntaxKind.ParenthesizedExpression]: ParenthesizedExpressionVisitor,
+    [ts.SyntaxKind.PropertyAccessExpression]: PropertyAccessExpressionVisitor,
+    [ts.SyntaxKind.PropertyAssignment]: PropertyAssignmentVisitor,
+    [ts.SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
+    [ts.SyntaxKind.ReturnStatement]: ReturnStatementVisitor,
+    [ts.SyntaxKind.StringLiteral]: StringLiteralVisitor,
+    [ts.SyntaxKind.SuperKeyword]: UnsupportedVisitor.withDescriptor("super"),
+    [ts.SyntaxKind.SwitchStatement]: UnsupportedVisitor.withDescriptor("switch"),
+    [ts.SyntaxKind.ThisKeyword]: ThisExpressionVisitor,
+    [ts.SyntaxKind.TrueKeyword]: LiteralVisitor,
+    [ts.SyntaxKind.TypeLiteral]: TypeLiteralVisitor,
+    [ts.SyntaxKind.VariableDeclaration]: VariableDeclarationVisitor,
+    [ts.SyntaxKind.WhileStatement]: WhileStatementVisitor,
 };
 
 /**
@@ -89,7 +89,7 @@ export class VisitorCreatorsBag {
      * @param kind   Syntax kind for a node.
      * @returns A creator for that kind of node.
      */
-    public getCreator(kind: SyntaxKind): typeof NodeVisitor {
+    public getCreator(kind: ts.SyntaxKind): typeof NodeVisitor {
         return creators[kind];
     }
 }

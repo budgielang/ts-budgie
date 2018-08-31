@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { ObjectLiteralExpression, PropertyAssignment } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -8,7 +8,7 @@ import { wrapWithQuotes } from "../../parsing/strings";
 import { NodeVisitor } from "../visitor";
 
 export class PropertyAssignmentVisitor extends NodeVisitor {
-    public visit(node: PropertyAssignment) {
+    public visit(node: ts.PropertyAssignment) {
         const { coercion } = this.context;
         if (!(coercion instanceof GlsLine) || coercion.command !== CommandNames.DictionaryType) {
             return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
@@ -45,8 +45,8 @@ export class PropertyAssignmentVisitor extends NodeVisitor {
         ];
     }
 
-    private shouldAddComma(node: PropertyAssignment) {
-        const parent = node.parent as ObjectLiteralExpression | undefined;
+    private shouldAddComma(node: ts.PropertyAssignment) {
+        const parent = node.parent as ts.ObjectLiteralExpression | undefined;
         if (parent === undefined) {
             return false;
         }

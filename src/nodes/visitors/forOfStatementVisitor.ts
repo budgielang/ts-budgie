@@ -1,7 +1,7 @@
 import { CommandNames } from "general-language-syntax";
-import { ForInitializer, ForOfStatement } from "typescript";
+import * as ts from "typescript";
 
-import { isExpression } from "tsutils";
+import * as tsutils from "tsutils";
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
@@ -9,7 +9,7 @@ import { getListValueType } from "../../parsing/lists";
 import { NodeVisitor } from "../visitor";
 
 export class ForOfStatementVisitor extends NodeVisitor {
-    public visit(node: ForOfStatement) {
+    public visit(node: ts.ForOfStatement) {
         const bodyNodes = this.router.recurseIntoNode(node.statement);
         if (bodyNodes instanceof UnsupportedComplaint) {
             return bodyNodes;
@@ -40,8 +40,8 @@ export class ForOfStatementVisitor extends NodeVisitor {
         ];
     }
 
-    private getContainer(initializer: ForInitializer) {
-        if (isExpression(initializer)) {
+    private getContainer(initializer: ts.ForInitializer) {
+        if (tsutils.isExpression(initializer)) {
             return initializer.getText(this.sourceFile);
         }
 

@@ -1,4 +1,4 @@
-import { Node, SourceFile } from "typescript";
+import * as ts from "typescript";
 
 import { IRange } from "./range";
 
@@ -24,7 +24,7 @@ export class UnsupportedComplaint {
     /**
      * Source file of the complaint.
      */
-    private readonly sourceFile: SourceFile;
+    private readonly sourceFile: ts.SourceFile;
 
     /**
      * Initializes a new instance of the Transformation class.
@@ -33,7 +33,7 @@ export class UnsupportedComplaint {
      * @param reason   Description of what's not supported.
      * @param sourceFile   Source file of the complaint.
      */
-    private constructor(range: IRange, reason: string | UnsupportedComplaint[], sourceFile: SourceFile) {
+    private constructor(range: IRange, reason: string | UnsupportedComplaint[], sourceFile: ts.SourceFile) {
         this.range = range;
         this.reason = reason;
         this.sourceFile = sourceFile;
@@ -47,7 +47,7 @@ export class UnsupportedComplaint {
      * @param reason   Description of what's not supported.
      * @returns A new UnsupportedComplaint for the node.
      */
-    public static forNode(node: Node, sourceFile: SourceFile, reason: string | UnsupportedComplaint[]): UnsupportedComplaint {
+    public static forNode(node: ts.Node, sourceFile: ts.SourceFile, reason: string | UnsupportedComplaint[]): UnsupportedComplaint {
         return new UnsupportedComplaint(
             {
                 end: node.getEnd(),
@@ -65,7 +65,7 @@ export class UnsupportedComplaint {
      * @param reason   Description of what's not supported.
      * @returns A new UnsupportedComplaint for the node.
      */
-    public static forUnsupportedTypeNode(node: Node, sourceFile: SourceFile): UnsupportedComplaint {
+    public static forUnsupportedTypeNode(node: ts.Node, sourceFile: ts.SourceFile): UnsupportedComplaint {
         return UnsupportedComplaint.forNode(node, sourceFile, unsupportedTypeComplaint);
     }
 

@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { ParenthesizedExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -7,7 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class ParenthesizedExpressionVisitor extends NodeVisitor {
-    public visit(node: ParenthesizedExpression) {
+    public visit(node: ts.ParenthesizedExpression) {
         const contents = this.router.recurseIntoValue(node.expression);
         if (contents instanceof UnsupportedComplaint) {
             return contents;

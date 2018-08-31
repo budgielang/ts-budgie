@@ -1,4 +1,4 @@
-import { PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { NodeVisitor } from "../visitor";
@@ -26,7 +26,7 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
         new MemberVariableChecker(this),
     ];
 
-    public visit(node: PropertyAccessExpression) {
+    public visit(node: ts.PropertyAccessExpression) {
         for (const checker of this.checkers) {
             const checkedResult = checker.visit(node);
 

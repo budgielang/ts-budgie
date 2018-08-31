@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { ElementAccessExpression, Expression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -18,7 +18,7 @@ const knownComplexFriendlyTypeCommands = new Map<string, string>([
 ]);
 
 export class ElementAccessExpressionVisitor extends NodeVisitor {
-    public visit(node: ElementAccessExpression) {
+    public visit(node: ts.ElementAccessExpression) {
         if (node.argumentExpression === undefined) {
             return UnsupportedComplaint.forNode(
                 node,
@@ -51,7 +51,7 @@ export class ElementAccessExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getCommandName(expression: Expression) {
+    private getCommandName(expression: ts.Expression) {
         const friendlyType = this.aliaser.getFriendlyTypeName(expression);
         if (friendlyType === undefined) {
             return UnsupportedComplaint.forUnsupportedTypeNode(expression, this.sourceFile);

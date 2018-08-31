@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { ArrayLiteralExpression, Expression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -9,7 +9,7 @@ import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 export class ArrayLiteralExpressionVisitor extends NodeVisitor {
-    public visit(node: ArrayLiteralExpression) {
+    public visit(node: ts.ArrayLiteralExpression) {
         const parsedElements = filterOutUnsupportedComplaint(
             node.elements.map(
                 (element) => this.router.recurseIntoValue(element)));
@@ -34,7 +34,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getType(elements: ReadonlyArray<Expression>) {
+    private getType(elements: ReadonlyArray<ts.Expression>) {
         if (this.context.coercion instanceof GlsLine) {
             return this.context.coercion.args[0];
         }
@@ -46,7 +46,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
         return this.aliaser.getFriendlyTypeName(elements[0]);
     }
 
-    private getTypeParsed(elements: ReadonlyArray<Expression>, parsedElements: (string | GlsLine)[]) {
+    private getTypeParsed(elements: ReadonlyArray<ts.Expression>, parsedElements: (string | GlsLine)[]) {
         let typeRaw = this.getType(elements);
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {

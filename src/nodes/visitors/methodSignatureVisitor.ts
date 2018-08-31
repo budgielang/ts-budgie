@@ -1,5 +1,5 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
-import { MethodSignature, ParameterDeclaration } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -7,7 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class MethodSignatureVisitor extends NodeVisitor {
-    public visit(node: MethodSignature) {
+    public visit(node: ts.MethodSignature) {
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, "Could not parse method return type.");
@@ -31,7 +31,7 @@ export class MethodSignatureVisitor extends NodeVisitor {
         ];
     }
 
-    private accumulateParameters(declarations: ReadonlyArray<ParameterDeclaration>) {
+    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>) {
         const parameters: (string | GlsLine)[] = [];
 
         for (const declaration of declarations) {

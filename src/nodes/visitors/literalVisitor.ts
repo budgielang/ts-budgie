@@ -1,4 +1,4 @@
-import { Node } from "typescript";
+import * as ts from "typescript";
 
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
@@ -7,7 +7,7 @@ import { NodeVisitor } from "../visitor";
  * Transforms simple literal nodes to their text equivalents.
  */
 export class LiteralVisitor extends NodeVisitor {
-    public visit(node: Node) {
+    public visit(node: ts.Node) {
         return [
             Transformation.fromNode(
                 node,

@@ -1,13 +1,13 @@
-import { NewExpression, SourceFile } from "typescript";
+import * as ts from "typescript";
 
 export class NewExpressionAliaser {
-    private readonly sourceFile: SourceFile;
+    private readonly sourceFile: ts.SourceFile;
 
-    public constructor(sourceFile: SourceFile) {
+    public constructor(sourceFile: ts.SourceFile) {
         this.sourceFile = sourceFile;
     }
 
-    public getFriendlyTypeName(node: NewExpression): string {
+    public getFriendlyTypeName(node: ts.NewExpression): string {
         return node.expression.getText(this.sourceFile);
     }
 }

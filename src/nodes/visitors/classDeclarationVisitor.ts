@@ -1,6 +1,6 @@
 import { CommandNames, KeywordNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
-import { ClassDeclaration, SyntaxKind } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -10,7 +10,7 @@ import { NodeVisitor } from "../visitor";
 const classWithoutNameComplaint = "A class must have a name.";
 
 export class ClassDeclarationVisitor extends NodeVisitor {
-    public visit(node: ClassDeclaration) {
+    public visit(node: ts.ClassDeclaration) {
         if (node.name === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, classWithoutNameComplaint);
         }
@@ -26,7 +26,7 @@ export class ClassDeclarationVisitor extends NodeVisitor {
         if (node.heritageClauses !== undefined) {
             for (const clause of node.heritageClauses) {
                 for (const type of clause.types) {
-                    if (clause.token === SyntaxKind.ExtendsKeyword) {
+                    if (clause.token === ts.SyntaxKind.ExtendsKeyword) {
                         extensions.push(type.expression.getText(this.sourceFile));
                     } else {
                         implementations.push(type.expression.getText(this.sourceFile));
@@ -37,11 +37,11 @@ export class ClassDeclarationVisitor extends NodeVisitor {
 
         const parameters = [];
 
-        if (hasModifier(node.modifiers, SyntaxKind.ExportKeyword)) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.ExportKeyword)) {
             parameters.push(KeywordNames.Export);
         }
 
-        if (hasModifier(node.modifiers, SyntaxKind.AbstractKeyword)) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.AbstractKeyword)) {
             parameters.push(KeywordNames.Abstract);
         }
 

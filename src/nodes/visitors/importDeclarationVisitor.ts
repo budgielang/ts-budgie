@@ -1,6 +1,6 @@
 import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
 import * as path from "path";
-import { ImportDeclaration, SyntaxKind } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -16,12 +16,12 @@ const noNamespaceImportsComplaint = "Namespace imports are not supported.";
 const noPackageImportsComplaint = "Package imports are not yet supported.";
 
 export class ImportDeclarationVisitor extends NodeVisitor {
-    public visit(node: ImportDeclaration) {
+    public visit(node: ts.ImportDeclaration) {
         if (node.importClause === undefined || node.importClause.namedBindings === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, noImportClauseComplaint);
         }
 
-        if (node.importClause.namedBindings.kind === SyntaxKind.NamespaceImport) {
+        if (node.importClause.namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, noNamespaceImportsComplaint);
         }
 
@@ -43,7 +43,7 @@ export class ImportDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private parsePackagePath(node: ImportDeclaration): string[] | UnsupportedComplaint {
+    private parsePackagePath(node: ts.ImportDeclaration): string[] | UnsupportedComplaint {
         const packagePathRaw = node.moduleSpecifier.getText(this.sourceFile);
         if (packagePathRaw[1] !== ".") {
             return UnsupportedComplaint.forNode(node, this.sourceFile, noPackageImportsComplaint);

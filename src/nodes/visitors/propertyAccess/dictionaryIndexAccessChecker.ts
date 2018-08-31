@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { Expression, PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
@@ -8,7 +8,7 @@ import { wrapWithQuotes } from "../../../parsing/strings";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class DictionaryIndexAccessChecker extends PropertyAccessChecker {
-    public visit(node: PropertyAccessExpression): Transformation[] | undefined {
+    public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (!this.isDictionary(node.expression)) {
             return undefined;
         }
@@ -37,7 +37,7 @@ export class DictionaryIndexAccessChecker extends PropertyAccessChecker {
         ];
     }
 
-    private isDictionary(expression: Expression) {
+    private isDictionary(expression: ts.Expression) {
         const friendlyName = this.aliaser.getFriendlyTypeName(expression);
         return friendlyName instanceof GlsLine
             ? friendlyName.command === CommandNames.DictionaryType

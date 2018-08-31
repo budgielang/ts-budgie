@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { WhileStatement } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../..";
 import { GlsLine } from "../../output/glsLine";
@@ -7,7 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class WhileStatementVisitor extends NodeVisitor {
-    public visit(node: WhileStatement) {
+    public visit(node: ts.WhileStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
         if (expression instanceof UnsupportedComplaint) {
             return expression;

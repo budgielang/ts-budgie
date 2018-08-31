@@ -1,6 +1,6 @@
 import { CommandNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
-import { Expression, PropertyDeclaration, SyntaxKind } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -8,7 +8,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
-    public visit(node: PropertyDeclaration) {
+    public visit(node: ts.PropertyDeclaration) {
         const type = this.getType(node);
 
         if (type === undefined) {
@@ -42,7 +42,7 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private getInitializerValue(initializer: Expression | undefined) {
+    private getInitializerValue(initializer: ts.Expression | undefined) {
         if (initializer === undefined) {
             return undefined;
         }
@@ -50,7 +50,7 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         return this.router.recurseIntoValue(initializer);
     }
 
-    private getType(node: PropertyDeclaration) {
+    private getType(node: ts.PropertyDeclaration) {
         if (node.type !== undefined) {
             return this.aliaser.getFriendlyTypeName(node.type);
         }
@@ -62,8 +62,8 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
         return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
     }
 
-    private getGlsCommand(node: PropertyDeclaration) {
-        if (hasModifier(node.modifiers, SyntaxKind.StaticKeyword)) {
+    private getGlsCommand(node: ts.PropertyDeclaration) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.StaticKeyword)) {
             return CommandNames.StaticVariableDeclare;
         }
 

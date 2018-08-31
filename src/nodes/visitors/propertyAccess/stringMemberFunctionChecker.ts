@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { Expression, isCallExpression, PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
@@ -17,9 +17,9 @@ const knownMethodPairs = new Map<string, string>([
 ]);
 
 export class StringMemberFunctionChecker extends PropertyAccessChecker {
-    public visit(node: PropertyAccessExpression): Transformation[] | undefined {
+    public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined
-            || !isCallExpression(node.parent)
+            || !ts.isCallExpression(node.parent)
             || !this.isString(node.expression)) {
             return undefined;
         }
@@ -47,7 +47,7 @@ export class StringMemberFunctionChecker extends PropertyAccessChecker {
         ];
     }
 
-    private isString(expression: Expression) {
+    private isString(expression: ts.Expression) {
         return this.aliaser.getFriendlyTypeName(expression) === "string";
     }
 }

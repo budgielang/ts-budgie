@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { IfStatement, Statement } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -7,7 +7,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class IfStatementVisitor extends NodeVisitor {
-    public visit(node: IfStatement) {
+    public visit(node: ts.IfStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
         if (expression instanceof UnsupportedComplaint) {
             return expression;
@@ -42,7 +42,7 @@ export class IfStatementVisitor extends NodeVisitor {
         ];
     }
 
-    private replaceWithElseCommands(elseStatement: Statement, transformations: Transformation[]) {
+    private replaceWithElseCommands(elseStatement: ts.Statement, transformations: Transformation[]) {
         // If there are no commands, just end with an else command
         if (transformations.length === 0) {
             return [

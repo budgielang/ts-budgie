@@ -1,11 +1,11 @@
 import { CommandNames } from "general-language-syntax";
-import { ArrayLiteralExpression, Expression } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class ArrayLiteralExpressionAliaser extends RecursiveAliaser {
-    public getFriendlyTypeName(node: ArrayLiteralExpression): string | GlsLine | undefined {
+    public getFriendlyTypeName(node: ts.ArrayLiteralExpression): string | GlsLine | undefined {
         const elementsType = this.getCommonElementsType(node.elements);
         if (elementsType === undefined) {
             return undefined;
@@ -14,7 +14,7 @@ export class ArrayLiteralExpressionAliaser extends RecursiveAliaser {
         return new GlsLine(CommandNames.ListType, elementsType);
     }
 
-    private getCommonElementsType(elements: ReadonlyArray<Expression>) {
+    private getCommonElementsType(elements: ReadonlyArray<ts.Expression>) {
         if (elements.length === 0) {
             return undefined;
         }

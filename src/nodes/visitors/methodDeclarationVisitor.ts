@@ -1,6 +1,6 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
-import { hasModifier } from "tsutils";
-import { MethodDeclaration, ParameterDeclaration, SyntaxKind } from "typescript";
+import * as tsutils from "tsutils";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -8,7 +8,7 @@ import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class MethodDeclarationVisitor extends NodeVisitor {
-    public visit(node: MethodDeclaration) {
+    public visit(node: ts.MethodDeclaration) {
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, "Could not parse method return type.");
@@ -24,17 +24,17 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         const name = this.casing.convertToCase(CaseStyle.PascalCase, nameSplit);
         const parameters = [privacy, name, returnType, ...methodArgs];
 
-        return hasModifier(node.modifiers, SyntaxKind.AbstractKeyword)
+        return tsutils.hasModifier(node.modifiers, ts.SyntaxKind.AbstractKeyword)
             ? this.returnAbstractTransformation(node, parameters)
             : this.returnConcreteTransformation(node, parameters);
     }
 
-    private returnAbstractTransformation(node: MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private returnAbstractTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
         if (node.body !== undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, "Non-abstract methods may not have bodies.");
         }
 
-        if (hasModifier(node.modifiers, SyntaxKind.StaticKeyword)) {
+        if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.StaticKeyword)) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, "Static methods may not be marked abstract.");
         }
 
@@ -48,7 +48,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private returnConcreteTransformation(node: MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private returnConcreteTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
         if (node.body === undefined) {
             return UnsupportedComplaint.forNode(node, this.sourceFile, "Non-abstract methods must have bodies.");
         }
@@ -72,7 +72,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private accumulateParameters(declarations: ReadonlyArray<ParameterDeclaration>) {
+    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>) {
         const parameters: (string | GlsLine)[] = [];
 
         for (const declaration of declarations) {
@@ -88,8 +88,8 @@ export class MethodDeclarationVisitor extends NodeVisitor {
         return parameters;
     }
 
-    private getConcreteCommandNames(node: MethodDeclaration) {
-        return hasModifier(node.modifiers, SyntaxKind.StaticKeyword)
+    private getConcreteCommandNames(node: ts.MethodDeclaration) {
+        return tsutils.hasModifier(node.modifiers, ts.SyntaxKind.StaticKeyword)
             ? [CommandNames.StaticFunctionDeclareStart, CommandNames.StaticFunctionDeclareEnd]
             : [CommandNames.MemberFunctionDeclareStart, CommandNames.MemberFunctionDeclareEnd];
     }

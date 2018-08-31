@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { isCallExpression, PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
@@ -8,9 +8,9 @@ import { filterOutUnsupportedComplaint } from "../../../utils";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class ConsoleLogAccessChecker extends PropertyAccessChecker {
-    public visit(node: PropertyAccessExpression): Transformation[] | undefined {
+    public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined
-            || !isCallExpression(node.parent)
+            || !ts.isCallExpression(node.parent)
             || node.expression.getText(this.sourceFile) !== "console"
             || node.name.getText(this.sourceFile) !== "log") {
             return undefined;

@@ -1,5 +1,5 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
-import { Node, SourceFile, TypeChecker } from "typescript";
+import * as ts from "typescript";
 
 import { Transformation } from "../../../output/transformation";
 import { RootAliaser } from "../../../parsing/aliasers/rootAliaser";
@@ -39,12 +39,12 @@ export abstract class PropertyAccessChecker {
     /**
      * Source file for nodes.
      */
-    protected readonly sourceFile: SourceFile;
+    protected readonly sourceFile: ts.SourceFile;
 
     /**
      * Type checker for the source file.
      */
-    protected readonly typeChecker: TypeChecker;
+    protected readonly typeChecker: ts.TypeChecker;
 
     /**
      * Initializes a new instance of the PropertyAccessChecker class.
@@ -73,5 +73,5 @@ export abstract class PropertyAccessChecker {
      * @param node   Node to transform.
      * @returns Transformations for the node, if possible.
      */
-    public abstract visit(node: Node): Transformation[] | undefined;
+    public abstract visit(node: ts.Node): Transformation[] | undefined;
 }

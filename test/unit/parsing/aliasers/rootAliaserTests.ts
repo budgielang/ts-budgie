@@ -1,19 +1,19 @@
 import { expect } from "chai";
 import "mocha";
-import { ClassDeclaration, ConstructorDeclaration, Node, SourceFile, TypeNode, VariableStatement } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../../../../src/output/glsLine";
 import { RootAliaser } from "../../../../src/parsing/aliasers/rootAliaser";
 import { mountSourceText } from "../mounting";
 
-type INodeGetter = (sourceFile: SourceFile) => Node;
+type INodeGetter = (sourceFile: ts.SourceFile) => ts.Node;
 
-const getRootNode = (sourceFile: SourceFile) => sourceFile.getChildren()[0].getChildren()[0];
+const getRootNode = (sourceFile: ts.SourceFile) => sourceFile.getChildren()[0].getChildren()[0];
 
 describe("RootAliaser", () => {
     describe("getFriendlyTypeName", () => {
-        const getVariableDeclarationType = (sourceFile: SourceFile) =>
-            (getRootNode(sourceFile) as VariableStatement).declarationList.declarations[0].type as TypeNode;
+        const getVariableDeclarationType = (sourceFile: ts.SourceFile) =>
+            (getRootNode(sourceFile) as ts.VariableStatement).declarationList.declarations[0].type as ts.TypeNode;
 
         const assertTypeNameBecomes = (
             sourceText: string,
@@ -78,8 +78,8 @@ describe("RootAliaser", () => {
     });
 
     describe("getFriendlyPrivacyName", () => {
-        const getFirstChildConstructor = (sourceFile: SourceFile) =>
-            (getRootNode(sourceFile) as ClassDeclaration).members[0] as ConstructorDeclaration;
+        const getFirstChildConstructor = (sourceFile: ts.SourceFile) =>
+            (getRootNode(sourceFile) as ts.ClassDeclaration).members[0] as ts.ConstructorDeclaration;
 
         const assertTypeNameBecomes = (
             sourceText: string,

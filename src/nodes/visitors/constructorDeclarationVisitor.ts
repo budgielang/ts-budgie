@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { Block, ConstructorDeclaration, isClassDeclaration, Node, ParameterDeclaration, Statement } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
@@ -11,7 +11,7 @@ const cannotFindClassNameComplaint = "Cannot find class name for constructor.";
 const noClassNameComplaint = "Classes must have names.";
 
 export class ConstructorDeclarationVisitor extends NodeVisitor {
-    public visit(node: ConstructorDeclaration) {
+    public visit(node: ts.ConstructorDeclaration) {
         const { body, parameters } = node;
 
         const className = this.getParentClassName(node);
@@ -43,7 +43,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         ];
     }
 
-    private getBodyChildren(body: Block | undefined): ReadonlyArray<Statement> {
+    private getBodyChildren(body: ts.Block | undefined): ReadonlyArray<ts.Statement> {
         if (body === undefined) {
             return [];
         }
@@ -51,7 +51,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return body.statements;
     }
 
-    private parseParameters(parameters: ReadonlyArray<ParameterDeclaration>): (string | GlsLine)[] | UnsupportedComplaint {
+    private parseParameters(parameters: ReadonlyArray<ts.ParameterDeclaration>): (string | GlsLine)[] | UnsupportedComplaint {
         const parsedParameters: (string | GlsLine)[] = [];
 
         for (const parameter of parameters) {
@@ -67,8 +67,11 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return parsedParameters;
     }
 
-    private getParentClassName(originalNode: ConstructorDeclaration, currentNode: Node = originalNode): string | UnsupportedComplaint {
-        if (isClassDeclaration(currentNode)) {
+    private getParentClassName(
+        originalNode: ts.ConstructorDeclaration,
+        currentNode: ts.Node = originalNode,
+    ): string | UnsupportedComplaint {
+        if (ts.isClassDeclaration(currentNode)) {
             if (currentNode.name === undefined) {
                 return UnsupportedComplaint.forNode(originalNode, this.sourceFile, noClassNameComplaint);
             }

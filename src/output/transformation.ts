@@ -1,4 +1,4 @@
-import { CommentRange, Node, SourceFile } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "./glsLine";
 import { IRange } from "./range";
@@ -42,7 +42,7 @@ export class Transformation {
      * @param sourceFile   Source file of the transformation.
      * @returns A new Transformation for the comment range.
      */
-    public static fromCommentRange(range: CommentRange, output: IOutput): Transformation {
+    public static fromCommentRange(range: ts.CommentRange, output: IOutput): Transformation {
         return new Transformation(
             {
                 end: range.end,
@@ -59,7 +59,7 @@ export class Transformation {
      * @param output   Output transformation.
      * @returns A new Transformation for the node.
      */
-    public static fromNode(node: Node, sourceFile: SourceFile, output: IOutput): Transformation {
+    public static fromNode(node: ts.Node, sourceFile: ts.SourceFile, output: IOutput): Transformation {
         return new Transformation(
             {
                 end: node.getEnd(),

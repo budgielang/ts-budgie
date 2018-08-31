@@ -1,5 +1,5 @@
 import { CommandNames } from "general-language-syntax";
-import { isCallExpression, PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
@@ -13,9 +13,9 @@ const allowedHasOwnPropertyReferences = new Set([
 ]);
 
 export class HasOwnPropertyAccessChecker extends PropertyAccessChecker {
-    public visit(node: PropertyAccessExpression): Transformation[] | undefined {
+    public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (node.parent === undefined
-            || !isCallExpression(node.parent)
+            || !ts.isCallExpression(node.parent)
             || !allowedHasOwnPropertyReferences.has(node.expression.getText(this.sourceFile))
             || node.name.getText(this.sourceFile) !== "call"
         ) {

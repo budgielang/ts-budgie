@@ -1,7 +1,7 @@
 import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { hasModifier } from "tsutils";
+import * as tsutils from "tsutils";
 import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
@@ -153,7 +153,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
             }
 
             return {
-                commandName: hasModifier(classProperty.valueDeclaration.modifiers, ts.SyntaxKind.StaticKeyword)
+                commandName: tsutils.hasModifier(classProperty.valueDeclaration.modifiers, ts.SyntaxKind.StaticKeyword)
                     ? CommandNames.StaticFunction
                     : CommandNames.MemberFunction,
                 hostSignature: classProperty,

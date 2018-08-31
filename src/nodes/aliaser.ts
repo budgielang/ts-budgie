@@ -1,4 +1,4 @@
-import { ArrowFunction, FunctionDeclaration, MethodDeclaration, MethodSignature, Node } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../output/glsLine";
 
@@ -10,7 +10,7 @@ export type IPrivacyName = "private" | "protected" | "public";
 /**
  * A node type that contains a return type.
  */
-export type IReturningNode = ArrowFunction | MethodDeclaration | MethodSignature | FunctionDeclaration;
+export type IReturningNode = ts.ArrowFunction | ts.MethodDeclaration | ts.MethodSignature | ts.FunctionDeclaration;
 
 /**
  * Generates GLS-friendly names for node types.
@@ -22,5 +22,5 @@ export interface INodeAliaser {
      * @param node   Node to generate a type name of.
      * @returns GLS-equivalent output type name of the node, if possible.
      */
-    getFriendlyTypeName(node: Node): string | GlsLine | undefined;
+    getFriendlyTypeName(node: ts.Node): string | GlsLine | undefined;
 }

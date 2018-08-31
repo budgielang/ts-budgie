@@ -1,12 +1,12 @@
 import { CommandNames } from "general-language-syntax";
-import { Expression, PropertyAccessExpression } from "typescript";
+import * as ts from "typescript";
 
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class StringLengthAccessChecker extends PropertyAccessChecker {
-    public visit(node: PropertyAccessExpression): Transformation[] | undefined {
+    public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
         if (!this.isString(node.expression) || node.name.getText(this.sourceFile) !== "length") {
             return undefined;
         }
@@ -21,7 +21,7 @@ export class StringLengthAccessChecker extends PropertyAccessChecker {
         ];
     }
 
-    private isString(expression: Expression) {
+    private isString(expression: ts.Expression) {
         return this.aliaser.getFriendlyTypeName(expression) === "string";
     }
 }
