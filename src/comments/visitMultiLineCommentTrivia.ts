@@ -14,12 +14,10 @@ export const visitMultiLineCommentTrivia = (fullText: string, comment: ts.Commen
     const commentLines = parseCommentLines(fullText.substring(comment.pos, comment.end));
 
     return [
-        Transformation.fromCommentRange(
-            comment,
-            [
-                new GlsLine(CommandNames.CommentBlockStart),
-                ...commentLines.map((line) => new GlsLine(CommandNames.CommentBlock, line)),
-                new GlsLine(CommandNames.CommentBlockEnd)
-            ])
+        Transformation.fromCommentRange(comment, [
+            new GlsLine(CommandNames.CommentBlockStart),
+            ...commentLines.map((line) => new GlsLine(CommandNames.CommentBlock, line)),
+            new GlsLine(CommandNames.CommentBlockEnd),
+        ]),
     ];
 };

@@ -12,64 +12,38 @@ export class BinaryExpressionVisitor extends NodeVisitor {
     public visit(node: ts.BinaryExpression) {
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
             return [
-                Transformation.fromNode(
-                    node,
-                    this.sourceFile,
-                    [
-                        new GlsLine(
-                            CommandNames.InstanceOf,
-                            node.left.getText(this.sourceFile),
-                            node.right.getText(this.sourceFile)),
-                    ]),
+                Transformation.fromNode(node, this.sourceFile, [
+                    new GlsLine(CommandNames.InstanceOf, node.left.getText(this.sourceFile), node.right.getText(this.sourceFile)),
+                ]),
             ];
         }
 
         if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
             return [
-                Transformation.fromNode(
-                    node,
-                    this.sourceFile,
-                    [
-                        new GlsLine(
-                            CommandNames.DictionaryContainsKey,
-                            node.left.getText(this.sourceFile),
-                            node.right.getText(this.sourceFile)),
-                    ]),
+                Transformation.fromNode(node, this.sourceFile, [
+                    new GlsLine(
+                        CommandNames.DictionaryContainsKey,
+                        node.left.getText(this.sourceFile),
+                        node.right.getText(this.sourceFile),
+                    ),
+                ]),
             ];
         }
 
-        const contents = this.collectOperationContents(node)
-            .map((content) => this.recurseOnOperationContents(content));
+        const contents = this.collectOperationContents(node).map((content) => this.recurseOnOperationContents(content));
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.Operation, ...contents)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Operation, ...contents)])];
     }
 
     private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine)[] {
         const { left, right } = node;
 
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
-            return [
-                new GlsLine(
-                    CommandNames.InstanceOf,
-                    left.getText(this.sourceFile),
-                    right.getText(this.sourceFile)),
-            ];
+            return [new GlsLine(CommandNames.InstanceOf, left.getText(this.sourceFile), right.getText(this.sourceFile))];
         }
 
         if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
-            return [
-                new GlsLine(
-                    CommandNames.DictionaryContainsKey,
-                    left.getText(this.sourceFile),
-                    right.getText(this.sourceFile)),
-            ];
+            return [new GlsLine(CommandNames.DictionaryContainsKey, left.getText(this.sourceFile), right.getText(this.sourceFile))];
         }
 
         const contents: (string | GlsLine)[] = [];
@@ -96,8 +70,6 @@ export class BinaryExpressionVisitor extends NodeVisitor {
     }
 
     private recurseOnOperationContents(content: string | GlsLine) {
-        return typeof content === "string" || content instanceof GlsLine
-            ? content
-            : this.router.recurseIntoValue(content);
+        return typeof content === "string" || content instanceof GlsLine ? content : this.router.recurseIntoValue(content);
     }
 }

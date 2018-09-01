@@ -9,14 +9,7 @@ export class ReturnStatementVisitor extends NodeVisitor {
     public visit(node: ts.ReturnStatement) {
         const returnValues = this.getReturnValues(node.expression);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.Return, ...returnValues),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Return, ...returnValues)])];
     }
 
     private getReturnValues(expression: ts.Expression | undefined) {
@@ -24,8 +17,6 @@ export class ReturnStatementVisitor extends NodeVisitor {
             return [];
         }
 
-        return [
-            this.router.recurseIntoValue(expression),
-        ];
+        return [this.router.recurseIntoValue(expression)];
     }
 }

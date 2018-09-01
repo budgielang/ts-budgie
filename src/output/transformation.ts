@@ -46,9 +46,10 @@ export class Transformation {
         return new Transformation(
             {
                 end: range.end,
-                start: range.pos
+                start: range.pos,
             },
-            output);
+            output,
+        );
     }
 
     /**
@@ -63,8 +64,9 @@ export class Transformation {
         return new Transformation(
             {
                 end: node.getEnd(),
-                start: node.getStart(sourceFile)
+                start: node.getStart(sourceFile),
             },
-            output);
+            output,
+        );
     }
 }

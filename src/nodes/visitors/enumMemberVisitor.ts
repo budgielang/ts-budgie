@@ -12,14 +12,7 @@ const missingInitializerComplaint = "For now, enum members each require a value.
 
 export class EnumMemberVisitor extends NodeVisitor {
     public visit(node: ts.EnumMember) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getTransformationContents(node),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getTransformationContents(node)])];
     }
 
     private getTransformationContents(node: ts.EnumMember) {

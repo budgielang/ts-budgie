@@ -55,16 +55,10 @@ export const createTransformer = (options: ITsGlsOptions) => {
     }
 
     return new Transformer({
-        compilerOptions: options.compilerOptions === undefined
-            ? {}
-            : options.compilerOptions,
+        compilerOptions: options.compilerOptions === undefined ? {} : options.compilerOptions,
         contextOptions: {
-            baseDirectory: options.baseDirectory === undefined
-                ? ""
-                : options.baseDirectory,
-            outputNamespace: options.outputNamespace === undefined
-                ? ""
-                : options.outputNamespace,
+            baseDirectory: options.baseDirectory === undefined ? "" : options.baseDirectory,
+            outputNamespace: options.outputNamespace === undefined ? "" : options.outputNamespace,
         },
         printer: new TransformationsPrinter(),
         service: new TransformationService(transformers),

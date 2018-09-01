@@ -12,11 +12,8 @@ const parseCommentText = (commentText: string): string => {
     return commentText.trim();
 };
 
-export const visitSingleLineCommentTrivia = (fullText: string, comment: ts.CommentRange) =>
-    [
-        Transformation.fromCommentRange(
-            comment,
-            [
-                new GlsLine(CommandNames.CommentLine, parseCommentText(fullText.substring(comment.pos, comment.end)))
-            ])
-    ];
+export const visitSingleLineCommentTrivia = (fullText: string, comment: ts.CommentRange) => [
+    Transformation.fromCommentRange(comment, [
+        new GlsLine(CommandNames.CommentLine, parseCommentText(fullText.substring(comment.pos, comment.end))),
+    ]),
+];

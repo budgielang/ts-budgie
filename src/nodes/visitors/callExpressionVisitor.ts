@@ -17,13 +17,6 @@ export class CallExpressionVisitor extends NodeVisitor {
     private visitSuperConstructor(node: ts.CallExpression) {
         const args = this.router.recurseIntoValues(node.arguments);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.SuperConstructor, ...args),
-                ]),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.SuperConstructor, ...args)])];
     }
 }

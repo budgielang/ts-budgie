@@ -7,13 +7,6 @@ import { NodeVisitor } from "../visitor";
 
 export class BreakStatementVisitor extends NodeVisitor {
     public visit(node: ts.BreakStatement) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.Break)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Break)])];
     }
 }

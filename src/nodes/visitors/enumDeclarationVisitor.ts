@@ -11,14 +11,11 @@ export class EnumDeclarationVisitor extends NodeVisitor {
         const name = node.name.text;
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.EnumStart, name),
-                    ...bodyNodes,
-                    new GlsLine(CommandNames.EnumEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.EnumStart, name),
+                ...bodyNodes,
+                new GlsLine(CommandNames.EnumEnd),
+            ]),
         ];
     }
 }

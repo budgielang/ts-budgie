@@ -14,14 +14,7 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
 
         this.context.setTypeCoercion(new GlsLine(CommandNames.ListType, typeParsed));
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.ListInitialize, typeParsed, ...parsedElements)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.ListInitialize, typeParsed, ...parsedElements)])];
     }
 
     private getType(elements: ReadonlyArray<ts.Expression>) {

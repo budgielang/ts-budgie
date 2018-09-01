@@ -10,14 +10,7 @@ export class NewExpressionVisitor extends NodeVisitor {
         const newTypes = this.getNewTypes(node.expression);
         const newArgs = this.collectNewArgs(node.arguments);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.New, newTypes[0], ...newArgs),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.New, newTypes[0], ...newArgs)])];
     }
 
     private getNewTypes(expression: ts.Expression | undefined): (string | GlsLine)[] {
@@ -25,9 +18,7 @@ export class NewExpressionVisitor extends NodeVisitor {
             return [];
         }
 
-        return [
-            this.router.recurseIntoValue(expression),
-        ];
+        return [this.router.recurseIntoValue(expression)];
     }
 
     private collectNewArgs(argsList: ts.NodeArray<ts.Expression> | undefined): (string | GlsLine)[] {

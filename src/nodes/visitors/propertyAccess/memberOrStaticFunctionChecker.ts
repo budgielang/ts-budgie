@@ -29,10 +29,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
 
         const caller = this.router.recurseIntoValue(node.expression);
 
-        const args = node.parent.arguments.map(
-            (arg) => arg === node
-                ? node.name.text
-                : this.router.recurseIntoValue(arg));
+        const args = node.parent.arguments.map((arg) => (arg === node ? node.name.text : this.router.recurseIntoValue(arg)));
 
         const [hostDeclaration] = hostSignature.declarations;
 
@@ -40,14 +37,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
         const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(commandName, privacy, caller, functionName, ...args)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(commandName, privacy, caller, functionName, ...args)])];
     }
 
     /**
@@ -61,21 +51,15 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         parent: ts.CallExpression,
     ): Transformation[] | undefined {
         const newGlsLineCall = this.router.recurseIntoValue(expression);
-        const args = parent.arguments.map(
-            (arg) => arg === node
-                ? node.name.text
-                : this.router.recurseIntoValue(arg));
+        const args = parent.arguments.map((arg) => (arg === node ? node.name.text : this.router.recurseIntoValue(arg)));
 
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
         const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.MemberFunction, KeywordNames.Public, newGlsLineCall, functionName, ...args)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.MemberFunction, KeywordNames.Public, newGlsLineCall, functionName, ...args),
+            ]),
         ];
     }
 
@@ -90,15 +74,14 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         }
 
         if (ts.isPropertyAccessExpression(node.expression)) {
-            return this.getHostContainerAndSignatureOfPropertyAccess(
-                node.expression.expression,
-                node.expression.name);
+            return this.getHostContainerAndSignatureOfPropertyAccess(node.expression.expression, node.expression.name);
         }
 
         if (ts.isCallExpression(node.expression) && ts.isPropertyAccessExpression(node.expression.expression)) {
             return this.getHostContainerAndSignatureOfPropertyAccess(
                 node.expression.expression.expression,
-                node.expression.expression.name);
+                node.expression.expression.name,
+            );
         }
 
         return undefined;
@@ -119,9 +102,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
 
         // If the class was imported from another file, this might be necessary to get the real type
         const declaredClassSymbol = this.typeChecker.getDeclaredTypeOfSymbol(classSymbol).symbol;
-        const trueClassSymbol = declaredClassSymbol === undefined
-            ? classSymbol
-            : declaredClassSymbol;
+        const trueClassSymbol = declaredClassSymbol === undefined ? classSymbol : declaredClassSymbol;
 
         // Protected properties are only listed as augmented properties (not in .members)
         const expressionType = this.typeChecker.getTypeAtLocation(expression);
@@ -140,7 +121,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
                     ? CommandNames.StaticFunction
                     : CommandNames.MemberFunction,
                 hostSignature: classProperty,
-                trueClassSymbol
+                trueClassSymbol,
             };
         }
 

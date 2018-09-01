@@ -12,12 +12,9 @@ export class StringLengthAccessChecker extends PropertyAccessChecker {
         }
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.StringLength, node.expression.getText(this.sourceFile))
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.StringLength, node.expression.getText(this.sourceFile)),
+            ]),
         ];
     }
 

@@ -10,14 +10,7 @@ const methodReturnTypeComplaint = "Could not parse method return type";
 
 export class MethodSignatureVisitor extends NodeVisitor {
     public visit(node: ts.MethodSignature) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getTransformationContents(node),
-                ]),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getTransformationContents(node)])];
     }
 
     private getTransformationContents(node: ts.MethodSignature): GlsLine {

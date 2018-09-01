@@ -43,7 +43,9 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
         throw new Error(message);
     }
 
-    public writeFile() {/* ... */}
+    public writeFile() {
+        /* ... */
+    }
 
     public getCurrentDirectory() {
         return ".";
@@ -61,8 +63,7 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
         return true;
     }
 
-    public readonly fileExists = (fileName: string) =>
-        this.sourceFiles.has(path.normalize(fileName))
+    public readonly fileExists = (fileName: string) => this.sourceFiles.has(path.normalize(fileName));
 
     public readonly readFile = (fileName: string): string => {
         const file = this.sourceFiles.get(path.normalize(fileName));
@@ -72,13 +73,12 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
         }
 
         return file.text;
-    }
+    };
 
     public resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
         return moduleNames.map((rawModuleName: string) => {
-            const moduleName = rawModuleName[0] === "."
-                ? path.join(path.dirname(containingFile), rawModuleName)
-                : path.normalize(rawModuleName);
+            const moduleName =
+                rawModuleName[0] === "." ? path.join(path.dirname(containingFile), rawModuleName) : path.normalize(rawModuleName);
             const resolvedFileName = `${moduleName}.ts`;
 
             if (!this.sourceFiles.has(resolvedFileName)) {

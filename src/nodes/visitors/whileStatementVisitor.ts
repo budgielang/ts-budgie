@@ -15,14 +15,11 @@ export class WhileStatementVisitor extends NodeVisitor {
         transformations.push(...thenBody);
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.WhileStart, expression),
-                    ...transformations,
-                    new GlsLine(CommandNames.WhileEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.WhileStart, expression),
+                ...transformations,
+                new GlsLine(CommandNames.WhileEnd),
+            ]),
         ];
     }
 }

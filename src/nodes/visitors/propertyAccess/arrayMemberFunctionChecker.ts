@@ -15,37 +15,35 @@ const knownMethodPairs = new Map<string, IKnownMethodInfo>([
         "concat",
         {
             argsCount: 1,
-            commandName: CommandNames.ListAddList
-        }
+            commandName: CommandNames.ListAddList,
+        },
     ],
     [
         "pop",
         {
             argsCount: 0,
-            commandName: CommandNames.ListPop
-        }
+            commandName: CommandNames.ListPop,
+        },
     ],
     [
         "unshift",
         {
             argsCount: 0,
-            commandName: CommandNames.ListPopFront
-        }
+            commandName: CommandNames.ListPopFront,
+        },
     ],
     [
         "push",
         {
             argsCount: 1,
-            commandName: CommandNames.ListPush
-        }
+            commandName: CommandNames.ListPush,
+        },
     ],
 ]);
 
 export class ArrayMemberFunctionChecker extends PropertyAccessChecker {
     public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
-        if (node.parent === undefined
-            || !ts.isCallExpression(node.parent)
-            || !this.isArray(node.expression)) {
+        if (node.parent === undefined || !ts.isCallExpression(node.parent) || !this.isArray(node.expression)) {
             return undefined;
         }
 
@@ -58,14 +56,7 @@ export class ArrayMemberFunctionChecker extends PropertyAccessChecker {
         const expression = this.router.recurseIntoValue(node.expression);
         const args = this.router.recurseIntoValues(node.parent.arguments);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(glsMethodPairing.commandName, expression, ...args)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(glsMethodPairing.commandName, expression, ...args)])];
     }
 
     private isArray(expression: ts.Expression) {

@@ -9,9 +9,7 @@ import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 
-export const visitSourceFile = (
-    { contextOptions, sourceFile, typeChecker }: ITransformerSettings,
-): Transformation[] => {
+export const visitSourceFile = ({ contextOptions, sourceFile, typeChecker }: ITransformerSettings): Transformation[] => {
     const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
     const nameSplitter = new NameSplitter();
@@ -29,7 +27,7 @@ export const visitSourceFile = (
         typeChecker,
         variableUsage,
         visitorContext,
-        visitorCreatorsBag
+        visitorCreatorsBag,
     });
 
     return router.recurseIntoNode(sourceFile);

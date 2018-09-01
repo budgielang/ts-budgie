@@ -17,19 +17,12 @@ interface IIntrinsicType extends ts.Type {
 /**
  * For very obvious types, we allow direct typeChecker usage to get simple names.
  */
-const allowedIntrinsicNames = new Set([
-    KeywordNames.String,
-    "boolean",
-    "number",
-    "string",
-]);
+const allowedIntrinsicNames = new Set([KeywordNames.String, "boolean", "number", "string"]);
 
 /**
  * Command names that indicate a variable needs to start and end with separate commands.
  */
-const multilineInitializerTypes = new Set([
-    CommandNames.DictionaryNewStart,
-]);
+const multilineInitializerTypes = new Set([CommandNames.DictionaryNewStart]);
 
 /**
  * @returns Whether a variable declaration is of a type that has a Start and corresponding End.
@@ -49,12 +42,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
     private readonly typeAdjuster = new TypeAdjuster();
 
     public visit(node: ts.VariableDeclaration) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                this.getTransformationContents(node)),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, this.getTransformationContents(node))];
     }
 
     private getTransformationContents(node: ts.VariableDeclaration) {
@@ -100,9 +88,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // If we don't know the interpreted type by now, just give up
         if (interpretedType === undefined) {
-            return [
-                createUnsupportedTypeGlsLine(),
-            ];
+            return [createUnsupportedTypeGlsLine()];
         }
 
         const firstResultsLineArgs: (string | GlsLine)[] = [name, interpretedType];
@@ -111,9 +97,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         }
 
         const lines: (string | GlsLine | Transformation)[] = [];
-        const command = isInitializerMultilineNecessary(firstResultsLineArgs[2])
-            ? CommandNames.VariableStart
-            : CommandNames.Variable;
+        const command = isInitializerMultilineNecessary(firstResultsLineArgs[2]) ? CommandNames.VariableStart : CommandNames.Variable;
 
         if (command === CommandNames.VariableStart) {
             const fullValue = this.getFullValue(node);
@@ -147,9 +131,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
     private getFriendlyTypeAtLocation(node: ts.VariableDeclaration): string | undefined {
         const { intrinsicName } = this.typeChecker.getTypeAtLocation(node) as IIntrinsicType;
 
-        return allowedIntrinsicNames.has(intrinsicName)
-            ? intrinsicName
-            : undefined;
+        return allowedIntrinsicNames.has(intrinsicName) ? intrinsicName : undefined;
     }
 
     private appendFullValueToLines(fullValue: (string | Transformation | GlsLine)[], lines: (string | GlsLine | Transformation)[]) {

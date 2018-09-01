@@ -52,9 +52,7 @@ const knownGlsLineTypes = new Map<string, string>([
  * Tries to find more specific types for variable declarations.
  */
 export class TypeAdjuster implements ITypeAdjustmentChecker {
-    private readonly checkers = [
-        new LengthCommandTypeAdjustmentChecker(),
-    ];
+    private readonly checkers = [new LengthCommandTypeAdjustmentChecker()];
 
     /**
      * Tries to find a more specific type for a variable declaration.

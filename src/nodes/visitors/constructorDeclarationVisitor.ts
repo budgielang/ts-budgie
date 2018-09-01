@@ -20,14 +20,11 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         const bodyNodes = this.router.recurseIntoNodes(bodyChildren);
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.ConstructorStart, privacy, className, ...parsedParameters),
-                    ...bodyNodes,
-                    new GlsLine(CommandNames.ConstructorEnd),
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.ConstructorStart, privacy, className, ...parsedParameters),
+                ...bodyNodes,
+                new GlsLine(CommandNames.ConstructorEnd),
+            ]),
         ];
     }
 
@@ -55,10 +52,7 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return parsedParameters;
     }
 
-    private getParentClassName(
-        originalNode: ts.ConstructorDeclaration,
-        currentNode: ts.Node = originalNode,
-    ): string | GlsLine {
+    private getParentClassName(originalNode: ts.ConstructorDeclaration, currentNode: ts.Node = originalNode): string | GlsLine {
         if (ts.isClassDeclaration(currentNode)) {
             if (currentNode.name === undefined) {
                 return createUnsupportedGlsLine(noClassNameComplaint);

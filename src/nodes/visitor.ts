@@ -71,7 +71,7 @@ export abstract class NodeVisitor {
         // See https://github.com/Microsoft/TypeScript/issues/17523
         if (dependencies instanceof NodeVisitor) {
             // tslint:disable-next-line:no-parameter-reassignment
-            dependencies = dependencies as {} as INodeVisitorDependencies;
+            dependencies = (dependencies as {}) as INodeVisitorDependencies;
         }
 
         this.aliaser = dependencies.aliaser;

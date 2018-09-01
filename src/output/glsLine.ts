@@ -1,14 +1,8 @@
-const escapeSpecialCharacters = (arg: string) =>
-    arg
-        .replace(/\r/g, "\\r")
-        .replace(/\n/g, "\\n");
+const escapeSpecialCharacters = (arg: string) => arg.replace(/\r/g, "\\r").replace(/\n/g, "\\n");
 
-const escapeParenthesis = (arg: string) =>
-    arg.replace(/\)/g, "\\)");
+const escapeParenthesis = (arg: string) => arg.replace(/\)/g, "\\)");
 
-const textWrapIndicators = new Set<string>([
-    "{", "(", " "
-]);
+const textWrapIndicators = new Set<string>(["{", "(", " "]);
 
 /**
  * Wraps a command argument if it has any spaces.
@@ -32,10 +26,7 @@ const wrapArg = (arg: string) => {
  * @param arg   String or recursive GLS command argument.
  * @returns The formatted argument.
  */
-const formatArg = (arg: string | GlsLine) =>
-    typeof arg === "string"
-        ? escapeSpecialCharacters(wrapArg(arg))
-        : `{ ${arg} }`;
+const formatArg = (arg: string | GlsLine) => (typeof arg === "string" ? escapeSpecialCharacters(wrapArg(arg)) : `{ ${arg} }`);
 
 /**
  * A single line of output GLS.

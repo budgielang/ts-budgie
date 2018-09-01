@@ -12,14 +12,7 @@ export abstract class UnsupportedVisitor {
         // tslint:disable-next-line:max-classes-per-file
         return class extends NodeVisitor {
             public visit(node: ts.Node): Transformation[] {
-                return [
-                    Transformation.fromNode(
-                        node,
-                        this.sourceFile,
-                        [
-                            createUnsupportedGlsLine(`GLS does not support ${description}.`),
-                        ])
-                ];
+                return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(`GLS does not support ${description}.`)])];
             }
         };
     }

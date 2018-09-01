@@ -20,14 +20,11 @@ export class InterfaceDeclarationVisitor extends NodeVisitor {
         }
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.InterfaceStart, name, ...extensions),
-                    ...bodyNodes,
-                    new GlsLine(CommandNames.InterfaceEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.InterfaceStart, name, ...extensions),
+                ...bodyNodes,
+                new GlsLine(CommandNames.InterfaceEnd),
+            ]),
         ];
     }
 }

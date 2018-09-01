@@ -9,18 +9,18 @@ import * as minimatch from "minimatch";
  * @returns Command names within the directory.
  */
 export const findGlsFilesUnder = (rootPath: string, inclusions?: Set<string>) => {
-    const childrenNames = fs.readdirSync(rootPath)
-        .filter((childName) => childName.indexOf(".") === -1);
+    const childrenNames = fs.readdirSync(rootPath).filter((childName) => childName.indexOf(".") === -1);
     if (inclusions === undefined) {
         return childrenNames;
     }
 
     const inclusionMatchers = Array.from(inclusions.keys());
 
-    return childrenNames
-        .filter(
-            (childName) => inclusionMatchers.some(
-                (inclusionMatcher) => minimatch(childName, inclusionMatcher, {
-                    nocase: true
-                })));
+    return childrenNames.filter((childName) =>
+        inclusionMatchers.some((inclusionMatcher) =>
+            minimatch(childName, inclusionMatcher, {
+                nocase: true,
+            }),
+        ),
+    );
 };

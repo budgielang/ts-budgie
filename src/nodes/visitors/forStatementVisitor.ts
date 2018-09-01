@@ -13,45 +13,31 @@ const irregularComplaint = "Could not parse irregular for loop.";
 
 export class ForStatementVisitor extends NodeVisitor {
     public visit(node: ts.ForStatement) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                this.getTransformationContents(node),
-            ),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, this.getTransformationContents(node))];
     }
 
     private getTransformationContents(node: ts.ForStatement) {
         const { condition, incrementor, initializer } = node;
         if (
-            condition === undefined
-            || incrementor === undefined
-            || initializer === undefined
-            || !ts.isVariableDeclarationList(initializer)
-            || initializer.declarations.length !== 1) {
-            return [
-                createUnsupportedGlsLine(irregularComplaint),
-            ];
+            condition === undefined ||
+            incrementor === undefined ||
+            initializer === undefined ||
+            !ts.isVariableDeclarationList(initializer) ||
+            initializer.declarations.length !== 1
+        ) {
+            return [createUnsupportedGlsLine(irregularComplaint)];
         }
 
         const declaration = initializer.declarations[0];
         if (declaration.initializer === undefined) {
-            return [
-                createUnsupportedGlsLine(irregularComplaint),
-            ];
+            return [createUnsupportedGlsLine(irregularComplaint)];
         }
 
         const name = (declaration.name as ts.Identifier).text;
         const incrementorText = this.getIncrementorIfNotOne(name, incrementor);
         const end = this.getConditionEnd(name, condition);
         const start = declaration.initializer.getText(this.sourceFile);
-        const realType = typeof end === "string"
-            ? getNumericTypeNameFromUsages([
-                start,
-                end
-            ])
-            : "float";
+        const realType = typeof end === "string" ? getNumericTypeNameFromUsages([start, end]) : "float";
 
         const bodyNodes = this.router.recurseIntoNode(node.statement);
         const parameters = [name, realType, start, end];
@@ -59,11 +45,7 @@ export class ForStatementVisitor extends NodeVisitor {
             parameters.push(incrementorText);
         }
 
-        return [
-            new GlsLine(CommandNames.ForNumbersStart, ...parameters),
-            ...bodyNodes,
-            new GlsLine(CommandNames.ForNumbersEnd)
-        ];
+        return [new GlsLine(CommandNames.ForNumbersStart, ...parameters), ...bodyNodes, new GlsLine(CommandNames.ForNumbersEnd)];
     }
 
     private getIncrementorIfNotOne(target: string, incrementor: ts.Expression) {
@@ -71,23 +53,25 @@ export class ForStatementVisitor extends NodeVisitor {
             return undefined;
         }
 
-        if (ts.isBinaryExpression(incrementor)
-            && incrementor.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken
-            && (incrementor.left as ts.Identifier).text === target) {
+        if (
+            ts.isBinaryExpression(incrementor) &&
+            incrementor.operatorToken.kind === ts.SyntaxKind.PlusEqualsToken &&
+            (incrementor.left as ts.Identifier).text === target
+        ) {
             const right = incrementor.right as ts.Identifier;
 
-            return right.text === "1"
-                ? undefined
-                : right.text;
+            return right.text === "1" ? undefined : right.text;
         }
 
         return createUnsupportedGlsLine(forLoopsMustBeAdditiveComplaint);
     }
 
     private getConditionEnd(target: string, condition: ts.Expression) {
-        if (!ts.isBinaryExpression(condition)
-            || (condition.left as ts.Identifier).text !== target
-            || condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken) {
+        if (
+            !ts.isBinaryExpression(condition) ||
+            (condition.left as ts.Identifier).text !== target ||
+            condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken
+        ) {
             return createUnsupportedGlsLine(irregularComplaint);
         }
 

@@ -27,7 +27,7 @@ interface IIntrinsicSignatureReturnType extends ts.Type {
 const recursiveFriendlyValueDeclarationTypes = new Set<ts.SyntaxKind>([
     ts.SyntaxKind.Parameter,
     ts.SyntaxKind.PropertyDeclaration,
-    ts.SyntaxKind.VariableDeclaration
+    ts.SyntaxKind.VariableDeclaration,
 ]);
 
 export class RootAliaser implements RootAliaser {
@@ -117,7 +117,7 @@ export class RootAliaser implements RootAliaser {
         }
 
         return undefined;
-    }
+    };
 
     public getFriendlyPrivacyName(node: ts.Node): IPrivacyName {
         if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.PrivateKeyword)) {
