@@ -1,18 +1,20 @@
 comment line
-for numbers start : aaa int 5 10
-for numbers end
+file start : Test Integration ForNumbers Source
+    for numbers start : aaa int 5 10
+    for numbers end
 
-for numbers start : aaa float 5.5 10.5
-for numbers end
+    for numbers start : aaa float 5.5 10.5
+    for numbers end
 
-for numbers start : i int 0 7
-for numbers end
+    for numbers start : i int 0 7
+    for numbers end
 
-for numbers start : i int 0 10 2
-for numbers end
+    for numbers start : i int 0 10 2
+    for numbers end
 
-variable : start float 0
+    variable : start float 0
 
-for numbers start : i int start 10
-for numbers end
+    for numbers start : i int start 10
+    for numbers end
+file end
 comment line

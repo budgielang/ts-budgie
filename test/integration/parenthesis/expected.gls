@@ -1,3 +1,5 @@
 comment line
-parenthesis : "abc"
+file start : Test Integration Parenthesis Source
+    parenthesis : "abc"
+file end
 comment line

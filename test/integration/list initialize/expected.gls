@@ -1,6 +1,8 @@
 comment line
-list initialize : int 1 2 3
-variable : abc { list type : int } { list initialize : int 1 2 3 }
-variable : def { list type : string } { list initialize : string "a" "b" "c" }
-variable : ghi { list type : { list type : int } } { list initialize : { list type : int } abc }
+file start : Test Integration ListInitialize Source
+    list initialize : int 1 2 3
+    variable : abc { list type : int } { list initialize : int 1 2 3 }
+    variable : def { list type : string } { list initialize : string "a" "b" "c" }
+    variable : ghi { list type : { list type : int } } { list initialize : { list type : int } abc }
+file end
 comment line

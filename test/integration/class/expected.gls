@@ -1,25 +1,27 @@
 comment line
-class start : Abc
-class end
+file start : Test Integration Class Source
+    class start : Abc
+    class end
 
-class start : Def extends Abc
-class end
+    class start : Def extends Abc
+    class end
 
-class start : Efg implements IHij
-class end
+    class start : Efg implements IHij
+    class end
 
-class start : Klm extends Efg implements IHij
-class end
+    class start : Klm extends Efg implements IHij
+    class end
 
-class start : abstract Klm
-class end
+    class start : abstract Klm
+    class end
 
-class start : abstract Nop extends Abc
-class end
+    class start : abstract Nop extends Abc
+    class end
 
-class start : abstract Qrs implements IHij
-class end
+    class start : abstract Qrs implements IHij
+    class end
 
-class start : abstract Tuv extends Efg implements IHij
-class end
+    class start : abstract Tuv extends Efg implements IHij
+    class end
+file end
 comment line

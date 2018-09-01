@@ -1,15 +1,17 @@
 comment line
-interface start : IAbc
-    interface method : Abc void
-    interface method : Bcd string i float
-    interface method : Cde IAbc j boolean k string
-interface end
+file start : Test Integration Interface Source
+    interface start : IAbc
+        interface method : Abc void
+        interface method : Bcd string i float
+        interface method : Cde IAbc j boolean k string
+    interface end
 
-interface start : IDef IAbc
-    interface method : Def void
-interface end
+    interface start : IDef IAbc
+        interface method : Def void
+    interface end
 
-interface start : IGhi IAbc IDef
-    interface method : Ghi IGhi abc IAbc def IDef
-interface end
+    interface start : IGhi IAbc IDef
+        interface method : Ghi IGhi abc IAbc def IDef
+    interface end
+file end
 comment line

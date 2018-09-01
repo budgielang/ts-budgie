@@ -1,22 +1,24 @@
 comment line
-enum start : NoMembers
-enum end
+file start : Test Integration Enum Source
+    enum start : NoMembers
+    enum end
 
-enum start : OneNumericMember
-    enum member : First 0
-enum end
+    enum start : OneNumericMember
+        enum member : First 0
+    enum end
 
-enum start : TwoNumericMembers
-    enum member : First 1 ,
-    enum member : Second 2
-enum end
+    enum start : TwoNumericMembers
+        enum member : First 1 ,
+        enum member : Second 2
+    enum end
 
-enum start : OneStringMember
-    enum member : First ""
-enum end
+    enum start : OneStringMember
+        enum member : First ""
+    enum end
 
-enum start : TwoStringMembers
-    enum member : First "abc" ,
-    enum member : Second "def"
-enum end
+    enum start : TwoStringMembers
+        enum member : First "abc" ,
+        enum member : Second "def"
+    enum end
+file end
 comment line

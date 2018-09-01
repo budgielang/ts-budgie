@@ -1,44 +1,46 @@
 comment line
-class start : PublicImplicitNoParameters
-    constructor start : public PublicImplicitNoParameters
-    constructor end
-class end
+file start : Test Integration Constructor Source
+    class start : PublicImplicitNoParameters
+        constructor start : public PublicImplicitNoParameters
+        constructor end
+    class end
 
-class start : PublicExplicitNoParameters
-    constructor start : public PublicExplicitNoParameters
-    constructor end
-class end
+    class start : PublicExplicitNoParameters
+        constructor start : public PublicExplicitNoParameters
+        constructor end
+    class end
 
-class start : ProtectedNoParameters
-    constructor start : protected ProtectedNoParameters
-    constructor end
-class end
+    class start : ProtectedNoParameters
+        constructor start : protected ProtectedNoParameters
+        constructor end
+    class end
 
-class start : PrivateNoParameters
-    constructor start : private PrivateNoParameters
-    constructor end
-class end
+    class start : PrivateNoParameters
+        constructor start : private PrivateNoParameters
+        constructor end
+    class end
 
-class start : OneParameter
-    constructor start : public OneParameter abc string
-    constructor end
-class end
+    class start : OneParameter
+        constructor start : public OneParameter abc string
+        constructor end
+    class end
 
-class start : OneParameterContent
-    constructor start : public OneParameterContent abc string
-        print : abc
-    constructor end
-class end
+    class start : OneParameterContent
+        constructor start : public OneParameterContent abc string
+            print : abc
+        constructor end
+    class end
 
-class start : TwoParameters
-    constructor start : public TwoParameters abc string def OneParameter
-    constructor end
-class end
+    class start : TwoParameters
+        constructor start : public TwoParameters abc string def OneParameter
+        constructor end
+    class end
 
-class start : TwoParametersContent
-    constructor start : public TwoParametersContent abc string def OneParameter
-        print : abc
-        print : def
-    constructor end
-class end
+    class start : TwoParametersContent
+        constructor start : public TwoParametersContent abc string def OneParameter
+            print : abc
+            print : def
+        constructor end
+    class end
+file end
 comment line

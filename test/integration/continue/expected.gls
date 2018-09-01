@@ -1,13 +1,15 @@
 comment line
-while start : true
-    continue
-while end
+file start : Test Integration Continue Source
+    while start : true
+        continue
+    while end
 
-for numbers start : i int 0 7
-    continue
-for numbers end
+    for numbers start : i int 0 7
+        continue
+    for numbers end
 
-for each start : { list initialize : string "abc" "def" } string word
-    continue
-for each end
+    for each start : { list initialize : string "abc" "def" } string word
+        continue
+    for each end
+file end
 comment line

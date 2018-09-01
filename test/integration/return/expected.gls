@@ -1,9 +1,11 @@
 comment line
-class start : Abc
-class end
+file start : Test Integration Return Source
+    class start : Abc
+    class end
 
-return
-return : ""
-return : 7
-return : { new : Abc }
+    return
+    return : ""
+    return : 7
+    return : { new : Abc }
+file end
 comment line

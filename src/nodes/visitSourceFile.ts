@@ -33,5 +33,9 @@ export const visitSourceFile = (
         visitorCreatorsBag
     });
 
-    return router.recurseIntoSourceFile();
+    const childTransformation = router.recurseIntoNode(sourceFile);
+
+    return childTransformation instanceof UnsupportedComplaint
+        ? [childTransformation]
+        : childTransformation;
 };

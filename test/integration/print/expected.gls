@@ -1,3 +1,5 @@
 comment line
-print : ("Hello world!")
+file start : Test Integration Print Source
+    print : ("Hello world!")
+file end
 comment line

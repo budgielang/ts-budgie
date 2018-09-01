@@ -1,9 +1,11 @@
 comment line
-if start : true
-if end
-if start : { operation : 2 plus 2 (equal to) 4 }
-else if start : { operation : 1 (greater than) 0 }
-else if start : true
-else start
-if end
+file start : Test Integration Index Source
+    if start : true
+    if end
+    if start : { operation : 2 plus 2 (equal to) 4 }
+    else if start : { operation : 1 (greater than) 0 }
+    else if start : true
+    else start
+    if end
+file end
 comment line

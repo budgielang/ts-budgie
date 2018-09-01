@@ -1,9 +1,11 @@
 comment line
-class start : Abc
-    constructor start : public Abc
-        super constructor
-        super constructor : "abc"
-        super constructor : true 7
-    constructor end
-class end
+file start : Test Integration SuperConstructor Source
+    class start : Abc
+        constructor start : public Abc
+            super constructor
+            super constructor : "abc"
+            super constructor : true 7
+        constructor end
+    class end
+file end
 comment line

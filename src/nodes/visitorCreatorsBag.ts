@@ -26,6 +26,7 @@ import { PropertyAccessExpressionVisitor } from "./visitors/propertyAccessExpres
 import { PropertyAssignmentVisitor } from "./visitors/propertyAssignmentVisitor";
 import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisitor";
 import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
+import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
 import { ThisExpressionVisitor } from "./visitors/thisExpressionVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
@@ -69,6 +70,7 @@ const creators: IVisitorCreators = {
     [ts.SyntaxKind.PropertyAssignment]: PropertyAssignmentVisitor,
     [ts.SyntaxKind.PropertyDeclaration]: PropertyDeclarationVisitor,
     [ts.SyntaxKind.ReturnStatement]: ReturnStatementVisitor,
+    [ts.SyntaxKind.SourceFile]: SourceFileVisitor,
     [ts.SyntaxKind.StringLiteral]: StringLiteralVisitor,
     [ts.SyntaxKind.SuperKeyword]: UnsupportedVisitor.withDescriptor("super"),
     [ts.SyntaxKind.SwitchStatement]: UnsupportedVisitor.withDescriptor("switch"),

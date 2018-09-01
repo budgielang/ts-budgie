@@ -1,7 +1,9 @@
 comment line
-class start : Abc
-class end
+file start : Test Integration New Source
+    class start : Abc
+    class end
 
-variable : abc Abc { new : Abc }
-new : Abc
+    variable : abc Abc { new : Abc }
+    new : Abc
+file end
 comment line

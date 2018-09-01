@@ -1,21 +1,23 @@
 comment line
-class start : Abc
-    member variable declare : public explicits string "def"
+file start : Test Integration MemberVariable Source
+    class start : Abc
+        member variable declare : public explicits string "def"
 
-    member variable declare : public implicits int 7
+        member variable declare : public implicits int 7
 
-    member variable declare : protected infinite Abc
+        member variable declare : protected infinite Abc
 
-    member variable declare : private array { list type : string } { list initialize : string "ghi" }
+        member variable declare : private array { list type : string } { list initialize : string "ghi" }
 
-    constructor start : public Abc
-        operation : { member variable : protected { this } infinite } equals { new : Abc }
-        operation : { member variable : private { this } array } equals { list initialize : string "jkl" }
-    constructor end
-class end
+        constructor start : public Abc
+            operation : { member variable : protected { this } infinite } equals { new : Abc }
+            operation : { member variable : private { this } array } equals { list initialize : string "jkl" }
+        constructor end
+    class end
 
-variable : abc Abc { new : Abc }
+    variable : abc Abc { new : Abc }
 
-operation : { member variable : public abc explicits } equals "mno"
-operation : { member variable : public abc implicits } (multiply by) 2
+    operation : { member variable : public abc explicits } equals "mno"
+    operation : { member variable : public abc implicits } (multiply by) 2
+file end
 comment line

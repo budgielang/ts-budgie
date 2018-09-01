@@ -1,24 +1,26 @@
 comment line
-class start : Abc
-    member function declare start : public Explicits string
-        return : ""
-    member function declare end
+file start : Test Integration MemberFunction Source
+    class start : Abc
+        member function declare start : public Explicits string
+            return : ""
+        member function declare end
 
-    member function declare start : public Implicits Abc
-        member function : private { this } Parameters "" 0
-        return : { new : Abc }
-    member function declare end
+        member function declare start : public Implicits Abc
+            member function : private { this } Parameters "" 0
+            return : { new : Abc }
+        member function declare end
 
-    member function declare start : private Parameters void first string second float
-        member function : public { this } Explicits
-    member function declare end
-class end
+        member function declare start : private Parameters void first string second float
+            member function : public { this } Explicits
+        member function declare end
+    class end
 
-class start : abstract Def
-    member function declare abstract : public Explicits string
+    class start : abstract Def
+        member function declare abstract : public Explicits string
 
-    member function declare abstract : public Implicits Abc
+        member function declare abstract : public Implicits Abc
 
-    member function declare abstract : protected Parameters void first string second float
-class end
+        member function declare abstract : protected Parameters void first string second float
+    class end
+file end
 comment line

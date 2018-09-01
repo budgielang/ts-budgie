@@ -1,0 +1,5 @@
+comment line
+file start : Test Integration InstanceOf Source
+    instance of : abc Def
+file end
+comment line

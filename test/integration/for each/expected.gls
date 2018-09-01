@@ -1,9 +1,11 @@
 comment line
-for each start : { list initialize : string "abc" "def" } string word
-for each end
+file start : Test Integration ForEach Source
+    for each start : { list initialize : string "abc" "def" } string word
+    for each end
 
-variable : words { list type : string } { list initialize : string "abc" "def" }
+    variable : words { list type : string } { list initialize : string "abc" "def" }
 
-for each start : words string word
-for each end
+    for each start : words string word
+    for each end
+file end
 comment line
