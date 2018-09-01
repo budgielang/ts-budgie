@@ -8,12 +8,7 @@ import { NodeVisitor } from "../visitor";
 
 export class ObjectLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ObjectLiteralExpression) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                this.getTransformationContents(node)),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, this.getTransformationContents(node))];
     }
 
     private getTransformationContents(node: ts.ObjectLiteralExpression): (GlsLine | Transformation)[] {
@@ -55,13 +50,13 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
     }
 
     private returnForBlankDictionary(typeKeys: string | GlsLine, typeValues: string | GlsLine): GlsLine[] {
-        return [
-            new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues),
-        ];
+        return [new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues)];
     }
 
     private returnForPopulatingDictionary(
-        node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine,
+        node: ts.ObjectLiteralExpression,
+        typeKeys: string | GlsLine,
+        typeValues: string | GlsLine,
     ): (GlsLine | Transformation)[] {
         const typeLine = new GlsLine(CommandNames.DictionaryType, typeKeys, typeValues);
 
@@ -72,7 +67,7 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
         return [
             new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues),
             ...bodyNodes,
-            new GlsLine(CommandNames.DictionaryNewEnd)
+            new GlsLine(CommandNames.DictionaryNewEnd),
         ];
     }
 }

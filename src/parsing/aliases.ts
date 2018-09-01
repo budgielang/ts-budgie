@@ -19,5 +19,5 @@ export const operators = {
     [ts.SyntaxKind.ExclamationEqualsEqualsToken]: "not equal to",
     [ts.SyntaxKind.BarBarToken]: "or",
     [ts.SyntaxKind.PlusToken]: "plus",
-    [ts.SyntaxKind.AsteriskToken]: "times"
+    [ts.SyntaxKind.AsteriskToken]: "times",
 };

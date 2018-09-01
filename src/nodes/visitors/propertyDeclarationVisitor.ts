@@ -9,14 +9,7 @@ import { NodeVisitor } from "../visitor";
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.PropertyDeclaration) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getTransformationContents(node),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getTransformationContents(node)])];
     }
 
     private getTransformationContents(node: ts.PropertyDeclaration) {

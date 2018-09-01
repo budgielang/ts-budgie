@@ -25,9 +25,7 @@ export class LineIndenter {
     private readonly commandsBag: CommandsBag;
 
     public constructor() {
-        this.commandsBag = CommandsBagFactory.forContext(
-            new RenderContext(
-                new LanguagesBag().getLanguageByName("TypeScript")));
+        this.commandsBag = CommandsBagFactory.forContext(new RenderContext(new LanguagesBag().getLanguageByName("TypeScript")));
     }
 
     /**

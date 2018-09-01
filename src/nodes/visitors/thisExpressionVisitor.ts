@@ -7,13 +7,6 @@ import { NodeVisitor } from "../visitor";
 
 export class ThisExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ThisExpression) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.This)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.This)])];
     }
 }

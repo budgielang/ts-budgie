@@ -13,35 +13,22 @@ export class IfStatementVisitor extends NodeVisitor {
         const transformations: Transformation[] = [...thenBody];
 
         if (elseStatement !== undefined) {
-            transformations.push(
-                ...this.replaceWithElseCommands(
-                    elseStatement,
-                    this.router.recurseIntoNode(elseStatement)));
+            transformations.push(...this.replaceWithElseCommands(elseStatement, this.router.recurseIntoNode(elseStatement)));
         }
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.IfStart, expression),
-                    ...transformations,
-                    new GlsLine(CommandNames.IfEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.IfStart, expression),
+                ...transformations,
+                new GlsLine(CommandNames.IfEnd),
+            ]),
         ];
     }
 
     private replaceWithElseCommands(elseStatement: ts.Statement, transformations: Transformation[]) {
         // If there are no commands, just end with an else command
         if (transformations.length === 0) {
-            return [
-                Transformation.fromNode(
-                    elseStatement,
-                    this.sourceFile,
-                    [
-                        new GlsLine(CommandNames.ElseStart),
-                    ])
-            ];
+            return [Transformation.fromNode(elseStatement, this.sourceFile, [new GlsLine(CommandNames.ElseStart)])];
         }
 
         // 'else if' commands are still stored as IfStatement nodes under the parent's elseStatment

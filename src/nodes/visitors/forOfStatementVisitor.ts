@@ -10,12 +10,7 @@ import { NodeVisitor } from "../visitor";
 
 export class ForOfStatementVisitor extends NodeVisitor {
     public visit(node: ts.ForOfStatement) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                this.getTransformationContents(node)),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, this.getTransformationContents(node))];
     }
 
     private getTransformationContents(node: ts.ForOfStatement) {
@@ -29,11 +24,7 @@ export class ForOfStatementVisitor extends NodeVisitor {
         const valueType = getListValueType(expressionType);
         const value = this.getContainer(node.initializer);
 
-        return [
-            new GlsLine(CommandNames.ForEachStart, container, valueType, value),
-            ...bodyNodes,
-            new GlsLine(CommandNames.ForEachEnd)
-        ];
+        return [new GlsLine(CommandNames.ForEachStart, container, valueType, value), ...bodyNodes, new GlsLine(CommandNames.ForEachEnd)];
     }
 
     private getContainer(initializer: ts.ForInitializer) {

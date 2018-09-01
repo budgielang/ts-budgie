@@ -8,13 +8,6 @@ import { NodeVisitor } from "../visitor";
  */
 export class LiteralVisitor extends NodeVisitor {
     public visit(node: ts.Node) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    node.getText(this.sourceFile)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [node.getText(this.sourceFile)])];
     }
 }

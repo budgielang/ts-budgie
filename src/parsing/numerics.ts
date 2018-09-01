@@ -2,8 +2,7 @@ import { GlsLine } from "../output/glsLine";
 
 export type NumericType = "float" | "int";
 
-export const isNumericTypeName = (type: string): type is NumericType =>
-    type === "float" || type === "int";
+export const isNumericTypeName = (type: string): type is NumericType => type === "float" || type === "int";
 
 export const getNumericTypeNameFromUsages = (usages: (number | string | GlsLine)[]): NumericType => {
     for (const usage of usages) {

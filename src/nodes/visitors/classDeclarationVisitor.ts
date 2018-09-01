@@ -12,14 +12,7 @@ const classWithoutNameComplaint = "A class must have a name.";
 export class ClassDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.ClassDeclaration) {
         if (node.name === undefined) {
-            return [
-                Transformation.fromNode(
-                    node,
-                    this.sourceFile,
-                    [
-                        createUnsupportedGlsLine(classWithoutNameComplaint),
-                    ]),
-            ];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(classWithoutNameComplaint)])];
         }
 
         const bodyNodes = this.router.recurseIntoNodes(node.members);
@@ -59,14 +52,11 @@ export class ClassDeclarationVisitor extends NodeVisitor {
         }
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.ClassStart, ...parameters),
-                    ...bodyNodes,
-                    new GlsLine(CommandNames.ClassEnd)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [
+                new GlsLine(CommandNames.ClassStart, ...parameters),
+                ...bodyNodes,
+                new GlsLine(CommandNames.ClassEnd),
+            ]),
         ];
     }
 }

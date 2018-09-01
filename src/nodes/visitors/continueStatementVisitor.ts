@@ -7,13 +7,6 @@ import { NodeVisitor } from "../visitor";
 
 export class ContinueStatementVisitor extends NodeVisitor {
     public visit(node: ts.ContinueStatement) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.Continue)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Continue)])];
     }
 }

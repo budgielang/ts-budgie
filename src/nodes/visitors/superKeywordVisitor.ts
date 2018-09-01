@@ -6,13 +6,6 @@ import { NodeVisitor } from "../visitor";
 
 export class SuperKeywordVisitor extends NodeVisitor {
     public visit(node: ts.Expression) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    wrapWithQuotes(node.getText(this.sourceFile))
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [wrapWithQuotes(node.getText(this.sourceFile))])];
     }
 }

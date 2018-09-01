@@ -12,13 +12,11 @@ const unsupportedTypeComplaint = "Could not parse unsupported type.";
  * @param reason   Why the syntax is unsupported.
  * @returns GLS line for unsupported syntax for the reason.
  */
-export const createUnsupportedGlsLine = (reason: string) =>
-    new GlsLine(CommandNames.Unsupported, reason);
+export const createUnsupportedGlsLine = (reason: string) => new GlsLine(CommandNames.Unsupported, reason);
 
 /**
  * Creates a GLS line for unsupported syntax due to an unsupported type.
  *
  * @returns GLS line for unsupported syntax for an unsupported type.
  */
-export const createUnsupportedTypeGlsLine = () =>
-    createUnsupportedGlsLine(unsupportedTypeComplaint);
+export const createUnsupportedTypeGlsLine = () => createUnsupportedGlsLine(unsupportedTypeComplaint);

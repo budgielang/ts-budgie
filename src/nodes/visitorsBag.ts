@@ -1,11 +1,10 @@
-
 import { INodeVisitorDependencies, NodeVisitor } from "./visitor";
 
 /**
  * Creates a visitor for a node type.
  */
 export type INodeVisitorCreator = typeof NodeVisitor & {
-    new(dependencies: INodeVisitorDependencies): NodeVisitor;
+    new (dependencies: INodeVisitorDependencies): NodeVisitor;
 };
 
 /**

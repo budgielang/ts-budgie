@@ -9,13 +9,6 @@ export class ParenthesizedExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ParenthesizedExpression) {
         const contents = this.router.recurseIntoValue(node.expression);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.Parenthesis, contents),
-                ]),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Parenthesis, contents)])];
     }
 }

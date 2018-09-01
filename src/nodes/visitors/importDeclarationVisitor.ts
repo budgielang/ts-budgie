@@ -17,14 +17,7 @@ const noPackageImportsComplaint = "Package imports are not yet supported.";
 
 export class ImportDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.ImportDeclaration) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getTransformationContents(node),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getTransformationContents(node)])];
     }
 
     private getTransformationContents(node: ts.ImportDeclaration) {
@@ -41,8 +34,7 @@ export class ImportDeclarationVisitor extends NodeVisitor {
             return packagePath;
         }
 
-        const importedItems = node.importClause.namedBindings.elements
-            .map((element) => element.name.text);
+        const importedItems = node.importClause.namedBindings.elements.map((element) => element.name.text);
 
         return new GlsLine(CommandNames.ImportLocal, ...packagePath, KeywordNames.Use, ...importedItems);
     }
@@ -63,10 +55,9 @@ export class ImportDeclarationVisitor extends NodeVisitor {
 
         const pathWithNamespace = path.posix.join(
             this.context.options.outputNamespace,
-            pathResolved.substring(this.context.options.baseDirectory.length));
+            pathResolved.substring(this.context.options.baseDirectory.length),
+        );
 
-        return pathWithNamespace
-            .split(/\//g)
-            .map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, [pathComponent]));
+        return pathWithNamespace.split(/\//g).map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, [pathComponent]));
     }
 }

@@ -16,9 +16,7 @@ const knownMethodPairs = new Map<string, string>([
 
 export class StringMemberFunctionChecker extends PropertyAccessChecker {
     public visit(node: ts.PropertyAccessExpression): Transformation[] | undefined {
-        if (node.parent === undefined
-            || !ts.isCallExpression(node.parent)
-            || !this.isString(node.expression)) {
+        if (node.parent === undefined || !ts.isCallExpression(node.parent) || !this.isString(node.expression)) {
             return undefined;
         }
 
@@ -31,12 +29,7 @@ export class StringMemberFunctionChecker extends PropertyAccessChecker {
         const args = this.router.recurseIntoValues(node.parent.arguments);
 
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(glsMethodName, node.expression.getText(this.sourceFile), ...args)
-                ])
+            Transformation.fromNode(node, this.sourceFile, [new GlsLine(glsMethodName, node.expression.getText(this.sourceFile), ...args)]),
         ];
     }
 

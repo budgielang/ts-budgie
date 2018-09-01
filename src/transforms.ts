@@ -63,9 +63,7 @@ export class Transformer {
      * @returns GLS equivalent for the source file, or a complaint for unsupported syntax.
      */
     public transformSourceFile(sourceFile: ts.SourceFile): string[] {
-        return this.dependencies.printer.printFile(
-            sourceFile.text,
-            this.getSourceFileTransforms(sourceFile));
+        return this.dependencies.printer.printFile(sourceFile.text, this.getSourceFileTransforms(sourceFile));
     }
 
     /**

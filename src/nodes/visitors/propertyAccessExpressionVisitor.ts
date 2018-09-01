@@ -36,13 +36,6 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
             }
         }
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    createUnsupportedGlsLine(couldNotDetermineAccessComplaint),
-                ]),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(couldNotDetermineAccessComplaint)])];
     }
 }

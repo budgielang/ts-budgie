@@ -9,14 +9,7 @@ import { NodeVisitor } from "../visitor";
 
 export class PropertyAssignmentVisitor extends NodeVisitor {
     public visit(node: ts.PropertyAssignment) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getTransformationContents(node),
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getTransformationContents(node)])];
     }
 
     private getTransformationContents(node: ts.PropertyAssignment) {
@@ -28,9 +21,7 @@ export class PropertyAssignmentVisitor extends NodeVisitor {
         const [keyType] = coercion.args;
 
         const key = this.router.recurseIntoValue(node.name);
-        const keyWrapped = typeof key === "string" && keyType === "string"
-            ? wrapWithQuotes(key)
-            : key;
+        const keyWrapped = typeof key === "string" && keyType === "string" ? wrapWithQuotes(key) : key;
 
         const value = this.router.recurseIntoValue(node.initializer);
         const results: (string | GlsLine)[] = [keyWrapped, value];

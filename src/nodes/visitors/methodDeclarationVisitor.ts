@@ -17,14 +17,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.MethodDeclaration): Transformation[] {
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
-            return [
-                Transformation.fromNode(
-                    node,
-                    this.sourceFile,
-                    [
-                        createUnsupportedGlsLine(unknownReturnTypeComplaint),
-                    ]),
-            ];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(unknownReturnTypeComplaint)])];
         }
 
         const methodArgs = this.accumulateParameters(node.parameters);
@@ -39,14 +32,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
     }
 
     private returnAbstractTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    this.getAbstractTransformationContents(node, parameters),
-                ]),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [this.getAbstractTransformationContents(node, parameters)])];
     }
 
     private getAbstractTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
@@ -62,30 +48,18 @@ export class MethodDeclarationVisitor extends NodeVisitor {
     }
 
     private returnConcreteTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                this.getConcreteTransformationContents(node, parameters),
-            ),
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, this.getConcreteTransformationContents(node, parameters))];
     }
 
     private getConcreteTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
         if (node.body === undefined) {
-            return [
-                createUnsupportedGlsLine(noBodyComplaint),
-            ];
+            return [createUnsupportedGlsLine(noBodyComplaint)];
         }
 
         const bodyNodes = this.router.recurseIntoNodes(node.body.statements);
         const [commandStart, commandEnd] = this.getConcreteCommandNames(node);
 
-        return [
-            new GlsLine(commandStart, ...parameters),
-            ...bodyNodes,
-            new GlsLine(commandEnd)
-        ];
+        return [new GlsLine(commandStart, ...parameters), ...bodyNodes, new GlsLine(commandEnd)];
     }
 
     private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>): (string | GlsLine)[] {

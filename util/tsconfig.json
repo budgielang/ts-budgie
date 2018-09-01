@@ -15,10 +15,6 @@
         "sourceMap": true,
         "strict": true
     },
-    "exclude": [
-        "../src/**/*.ts"
-    ],
-    "include": [
-        "./*.ts"
-    ]
+    "exclude": ["../src/**/*.ts"],
+    "include": ["./*.ts"]
 }

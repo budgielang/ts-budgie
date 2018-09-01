@@ -11,16 +11,12 @@ import { GlsLine } from "../output/glsLine";
 export const parseRawTypeToGls = (typeRaw: string): string | GlsLine => {
     const angleBracketIndex = typeRaw.lastIndexOf("<");
     if (angleBracketIndex !== -1) {
-        return new GlsLine(
-            CommandNames.GenericType,
-            parseRawTypeToGls(typeRaw.substring(0, angleBracketIndex)));
+        return new GlsLine(CommandNames.GenericType, parseRawTypeToGls(typeRaw.substring(0, angleBracketIndex)));
     }
 
     const arrayBracketIndex = typeRaw.lastIndexOf("[");
     if (arrayBracketIndex !== -1) {
-        return new GlsLine(
-            CommandNames.ListType,
-            parseRawTypeToGls(typeRaw.substring(0, arrayBracketIndex)));
+        return new GlsLine(CommandNames.ListType, parseRawTypeToGls(typeRaw.substring(0, arrayBracketIndex)));
     }
 
     return typeRaw;

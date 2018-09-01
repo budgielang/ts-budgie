@@ -15,14 +15,7 @@ export class MemberVariableChecker extends PropertyAccessChecker {
         const variableName = node.name.getText(this.sourceFile);
         const privacy = this.getMemberPrivacy(node.expression, node.name);
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.MemberVariable, privacy, caller, variableName)
-                ])
-        ];
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.MemberVariable, privacy, caller, variableName)])];
     }
 
     private getMemberPrivacy(expression: ts.Expression, name: ts.Identifier) {
