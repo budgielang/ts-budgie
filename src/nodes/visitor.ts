@@ -2,7 +2,6 @@ import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../output/complaint";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { VisitorContext } from "./context";
@@ -89,7 +88,7 @@ export abstract class NodeVisitor {
      * Creates transformations for a node.
      *
      * @param node   Node to transform.
-     * @returns Transformations for the node, or a complaint for unsupported syntax.
+     * @returns Transformations for the node.
      */
-    public abstract visit(node: ts.Node): Transformation[] | UnsupportedComplaint;
+    public abstract visit(node: ts.Node): Transformation[];
 }

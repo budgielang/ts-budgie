@@ -2,9 +2,9 @@ import { CommandNames, KeywordNames } from "general-language-syntax";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const classWithoutNameComplaint = "A class must have a name.";
@@ -12,14 +12,17 @@ const classWithoutNameComplaint = "A class must have a name.";
 export class ClassDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.ClassDeclaration) {
         if (node.name === undefined) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, classWithoutNameComplaint);
+            return [
+                Transformation.fromNode(
+                    node,
+                    this.sourceFile,
+                    [
+                        createUnsupportedGlsLine(classWithoutNameComplaint),
+                    ]),
+            ];
         }
 
-        const bodyNodes = this.router.recurseIntoNodes(node.members, node);
-        if (bodyNodes instanceof UnsupportedComplaint) {
-            return bodyNodes;
-        }
-
+        const bodyNodes = this.router.recurseIntoNodes(node.members);
         const extensions: string[] = [];
         const implementations: string[] = [];
 

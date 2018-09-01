@@ -1,4 +1,3 @@
-import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { LineIndenter } from "./lineIndenter";
@@ -34,7 +33,7 @@ export class TransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent indented lines.
      */
-    public printFile(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): string[] {
+    public printFile(sourceText: string, transformations: Transformation[]): string[] {
         return this.lineIndenter.indent(this.printTransformations(sourceText, transformations));
     }
 
@@ -45,7 +44,7 @@ export class TransformationsPrinter {
      * @param transformations   A series of transformations.
      * @returns The transformations' equivalent GLS and literal string lines.
      */
-    public printTransformations(sourceText: string, transformations: (Transformation | UnsupportedComplaint)[]): (string | GlsLine)[] {
+    public printTransformations(sourceText: string, transformations: Transformation[]): (string | GlsLine)[] {
         const lines: (string | GlsLine)[] = [];
 
         if (transformations.length === 0) {
@@ -75,11 +74,7 @@ export class TransformationsPrinter {
      * @param transformation   A transformations.
      * @returns The transformation's equivalent GLS.
      */
-    private printTransformation(sourceText: string, transformation: Transformation | UnsupportedComplaint): (string | GlsLine)[] {
-        if (transformation instanceof UnsupportedComplaint) {
-            return [transformation.toString()];
-        }
-
+    private printTransformation(sourceText: string, transformation: Transformation): (string | GlsLine)[] {
         const lines: (string | GlsLine)[] = [];
         let previous: string | Transformation | GlsLine | undefined;
 

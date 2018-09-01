@@ -1,11 +1,9 @@
 import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
+import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import * as tsutils from "tsutils";
-import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
-import { filterOutUnsupportedComplaint } from "../../../utils";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
@@ -30,18 +28,11 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         }
 
         const caller = this.router.recurseIntoValue(node.expression);
-        if (caller instanceof UnsupportedComplaint) {
-            return undefined;
-        }
 
-        const args = filterOutUnsupportedComplaint(
-            node.parent.arguments.map(
-                (arg) => arg === node
-                    ? node.name.text
-                    : this.router.recurseIntoValue(arg)));
-        if (args instanceof UnsupportedComplaint) {
-            return undefined;
-        }
+        const args = node.parent.arguments.map(
+            (arg) => arg === node
+                ? node.name.text
+                : this.router.recurseIntoValue(arg));
 
         const [hostDeclaration] = hostSignature.declarations;
 
@@ -70,18 +61,10 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         parent: ts.CallExpression,
     ): Transformation[] | undefined {
         const newGlsLineCall = this.router.recurseIntoValue(expression);
-        if (newGlsLineCall instanceof UnsupportedComplaint) {
-            return undefined;
-        }
-
-        const args = filterOutUnsupportedComplaint(
-            parent.arguments.map(
-                (arg) => arg === node
-                    ? node.name.text
-                    : this.router.recurseIntoValue(arg)));
-        if (args instanceof UnsupportedComplaint) {
-            return undefined;
-        }
+        const args = parent.arguments.map(
+            (arg) => arg === node
+                ? node.name.text
+                : this.router.recurseIntoValue(arg));
 
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
         const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);

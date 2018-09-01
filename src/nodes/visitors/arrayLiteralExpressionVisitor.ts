@@ -1,26 +1,16 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { getNumericTypeNameFromUsages, isNumericTypeName } from "../../parsing/numerics";
-import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 export class ArrayLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ArrayLiteralExpression) {
-        const parsedElements = filterOutUnsupportedComplaint(
-            node.elements.map(
-                (element) => this.router.recurseIntoValue(element)));
-        if (parsedElements instanceof UnsupportedComplaint) {
-            return parsedElements;
-        }
-
+        const parsedElements = this.router.recurseIntoValues(node.elements);
         const typeParsed = this.getTypeParsed(node.elements, parsedElements);
-        if (typeParsed === undefined) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
-        }
 
         this.context.setTypeCoercion(new GlsLine(CommandNames.ListType, typeParsed));
 
@@ -51,6 +41,10 @@ export class ArrayLiteralExpressionVisitor extends NodeVisitor {
 
         if (typeof typeRaw === "string" && isNumericTypeName(typeRaw)) {
             typeRaw = getNumericTypeNameFromUsages(parsedElements);
+        }
+
+        if (typeRaw === undefined) {
+            return createUnsupportedTypeGlsLine();
         }
 
         return typeRaw;

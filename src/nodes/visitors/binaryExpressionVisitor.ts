@@ -1,11 +1,9 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { operators } from "../../parsing/aliases";
-import { filterOutUnsupportedComplaint } from "../../utils";
 import { NodeVisitor } from "../visitor";
 
 const unknownOperatorComplaint = "Unknown operator kind.";
@@ -40,12 +38,8 @@ export class BinaryExpressionVisitor extends NodeVisitor {
             ];
         }
 
-        const contents = filterOutUnsupportedComplaint(
-            this.collectOperationContents(node)
-                .map((content) => this.recurseOnOperationContents(content)));
-        if (contents instanceof UnsupportedComplaint) {
-            return contents;
-        }
+        const contents = this.collectOperationContents(node)
+            .map((content) => this.recurseOnOperationContents(content));
 
         return [
             Transformation.fromNode(
@@ -57,7 +51,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine | UnsupportedComplaint)[] {
+    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine)[] {
         const { left, right } = node;
 
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
@@ -78,7 +72,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
             ];
         }
 
-        const contents: (string | GlsLine | UnsupportedComplaint)[] = [];
+        const contents: (string | GlsLine)[] = [];
 
         if (ts.isBinaryExpression(left)) {
             contents.push(...this.collectOperationContents(left));
@@ -89,7 +83,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (node.operatorToken.kind in operators) {
             contents.push((operators as { [i: number]: string })[node.operatorToken.kind]);
         } else {
-            contents.push(UnsupportedComplaint.forNode(node, this.sourceFile, unknownOperatorComplaint));
+            contents.push(new GlsLine(CommandNames.Unsupported, unknownOperatorComplaint));
         }
 
         if (ts.isBinaryExpression(right)) {
@@ -101,8 +95,8 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         return contents;
     }
 
-    private recurseOnOperationContents(content: string | GlsLine | UnsupportedComplaint) {
-        return typeof content === "string" || content instanceof GlsLine || content instanceof UnsupportedComplaint
+    private recurseOnOperationContents(content: string | GlsLine) {
+        return typeof content === "string" || content instanceof GlsLine
             ? content
             : this.router.recurseIntoValue(content);
     }

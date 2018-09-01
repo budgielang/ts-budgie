@@ -2,21 +2,27 @@ import { CommandNames } from "general-language-syntax";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 export class PropertyDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.PropertyDeclaration) {
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    this.getTransformationContents(node),
+                ])
+        ];
+    }
+
+    private getTransformationContents(node: ts.PropertyDeclaration) {
         const type = this.getType(node);
-
         if (type === undefined) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
-        }
-
-        if (type instanceof UnsupportedComplaint) {
-            return type;
+            return createUnsupportedTypeGlsLine();
         }
 
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
@@ -25,21 +31,10 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
 
         const value = this.getInitializerValue(node.initializer);
         if (value !== undefined) {
-            if (value instanceof UnsupportedComplaint) {
-                return value;
-            }
-
             results.push(value);
         }
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(this.getGlsCommand(node), ...results)
-                ])
-        ];
+        return new GlsLine(this.getGlsCommand(node), ...results);
     }
 
     private getInitializerValue(initializer: ts.Expression | undefined) {
@@ -59,7 +54,7 @@ export class PropertyDeclarationVisitor extends NodeVisitor {
             return this.aliaser.getFriendlyTypeName(node.initializer);
         }
 
-        return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+        return undefined;
     }
 
     private getGlsCommand(node: ts.PropertyDeclaration) {

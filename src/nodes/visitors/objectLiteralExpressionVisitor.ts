@@ -1,26 +1,35 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 export class ObjectLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ObjectLiteralExpression) {
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                this.getTransformationContents(node)),
+        ];
+    }
+
+    private getTransformationContents(node: ts.ObjectLiteralExpression): (GlsLine | Transformation)[] {
         if (node.parent === undefined) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+            return [createUnsupportedTypeGlsLine()];
         }
 
         const parentTypePair = this.getParentTypePair(node.parent);
-        if (parentTypePair instanceof UnsupportedComplaint) {
-            return parentTypePair;
+        if (parentTypePair instanceof GlsLine) {
+            return [parentTypePair];
         }
 
         const [typeKeys, typeValues] = parentTypePair;
 
         return node.properties.length === 0
-            ? this.returnForBlankDictionary(node, typeKeys, typeValues)
+            ? this.returnForBlankDictionary(typeKeys, typeValues)
             : this.returnForPopulatingDictionary(node, typeKeys, typeValues);
     }
 
@@ -33,51 +42,37 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
             return this.getDirectNodeTypePair(node);
         }
 
-        return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+        return createUnsupportedTypeGlsLine();
     }
 
     private getDirectNodeTypePair(node: ts.Expression | ts.PropertyDeclaration | ts.VariableDeclaration) {
         const typeName = this.aliaser.getFriendlyTypeName(node);
         if (!(typeName instanceof GlsLine) || typeName.command !== CommandNames.DictionaryType) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+            return createUnsupportedTypeGlsLine();
         }
 
         return typeName.args;
     }
 
-    private returnForBlankDictionary(
-        node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
+    private returnForBlankDictionary(typeKeys: string | GlsLine, typeValues: string | GlsLine): GlsLine[] {
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues)
-                ])
+            new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues),
         ];
     }
 
     private returnForPopulatingDictionary(
-        node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
+        node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine,
+    ): (GlsLine | Transformation)[] {
         const typeLine = new GlsLine(CommandNames.DictionaryType, typeKeys, typeValues);
 
         this.context.setTypeCoercion(typeLine);
-        const bodyNodes = this.router.recurseIntoNodes(node.properties, node);
+        const bodyNodes = this.router.recurseIntoNodes(node.properties);
         this.context.exitTypeCoercion();
 
-        if (bodyNodes instanceof UnsupportedComplaint) {
-            return bodyNodes;
-        }
-
         return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues),
-                    ...bodyNodes,
-                    new GlsLine(CommandNames.DictionaryNewEnd)
-                ])
+            new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues),
+            ...bodyNodes,
+            new GlsLine(CommandNames.DictionaryNewEnd)
         ];
     }
 }

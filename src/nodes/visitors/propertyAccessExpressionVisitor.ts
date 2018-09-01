@@ -1,6 +1,7 @@
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
+import { Transformation } from "../../output/transformation";
+import { createUnsupportedGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 import { ArrayMemberFunctionChecker } from "./propertyAccess/arrayMemberFunctionChecker";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
@@ -35,9 +36,13 @@ export class PropertyAccessExpressionVisitor extends NodeVisitor {
             }
         }
 
-        return UnsupportedComplaint.forNode(
-            node,
-            this.sourceFile,
-            couldNotDetermineAccessComplaint);
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    createUnsupportedGlsLine(couldNotDetermineAccessComplaint),
+                ]),
+        ];
     }
 }

@@ -1,7 +1,6 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
@@ -9,14 +8,7 @@ import { NodeVisitor } from "../visitor";
 export class NewExpressionVisitor extends NodeVisitor {
     public visit(node: ts.NewExpression) {
         const newTypes = this.getNewTypes(node.expression);
-        if (newTypes instanceof UnsupportedComplaint) {
-            return newTypes;
-        }
-
         const newArgs = this.collectNewArgs(node.arguments);
-        if (newArgs instanceof UnsupportedComplaint) {
-            return newArgs;
-        }
 
         return [
             Transformation.fromNode(
@@ -28,20 +20,17 @@ export class NewExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getNewTypes(expression: ts.Expression | undefined): (string | GlsLine)[] | UnsupportedComplaint {
+    private getNewTypes(expression: ts.Expression | undefined): (string | GlsLine)[] {
         if (expression === undefined) {
             return [];
         }
 
-        const returnValue = this.router.recurseIntoValue(expression);
-        if (returnValue instanceof UnsupportedComplaint) {
-            return returnValue;
-        }
-
-        return [returnValue];
+        return [
+            this.router.recurseIntoValue(expression),
+        ];
     }
 
-    private collectNewArgs(argsList: ts.NodeArray<ts.Expression> | undefined): (string | GlsLine)[] | UnsupportedComplaint {
+    private collectNewArgs(argsList: ts.NodeArray<ts.Expression> | undefined): (string | GlsLine)[] {
         const args: (string | GlsLine)[] = [];
         if (argsList === undefined) {
             return args;
@@ -49,10 +38,6 @@ export class NewExpressionVisitor extends NodeVisitor {
 
         for (const arg of argsList) {
             const transformed = this.router.recurseIntoNode(arg);
-            if (transformed instanceof UnsupportedComplaint) {
-                return transformed;
-            }
-
             const argOutput = transformed[0].output[0];
             if (!(argOutput instanceof Transformation)) {
                 args.push(argOutput);

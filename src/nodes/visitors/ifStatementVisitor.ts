@@ -1,7 +1,6 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
@@ -9,25 +8,15 @@ import { NodeVisitor } from "../visitor";
 export class IfStatementVisitor extends NodeVisitor {
     public visit(node: ts.IfStatement) {
         const expression = this.router.recurseIntoValue(node.expression);
-        if (expression instanceof UnsupportedComplaint) {
-            return expression;
-        }
-
         const { elseStatement, thenStatement } = node;
         const thenBody = this.router.recurseIntoNode(thenStatement);
-        if (thenBody instanceof UnsupportedComplaint) {
-            return thenBody;
-        }
-
         const transformations: Transformation[] = [...thenBody];
 
         if (elseStatement !== undefined) {
-            const elseBody = this.router.recurseIntoNode(elseStatement);
-            if (elseBody instanceof UnsupportedComplaint) {
-                return elseBody;
-            }
-
-            transformations.push(...this.replaceWithElseCommands(elseStatement, elseBody));
+            transformations.push(
+                ...this.replaceWithElseCommands(
+                    elseStatement,
+                    this.router.recurseIntoNode(elseStatement)));
         }
 
         return [
