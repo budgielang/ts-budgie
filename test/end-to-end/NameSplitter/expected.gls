@@ -1,25 +1,27 @@
 comment line
-class start : NameSplitter
-    member function declare start : public Split { list type : string } name string
-        variable : results { list type : string } { list initialize : string }
-        variable : start int 0
+file start : Test End-to-end Namesplitter Source
+    class start : NameSplitter
+        member function declare start : public Split { list type : string } name string
+            variable : results { list type : string } { list initialize : string }
+            variable : start int 0
 
-        for numbers start : end float 1 { string length : name }
-            if start : { member function : private { this } IsUpperCase { string index : name end } }
-                list push : results { string substring index : name start end }
-                operation : start equals end
+            for numbers start : end float 1 { string length : name }
+                if start : { member function : private { this } IsUpperCase { string index : name end } }
+                    list push : results { string substring index : name start end }
+                    operation : start equals end
+                if end
+            for numbers end
+
+            if start : { operation : start (not equal to) { string length : name } }
+                list push : results { string substring index : name start { string length : name } }
             if end
-        for numbers end
 
-        if start : { operation : start (not equal to) { string length : name } }
-            list push : results { string substring index : name start { string length : name } }
-        if end
+            return : results
+        member function declare end
 
-        return : results
-    member function declare end
-
-    member function declare start : private IsUpperCase boolean letter string
-        return : { operation : letter (equal to) { string case upper : letter } }
-    member function declare end
-class end
+        member function declare start : private IsUpperCase boolean letter string
+            return : { operation : letter (equal to) { string case upper : letter } }
+        member function declare end
+    class end
+file end
 comment line

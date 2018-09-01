@@ -1,9 +1,0 @@
-comment line
-file start : Test Integration Import Source
-    import local : Test Integration Import Def use Abc
-
-    import local : Test Integration Jkl use Ghi
-
-    import local : Test Integration Stu Vwx use Mno Pqr
-file end
-comment line

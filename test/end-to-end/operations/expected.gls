@@ -1,3 +1,5 @@
 comment line
-operation : 7 plus { parenthesis : { operation : 14 divide 2 } }
+file start : Test End-to-end Operations Source
+    operation : 7 plus { parenthesis : { operation : 14 divide 2 } }
+file end
 comment line
