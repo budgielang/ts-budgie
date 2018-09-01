@@ -1,7 +1,6 @@
 import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import * as tsutils from "tsutils";
 
-import { UnsupportedComplaint } from "../output/complaint";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { TransformationsPrinter } from "../printing/transformationsPrinter";
@@ -12,7 +11,7 @@ import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 
 export const visitSourceFile = (
     { contextOptions, sourceFile, typeChecker }: ITransformerSettings,
-): (Transformation | UnsupportedComplaint)[] => {
+): Transformation[] => {
     const aliaser = new RootAliaser(sourceFile, typeChecker);
     const casing = new CaseStyleConverterBag();
     const nameSplitter = new NameSplitter();
@@ -33,9 +32,5 @@ export const visitSourceFile = (
         visitorCreatorsBag
     });
 
-    const childTransformation = router.recurseIntoNode(sourceFile);
-
-    return childTransformation instanceof UnsupportedComplaint
-        ? [childTransformation]
-        : childTransformation;
+    return router.recurseIntoNode(sourceFile);
 };

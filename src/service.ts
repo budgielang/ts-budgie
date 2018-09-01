@@ -1,6 +1,5 @@
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 
 /**
@@ -45,7 +44,7 @@ export interface ITransformerSettings {
  * @param typeChecker   Type checker for the source file.
  * @returns Transformations from the file, or a complaint for unsupported syntax.
  */
-export type ITransformer = (settings: ITransformerSettings) => (Transformation | UnsupportedComplaint)[];
+export type ITransformer = (settings: ITransformerSettings) => Transformation[];
 
 /**
  * Retrieves and merges source-to-GLS transforms from files.
@@ -72,8 +71,8 @@ export class TransformationService {
      * @param typeChecker   Type checker for the file.
      * @returns Transformations from the file, or a complaint for unsupported syntax.
      */
-    public transform(settings: ITransformerSettings): (Transformation | UnsupportedComplaint)[] {
-        const transformations: (UnsupportedComplaint | Transformation)[] = [];
+    public transform(settings: ITransformerSettings): Transformation[] {
+        const transformations: Transformation[] = [];
 
         for (const transformer of this.transformers) {
             transformations.push(...transformer(settings));

@@ -1,9 +1,9 @@
 import { CommandNames, KeywordNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { TypeAdjuster } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
@@ -49,6 +49,15 @@ export class VariableDeclarationVisitor extends NodeVisitor {
     private readonly typeAdjuster = new TypeAdjuster();
 
     public visit(node: ts.VariableDeclaration) {
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                this.getTransformationContents(node)),
+        ];
+    }
+
+    private getTransformationContents(node: ts.VariableDeclaration) {
         const name = node.name.getText(this.sourceFile);
         let interpretedType = this.aliaser.getFriendlyTypeName(node);
 
@@ -60,9 +69,6 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // A value may indicate to us better typing info than what we already have
         const aliasedValue = this.getAliasedValue(node);
-        if (aliasedValue instanceof UnsupportedComplaint) {
-            return aliasedValue;
-        }
 
         // After recursing into the node, see if we've found a more specific type (coercion)
         const typeModified = this.context.exitTypeCoercion();
@@ -94,7 +100,9 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         // If we don't know the interpreted type by now, just give up
         if (interpretedType === undefined) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(node, this.sourceFile);
+            return [
+                createUnsupportedTypeGlsLine(),
+            ];
         }
 
         const firstResultsLineArgs: (string | GlsLine)[] = [name, interpretedType];
@@ -109,9 +117,6 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         if (command === CommandNames.VariableStart) {
             const fullValue = this.getFullValue(node);
-            if (fullValue instanceof UnsupportedComplaint) {
-                return fullValue;
-            }
 
             if (fullValue !== undefined) {
                 this.appendFullValueToLines(fullValue, lines);
@@ -120,12 +125,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
 
         lines.unshift(new GlsLine(command, ...firstResultsLineArgs));
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                lines)
-        ];
+        return lines;
     }
 
     private getAliasedValue(node: ts.VariableDeclaration) {

@@ -1,14 +1,11 @@
 import { expect } from "chai";
 import { readFileSync } from "fs";
-import * as minimatch from "minimatch";
 import "mocha";
 import * as path from "path";
 import * as ts from "typescript";
 
-import { createTransformer, Transformer } from "../src";
-import { UnsupportedComplaint } from "../src/output/complaint";
-import { GlsLine } from "../src/output/glsLine";
-import { findGlsFilesUnder, findGlsTestSourcesUnder } from "../util";
+import { createTransformer } from "../src";
+import { findGlsTestSourcesUnder } from "../util";
 
 /**
  * Reads the code contents of a test file.
@@ -68,7 +65,7 @@ export class ComparisonTestsRunner {
      */
     public run(): void {
         describe(this.section, () => {
-            this.commandTests.forEach((tests: string[], test: string): void => {
+            this.commandTests.forEach((_, test): void => {
                 it(test, () => {
                     this.runCommandTest(path.join(this.section, test));
                 });
@@ -84,7 +81,6 @@ export class ComparisonTestsRunner {
     public runCommandTest(directoryPath: string): void {
         // Arrange
         const sourceName = path.join(directoryPath, "source.ts");
-        const sourceText = readFileAndTrim(directoryPath, "source.ts", "//");
         const expectedText = readFileAndTrim(directoryPath, "expected.gls", "comment line");
 
         // Act
@@ -108,7 +104,7 @@ export class ComparisonTestsRunner {
         this.commandTests.forEach((tests: string[], test: string): void => {
             const directoryName = path.join(this.section, test);
 
-            for (const subTest of tests) {
+            for (const {} of tests) {
                 const filePath = path.join(directoryName, "source.ts");
                 const sourceText = readFileSync(filePath).toString();
                 const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);

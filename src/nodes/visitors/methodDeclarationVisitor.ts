@@ -2,23 +2,32 @@ import { CaseStyle, CommandNames } from "general-language-syntax";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
+const noAbstractStaticMethods = "Static methods may not be marked abstract.";
+
+const noBodyComplaint = "Non-abstract methods may not have bodies.";
+
+const unknownReturnTypeComplaint = "Could not parse method return type.";
+
 export class MethodDeclarationVisitor extends NodeVisitor {
-    public visit(node: ts.MethodDeclaration) {
+    public visit(node: ts.MethodDeclaration): Transformation[] {
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, "Could not parse method return type.");
+            return [
+                Transformation.fromNode(
+                    node,
+                    this.sourceFile,
+                    [
+                        createUnsupportedGlsLine(unknownReturnTypeComplaint),
+                    ]),
+            ];
         }
 
         const methodArgs = this.accumulateParameters(node.parameters);
-        if (methodArgs instanceof UnsupportedComplaint) {
-            return methodArgs;
-        }
-
         const privacy = this.aliaser.getFriendlyPrivacyName(node);
         const nameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
         const name = this.casing.convertToCase(CaseStyle.PascalCase, nameSplit);
@@ -30,55 +39,62 @@ export class MethodDeclarationVisitor extends NodeVisitor {
     }
 
     private returnAbstractTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+        return [
+            Transformation.fromNode(
+                node,
+                this.sourceFile,
+                [
+                    this.getAbstractTransformationContents(node, parameters),
+                ]),
+        ];
+    }
+
+    private getAbstractTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
         if (node.body !== undefined) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, "Non-abstract methods may not have bodies.");
+            return createUnsupportedGlsLine(noBodyComplaint);
         }
 
         if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.StaticKeyword)) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, "Static methods may not be marked abstract.");
+            return createUnsupportedGlsLine(noAbstractStaticMethods);
         }
 
-        return [
-            Transformation.fromNode(
-                node,
-                this.sourceFile,
-                [
-                    new GlsLine(CommandNames.MemberFunctionDeclareAbstract, ...parameters)
-                ])
-        ];
+        return new GlsLine(CommandNames.MemberFunctionDeclareAbstract, ...parameters);
     }
 
     private returnConcreteTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
-        if (node.body === undefined) {
-            return UnsupportedComplaint.forNode(node, this.sourceFile, "Non-abstract methods must have bodies.");
-        }
-
-        const bodyNodes = this.router.recurseIntoNodes(node.body.statements, node.body);
-        if (bodyNodes instanceof UnsupportedComplaint) {
-            return bodyNodes;
-        }
-
-        const [commandStart, commandEnd] = this.getConcreteCommandNames(node);
-
         return [
             Transformation.fromNode(
                 node,
                 this.sourceFile,
-                [
-                    new GlsLine(commandStart, ...parameters),
-                    ...bodyNodes,
-                    new GlsLine(commandEnd)
-                ])
+                this.getConcreteTransformationContents(node, parameters),
+            ),
         ];
     }
 
-    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>) {
+    private getConcreteTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+        if (node.body === undefined) {
+            return [
+                createUnsupportedGlsLine(noBodyComplaint),
+            ];
+        }
+
+        const bodyNodes = this.router.recurseIntoNodes(node.body.statements);
+        const [commandStart, commandEnd] = this.getConcreteCommandNames(node);
+
+        return [
+            new GlsLine(commandStart, ...parameters),
+            ...bodyNodes,
+            new GlsLine(commandEnd)
+        ];
+    }
+
+    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>): (string | GlsLine)[] {
         const parameters: (string | GlsLine)[] = [];
 
         for (const declaration of declarations) {
             const typeName = this.aliaser.getFriendlyTypeName(declaration);
             if (typeName === undefined) {
-                return UnsupportedComplaint.forUnsupportedTypeNode(declaration, this.sourceFile);
+                return [createUnsupportedTypeGlsLine()];
             }
 
             parameters.push(declaration.name.getText(this.sourceFile));

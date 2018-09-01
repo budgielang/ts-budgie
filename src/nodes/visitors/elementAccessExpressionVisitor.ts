@@ -1,9 +1,9 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
+import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const noArgumentExpressionComplaint = "No index passed to [] access.";
@@ -20,26 +20,30 @@ const knownComplexFriendlyTypeCommands = new Map<string, string>([
 export class ElementAccessExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ElementAccessExpression) {
         if (node.argumentExpression === undefined) {
-            return UnsupportedComplaint.forNode(
-                node,
-                this.sourceFile,
-                noArgumentExpressionComplaint);
+            return [
+                Transformation.fromNode(
+                    node,
+                    this.sourceFile,
+                    [
+                        createUnsupportedGlsLine(noArgumentExpressionComplaint),
+                    ]),
+            ];
         }
 
         const commandName = this.getCommandName(node.expression);
-        if (commandName instanceof UnsupportedComplaint) {
-            return commandName;
+        if (commandName instanceof GlsLine) {
+            return [
+                Transformation.fromNode(
+                    node,
+                    this.sourceFile,
+                    [
+                        createUnsupportedGlsLine(noArgumentExpressionComplaint),
+                    ])
+            ];
         }
 
         const expression = this.router.recurseIntoValue(node.expression);
-        if (expression instanceof UnsupportedComplaint) {
-            return expression;
-        }
-
         const argument = this.router.recurseIntoValue(node.argumentExpression);
-        if (argument instanceof UnsupportedComplaint) {
-            return argument;
-        }
 
         return [
             Transformation.fromNode(
@@ -51,10 +55,10 @@ export class ElementAccessExpressionVisitor extends NodeVisitor {
         ];
     }
 
-    private getCommandName(expression: ts.Expression) {
+    private getCommandName(expression: ts.Expression): string | GlsLine {
         const friendlyType = this.aliaser.getFriendlyTypeName(expression);
         if (friendlyType === undefined) {
-            return UnsupportedComplaint.forUnsupportedTypeNode(expression, this.sourceFile);
+            return createUnsupportedTypeGlsLine();
         }
 
         const [typeKey, commandsContainer] = typeof friendlyType === "string"
@@ -63,7 +67,7 @@ export class ElementAccessExpressionVisitor extends NodeVisitor {
 
         const typeCommand = commandsContainer.get(typeKey);
         return typeCommand === undefined
-            ? UnsupportedComplaint.forUnsupportedTypeNode(expression, this.sourceFile)
+            ? createUnsupportedTypeGlsLine()
             : typeCommand;
     }
 }

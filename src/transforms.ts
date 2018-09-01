@@ -1,7 +1,6 @@
 import * as ts from "typescript";
 
 import { createProgramForFiles } from "./compiler/program";
-import { UnsupportedComplaint } from "./output/complaint";
 import { Transformation } from "./output/transformation";
 import { TransformationsPrinter } from "./printing/transformationsPrinter";
 import { IContextOptions, TransformationService } from "./service";
@@ -76,7 +75,7 @@ export class Transformer {
      * @param typeChecker   Type checker for the source file.
      * @returns Transformations for the file, or a complaint for unsupported syntax.
      */
-    private getSourceFileTransforms(sourceFile: ts.SourceFile): (Transformation | UnsupportedComplaint)[] {
+    private getSourceFileTransforms(sourceFile: ts.SourceFile): Transformation[] {
         return this.dependencies.service.transform({
             contextOptions: this.dependencies.contextOptions,
             sourceFile,

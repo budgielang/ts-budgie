@@ -1,7 +1,6 @@
 import { CommandNames, KeywordNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -13,10 +12,6 @@ export class MemberVariableChecker extends PropertyAccessChecker {
         }
 
         const caller = this.router.recurseIntoValue(node.expression);
-        if (caller instanceof UnsupportedComplaint) {
-            return undefined;
-        }
-
         const variableName = node.name.getText(this.sourceFile);
         const privacy = this.getMemberPrivacy(node.expression, node.name);
 

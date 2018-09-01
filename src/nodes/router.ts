@@ -2,7 +2,6 @@ import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../output/complaint";
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
@@ -62,10 +61,10 @@ export class NodeVisitRouter {
      * @param node   Node to retrieve transformations for.
      * @returns Output transformations for the node.
      */
-    public recurseIntoNode(node: ts.Node): Transformation[] | UnsupportedComplaint {
+    public recurseIntoNode(node: ts.Node): Transformation[] {
         const creator = this.dependencies.visitorCreatorsBag.getCreator(node.kind) as INodeVisitorCreator | undefined;
         if (creator === undefined) {
-            return this.recurseIntoChildren(node);
+            return this.recurseIntoNodes(node.getChildren());
         }
 
         return this.visitorsBag.createVisitor(creator).visit(node);
@@ -78,27 +77,14 @@ export class NodeVisitRouter {
      * @param parent   Common parent of the nodes.
      * @returns Transformed GLS output for the nodes.
      */
-    public recurseIntoNodes(nodes: ReadonlyArray<ts.Node>, parent: ts.Node): Transformation[] | UnsupportedComplaint {
+    public recurseIntoNodes(nodes: ReadonlyArray<ts.Node>): Transformation[] {
         const transformations: Transformation[] = [];
-        let complaints: UnsupportedComplaint[] | undefined;
 
         for (const node of nodes) {
-            const childTransformations = this.recurseIntoNode(node);
-
-            if (childTransformations instanceof UnsupportedComplaint) {
-                if (complaints === undefined) {
-                    complaints = [childTransformations];
-                } else {
-                    complaints.push(childTransformations);
-                }
-            } else {
-                transformations.push(...childTransformations);
-            }
+            transformations.push(...this.recurseIntoNode(node));
         }
 
-        return complaints === undefined
-            ? transformations
-            : UnsupportedComplaint.forNode(parent, this.dependencies.sourceFile, complaints);
+        return transformations;
     }
 
     /**
@@ -107,13 +93,10 @@ export class NodeVisitRouter {
      * @param node   Node to transform.
      * @returns Transformed GLS output for the inline value.
      */
-    public recurseIntoValue(node: ts.Node): string | GlsLine | UnsupportedComplaint {
+    public recurseIntoValue(node: ts.Node): string | GlsLine {
         const subTransformations = this.recurseIntoNode(node);
-        if (subTransformations instanceof UnsupportedComplaint) {
-            return subTransformations;
-        }
-
         const { sourceFile } = this.dependencies;
+
         return this.dependencies.printer.printTransformations(sourceFile.getText(sourceFile), subTransformations)[0];
     }
 
@@ -123,28 +106,13 @@ export class NodeVisitRouter {
      * @param nodes   Nodes to transform.
      * @returns Transformed GLS output for the inline values.
      */
-    public recurseIntoValues(nodes: ts.NodeArray<ts.Node>): (string | GlsLine)[] | UnsupportedComplaint {
+    public recurseIntoValues(nodes: ts.NodeArray<ts.Node>): (string | GlsLine)[] {
         const values: (string | GlsLine)[] = [];
 
         for (const node of nodes) {
-            const value = this.recurseIntoValue(node);
-            if (value instanceof UnsupportedComplaint) {
-                return value;
-            }
-
-            values.push(value);
+            values.push(this.recurseIntoValue(node));
         }
 
         return values;
-    }
-
-    /**
-     * Recurses the GLS outputs for a node's children.
-     *
-     * @param node   Node to transform the children of.
-     * @returns Transformed GLS output for the node's children.
-     */
-    public recurseIntoChildren(node: ts.Node): Transformation[] | UnsupportedComplaint {
-        return this.recurseIntoNodes(node.getChildren(), node);
     }
 }

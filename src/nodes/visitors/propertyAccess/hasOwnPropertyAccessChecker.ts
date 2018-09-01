@@ -1,10 +1,8 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../../output/complaint";
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
-import { filterOutUnsupportedComplaint } from "../../../utils";
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 const allowedHasOwnPropertyReferences = new Set([
@@ -22,12 +20,7 @@ export class HasOwnPropertyAccessChecker extends PropertyAccessChecker {
             return undefined;
         }
 
-        const args = filterOutUnsupportedComplaint(
-            node.parent.arguments
-                .map((arg) => this.router.recurseIntoValue(arg)));
-        if (args instanceof UnsupportedComplaint) {
-            return undefined;
-        }
+        const args = this.router.recurseIntoValues(node.parent.arguments);
 
         return [
             Transformation.fromNode(

@@ -6,7 +6,6 @@ import { TransformationsPrinter } from "./printing/transformationsPrinter";
 import { ITransformer, TransformationService } from "./service";
 import { Transformer } from "./transforms";
 export { GlsLine } from "./output/glsLine";
-export { UnsupportedComplaint } from "./output/complaint";
 export { IOutput, Transformation } from "./output/transformation";
 export { IRange } from "./output/range";
 export { ITransformer, TransformationService } from "./service";

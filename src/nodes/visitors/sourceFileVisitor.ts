@@ -1,18 +1,13 @@
 import { CaseStyle, CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
 export class SourceFileVisitor extends NodeVisitor {
     public visit(node: ts.SourceFile) {
-        const body = this.router.recurseIntoNodes(node.statements, node);
-
-        if (body instanceof UnsupportedComplaint) {
-            return body;
-        }
+        const body = this.router.recurseIntoNodes(node.statements);
 
         return [
             Transformation.fromNode(

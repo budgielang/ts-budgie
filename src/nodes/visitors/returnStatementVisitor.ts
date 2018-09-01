@@ -1,7 +1,6 @@
 import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { UnsupportedComplaint } from "../../output/complaint";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
@@ -9,9 +8,6 @@ import { NodeVisitor } from "../visitor";
 export class ReturnStatementVisitor extends NodeVisitor {
     public visit(node: ts.ReturnStatement) {
         const returnValues = this.getReturnValues(node.expression);
-        if (returnValues instanceof UnsupportedComplaint) {
-            return returnValues;
-        }
 
         return [
             Transformation.fromNode(
@@ -28,10 +24,8 @@ export class ReturnStatementVisitor extends NodeVisitor {
             return [];
         }
 
-        const value = this.router.recurseIntoValue(expression);
-
-        return value instanceof UnsupportedComplaint
-            ? value
-            : [value];
+        return [
+            this.router.recurseIntoValue(expression),
+        ];
     }
 }
