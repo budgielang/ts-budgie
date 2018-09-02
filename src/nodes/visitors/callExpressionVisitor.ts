@@ -1,6 +1,6 @@
+import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
-import { CommandNames } from "../../../node_modules/general-language-syntax";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";

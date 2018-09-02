@@ -1,4 +1,5 @@
-import { CommandNames } from "../../node_modules/general-language-syntax";
+import { CommandNames } from "general-language-syntax";
+
 import { GlsLine } from "./glsLine";
 
 /**
