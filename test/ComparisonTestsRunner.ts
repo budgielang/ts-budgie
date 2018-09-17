@@ -21,9 +21,7 @@ const readFileAndTrim = (directoryPath: string, fileName: string, trim: string):
         .replace(/\r\n|\r|\n/g, "\n")
         .trim();
 
-    return lines.slice(
-        lines.indexOf(trim) + trim.length + 1,
-        lines.lastIndexOf(trim) - 1);
+    return lines.slice(lines.indexOf(trim) + trim.length + 1, lines.lastIndexOf(trim) - 1);
 };
 
 /**
@@ -65,11 +63,13 @@ export class ComparisonTestsRunner {
      */
     public run(): void {
         describe(this.section, () => {
-            this.commandTests.forEach((_, test): void => {
-                it(test, () => {
-                    this.runCommandTest(path.join(this.section, test));
-                });
-            });
+            this.commandTests.forEach(
+                (_, test): void => {
+                    it(test, () => {
+                        this.runCommandTest(path.join(this.section, test));
+                    });
+                },
+            );
         });
     }
 
@@ -95,23 +95,25 @@ export class ComparisonTestsRunner {
         const actual = transformer.transformSourceFile(sourceFile);
 
         // Asserted
-        expect(actual.join("\n").split("\n")).to.be.deep.equal(expectedText.split("\n"));
+        expect(actual.printed.join("\n").split("\n")).to.be.deep.equal(expectedText.split("\n"));
     }
 
     private createSourceFiles(): Map<string, ts.SourceFile> {
         const sourceFiles = new Map<string, ts.SourceFile>();
 
-        this.commandTests.forEach((tests: string[], test: string): void => {
-            const directoryName = path.join(this.section, test);
+        this.commandTests.forEach(
+            (tests: string[], test: string): void => {
+                const directoryName = path.join(this.section, test);
 
-            for (const {} of tests) {
-                const filePath = path.join(directoryName, "source.ts");
-                const sourceText = readFileSync(filePath).toString();
-                const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+                for (const {} of tests) {
+                    const filePath = path.join(directoryName, "source.ts");
+                    const sourceText = readFileSync(filePath).toString();
+                    const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
-                sourceFiles.set(filePath, sourceFile);
-            }
-        });
+                    sourceFiles.set(filePath, sourceFile);
+                }
+            },
+        );
 
         return sourceFiles;
     }

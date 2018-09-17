@@ -36,6 +36,14 @@ export interface ITransformerDependencies {
 }
 
 /**
+ * Raw and formatted results from transforming a source file.
+ */
+export interface ITransformationResults {
+    transforms: Transformation[];
+    printed: string[];
+}
+
+/**
  * Transforms TypeScript to GLS.
  */
 export class Transformer {
@@ -60,10 +68,15 @@ export class Transformer {
      * Transforms a source file to GLS.
      *
      * @param sourceText   Source file to transform.
-     * @returns GLS equivalent for the source file, or a complaint for unsupported syntax.
+     * @returns Raw and formatted results from transforming the source file.
      */
-    public transformSourceFile(sourceFile: ts.SourceFile): string[] {
-        return this.dependencies.printer.printFile(sourceFile.text, this.getSourceFileTransforms(sourceFile));
+    public transformSourceFile(sourceFile: ts.SourceFile): ITransformationResults {
+        const transforms = this.getSourceFileTransforms(sourceFile);
+
+        return {
+            printed: this.dependencies.printer.printFile(sourceFile.text, transforms),
+            transforms,
+        };
     }
 
     /**

@@ -1,16 +1,18 @@
 import * as path from "path";
 import * as ts from "typescript";
 
+import { fullyNormalizeFilePath } from "./utils";
+
 const createSourceFilesMap = (sourceFiles: ts.SourceFile[] | Map<string, ts.SourceFile>) => {
     const map = new Map<string, ts.SourceFile>();
 
     if (sourceFiles instanceof Map) {
         for (const [fileName, sourceFile] of Array.from(sourceFiles.entries())) {
-            map.set(path.normalize(fileName), sourceFile);
+            map.set(fullyNormalizeFilePath(fileName), sourceFile);
         }
     } else {
         for (const sourceFile of sourceFiles) {
-            map.set(path.normalize(sourceFile.fileName), sourceFile);
+            map.set(fullyNormalizeFilePath(sourceFile.fileName), sourceFile);
         }
     }
 
@@ -30,7 +32,7 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
 
     // tslint:disable-next-line:variable-name
     public getSourceFile(fileName: string, _languageVersion: ts.ScriptTarget, onError?: (message: string) => void): ts.SourceFile {
-        const sourceFile = this.sourceFiles.get(path.normalize(fileName));
+        const sourceFile = this.sourceFiles.get(fullyNormalizeFilePath(fileName));
         if (sourceFile !== undefined) {
             return sourceFile;
         }
@@ -63,10 +65,10 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
         return true;
     }
 
-    public readonly fileExists = (fileName: string) => this.sourceFiles.has(path.normalize(fileName));
+    public readonly fileExists = (fileName: string) => this.sourceFiles.has(fullyNormalizeFilePath(fileName));
 
     public readonly readFile = (fileName: string): string => {
-        const file = this.sourceFiles.get(path.normalize(fileName));
+        const file = this.sourceFiles.get(fullyNormalizeFilePath(fileName));
 
         if (file === undefined) {
             throw new Error(`File not found: '${file}'.`);
@@ -77,8 +79,9 @@ export class InMemoryCompilerHost implements ts.CompilerHost {
 
     public resolveModuleNames(moduleNames: string[], containingFile: string): ts.ResolvedModule[] {
         return moduleNames.map((rawModuleName: string) => {
-            const moduleName =
-                rawModuleName[0] === "." ? path.join(path.dirname(containingFile), rawModuleName) : path.normalize(rawModuleName);
+            const moduleName = fullyNormalizeFilePath(
+                rawModuleName[0] === "." ? path.join(path.dirname(containingFile), rawModuleName) : path.normalize(rawModuleName),
+            );
             const resolvedFileName = `${moduleName}.ts`;
 
             if (!this.sourceFiles.has(resolvedFileName)) {

@@ -12,6 +12,10 @@
             "args": [
                 "--language",
                 "C#",
+                "--base-directory",
+                "src",
+                "--namespace",
+                "Gls",
                 "--tsconfig",
                 "${workspaceRoot}/../GLS/tsconfig.json",
                 "--exclude",
@@ -24,14 +28,7 @@
             "request": "launch",
             "name": "Unit Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceRoot}/test/unit/**/*.js"
-            ],
+            "args": ["-u", "tdd", "--timeout", "999999", "--colors", "${workspaceRoot}/test/unit/**/*.js"],
             "internalConsoleOptions": "openOnSessionStart",
             "sourceMaps": true
         },
@@ -40,14 +37,7 @@
             "request": "launch",
             "name": "Integration Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceRoot}/test/integration.js"
-            ],
+            "args": ["-u", "tdd", "--timeout", "999999", "--colors", "${workspaceRoot}/test/integration.js"],
             "internalConsoleOptions": "openOnSessionStart",
             "sourceMaps": true
         },
@@ -56,14 +46,7 @@
             "request": "launch",
             "name": "End-to-End Tests",
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
-            "args": [
-                "-u",
-                "tdd",
-                "--timeout",
-                "999999",
-                "--colors",
-                "${workspaceRoot}/test/end-to-end.js"
-            ],
+            "args": ["-u", "tdd", "--timeout", "999999", "--colors", "${workspaceRoot}/test/end-to-end.js"],
             "internalConsoleOptions": "openOnSessionStart",
             "sourceMaps": true
         }
