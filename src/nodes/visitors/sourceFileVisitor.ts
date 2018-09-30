@@ -25,6 +25,10 @@ export class SourceFileVisitor extends NodeVisitor {
             pathComponents.shift();
         }
 
-        return pathComponents.map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, pathComponent.split(" ")));
+        pathComponents.unshift(this.context.options.outputNamespace);
+
+        return pathComponents
+            .filter((pathComponent) => pathComponent !== "")
+            .map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, pathComponent.split(" ")));
     }
 }

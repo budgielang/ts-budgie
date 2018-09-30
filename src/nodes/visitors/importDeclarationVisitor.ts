@@ -58,6 +58,13 @@ export class ImportDeclarationVisitor extends NodeVisitor {
             pathResolved.substring(this.context.options.baseDirectory.length),
         );
 
-        return pathWithNamespace.split(/\//g).map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, [pathComponent]));
+        const pathWithNamespaceAndFileSplit = pathWithNamespace
+            .split(/\//g)
+            .filter((pathComponent) => pathComponent !== "")
+            .map((pathComponent) => this.casing.convertToCase(CaseStyle.PascalCase, [pathComponent]));
+
+        pathWithNamespaceAndFileSplit.pop();
+
+        return pathWithNamespaceAndFileSplit;
     }
 }

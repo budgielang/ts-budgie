@@ -7,24 +7,20 @@ import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 export class ObjectLiteralExpressionVisitor extends NodeVisitor {
-    public visit(node: ts.ObjectLiteralExpression) {
-        return [Transformation.fromNode(node, this.sourceFile, this.getTransformationContents(node))];
-    }
-
-    private getTransformationContents(node: ts.ObjectLiteralExpression): (GlsLine | Transformation)[] {
+    public visit(node: ts.ObjectLiteralExpression): Transformation[] {
         if (node.parent === undefined) {
-            return [createUnsupportedTypeGlsLine()];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedTypeGlsLine()])];
         }
 
         const parentTypePair = this.getParentTypePair(node.parent);
         if (parentTypePair instanceof GlsLine) {
-            return [parentTypePair];
+            return [Transformation.fromNode(node, this.sourceFile, [parentTypePair])];
         }
 
         const [typeKeys, typeValues] = parentTypePair;
 
         return node.properties.length === 0
-            ? this.returnForBlankDictionary(typeKeys, typeValues)
+            ? this.returnForBlankDictionary(node, typeKeys, typeValues)
             : this.returnForPopulatingDictionary(node, typeKeys, typeValues);
     }
 
@@ -49,25 +45,23 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
         return typeName.args;
     }
 
-    private returnForBlankDictionary(typeKeys: string | GlsLine, typeValues: string | GlsLine): GlsLine[] {
-        return [new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues)];
+    private returnForBlankDictionary(node: ts.Node, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues)])];
     }
 
-    private returnForPopulatingDictionary(
-        node: ts.ObjectLiteralExpression,
-        typeKeys: string | GlsLine,
-        typeValues: string | GlsLine,
-    ): (GlsLine | Transformation)[] {
+    private returnForPopulatingDictionary(node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
         const typeLine = new GlsLine(CommandNames.DictionaryType, typeKeys, typeValues);
 
         this.context.setTypeCoercion(typeLine);
-        const bodyNodes = this.router.recurseIntoNodes(node.properties);
+        const bodyNodes = node.properties.map((bodyNode) =>
+            Transformation.fromNode(bodyNode, this.sourceFile, this.router.recurseIntoNode(bodyNode)),
+        );
         this.context.exitTypeCoercion();
 
         return [
-            new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues),
+            Transformation.fromNodeStart(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues)]),
             ...bodyNodes,
-            new GlsLine(CommandNames.DictionaryNewEnd),
+            Transformation.fromNodeEnd(node, [new GlsLine(CommandNames.DictionaryNewEnd)]),
         ];
     }
 }

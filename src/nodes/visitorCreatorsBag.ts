@@ -28,7 +28,9 @@ import { PropertyDeclarationVisitor } from "./visitors/propertyDeclarationVisito
 import { ReturnStatementVisitor } from "./visitors/returnStatementVisitor";
 import { SourceFileVisitor } from "./visitors/sourceFileVisitor";
 import { StringLiteralVisitor } from "./visitors/stringLiteralVisitor";
+import { TemplateExpressionVisitor } from "./visitors/TemplateExpressionVisitor";
 import { ThisExpressionVisitor } from "./visitors/thisExpressionVisitor";
+import { ThrowStatementVisitor } from "./visitors/throwStatementVisitor";
 import { TypeLiteralVisitor } from "./visitors/typeLiteralVisitor";
 import { UnsupportedVisitor } from "./visitors/unsupportedVisitor";
 import { VariableDeclarationVisitor } from "./visitors/variableDeclarationVisitor";
@@ -74,7 +76,9 @@ const creators: IVisitorCreators = {
     [ts.SyntaxKind.StringLiteral]: StringLiteralVisitor,
     [ts.SyntaxKind.SuperKeyword]: UnsupportedVisitor.withDescriptor("super"),
     [ts.SyntaxKind.SwitchStatement]: UnsupportedVisitor.withDescriptor("switch"),
+    [ts.SyntaxKind.TemplateExpression]: TemplateExpressionVisitor,
     [ts.SyntaxKind.ThisKeyword]: ThisExpressionVisitor,
+    [ts.SyntaxKind.ThrowStatement]: ThrowStatementVisitor,
     [ts.SyntaxKind.TrueKeyword]: LiteralVisitor,
     [ts.SyntaxKind.TypeLiteral]: TypeLiteralVisitor,
     [ts.SyntaxKind.VariableDeclaration]: VariableDeclarationVisitor,

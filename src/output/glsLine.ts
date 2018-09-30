@@ -2,7 +2,7 @@ const escapeSpecialCharacters = (arg: string) => arg.replace(/\r/g, "\\r").repla
 
 const escapeParenthesis = (arg: string) => arg.replace(/\)/g, "\\)");
 
-const textWrapIndicators = new Set<string>(["{", "(", " "]);
+const textWrapIndicators = new Set<string>(["{", "}", "(", ")", " ", ":"]);
 
 /**
  * Wraps a command argument if it has any spaces.
