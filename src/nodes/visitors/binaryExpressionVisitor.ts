@@ -30,60 +30,12 @@ export class BinaryExpressionVisitor extends NodeVisitor {
             ];
         }
 
-        // This gets a little complicated... but it's worth it!
-        // First, we collect all the strings, lines, and transforms that need to go into this Operation command
-        const contents = this.collectOperationContents(node);
+        const contents = this.collectOperationContents(node).map((content) => this.recurseOnOperationContents(content));
 
-        // The first line contains the actual Operation, so any regular strings and GLS sub-lines go in there
-        // For example:
-        // operation : 2 plus 2
-        const firstLineArgs: (string | GlsLine)[] = [];
-        let i: number;
-
-        for (i = 0; i < contents.length; i += 1) {
-            const content = contents[i];
-
-            // The first line can't contain any sub-transformations, because those would need to go on the next line
-            // For example:
-            // operation : something equals { dictionary new start }
-            //     { dictionary pair : a b }
-            // dictionary new end
-            // We can't add the dictionary pair to the first line, so we break once we see a new transformation section
-            if (content instanceof Transformation) {
-                break;
-            }
-
-            firstLineArgs.push(content);
-        }
-
-        // If there are more content transforms to add (such as with dictionary new start), check if the first line goes inline
-        // Otherwise, we would put the { dictionary new start } from above on the next line. Not good.
-        if (i < contents.length) {
-            const content = contents[i];
-            if (content instanceof Transformation && !content.output.some((output) => output instanceof Transformation)) {
-                firstLineArgs.push(...(content.output as (string | GlsLine)[]));
-                i += 1;
-            }
-        }
-
-        const transformations = [
-            i === contents.length
-                ? Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Operation, ...firstLineArgs)])
-                : Transformation.fromNodeStart(node, this.sourceFile, [new GlsLine(CommandNames.OperationStart, ...firstLineArgs)]),
-        ];
-
-        // Now that we've created the first line with the actual Operation, we add any more transformations from after it
-        for (i; i < contents.length; i += 1) {
-            const content = contents[i];
-            if (content instanceof Transformation) {
-                transformations.push(content);
-            }
-        }
-
-        return transformations;
+        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Operation, ...contents)])];
     }
 
-    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine | Transformation)[] {
+    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine)[] {
         const { left, right } = node;
 
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
@@ -94,7 +46,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
             return [new GlsLine(CommandNames.DictionaryContainsKey, left.getText(this.sourceFile), right.getText(this.sourceFile))];
         }
 
-        const contents: (string | GlsLine | Transformation)[] = [];
+        const contents: (string | GlsLine)[] = [];
 
         if (ts.isBinaryExpression(left)) {
             contents.push(...this.collectOperationContents(left));
@@ -111,9 +63,13 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (ts.isBinaryExpression(right)) {
             contents.push(...this.collectOperationContents(right));
         } else {
-            contents.push(...this.router.recurseIntoNode(right));
+            contents.push(this.router.recurseIntoValue(right));
         }
 
         return contents;
+    }
+
+    private recurseOnOperationContents(content: string | GlsLine) {
+        return typeof content === "string" || content instanceof GlsLine ? content : this.router.recurseIntoValue(content);
     }
 }

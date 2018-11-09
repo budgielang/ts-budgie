@@ -18,13 +18,11 @@ const knownComplexFriendlyTypeCommands = new Map<string, string>([
 export class ElementAccessExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ElementAccessExpression) {
         if (node.argumentExpression === undefined) {
-            console.log("node.aE", node.argumentExpression);
             return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(noArgumentExpressionComplaint)])];
         }
 
         const commandName = this.getCommandName(node.expression);
         if (commandName instanceof GlsLine) {
-            console.log({ commandName });
             return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(noArgumentExpressionComplaint)])];
         }
 
