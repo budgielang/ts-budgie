@@ -5,7 +5,6 @@
     "main": "src/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
-        "precommit": "pretty-quick --staged --write",
         "prettier:write": "prettier --config .prettierrc.json --write",
         "prettier:write:all": "npm run prettier:write ./{src,test,util}/**/*.{json,ts}",
         "src": "npm run src:tsc && npm run src:tslint",
@@ -58,5 +57,10 @@
         "mz": "^2.7.0",
         "tsutils": "^3.4.0",
         "typescript": "^3.1.6"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged --write"
+        }
     }
 }
