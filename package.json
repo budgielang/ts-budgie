@@ -38,7 +38,7 @@
         "@types/minimatch": "^3.0.3",
         "@types/mocha": "^5.2.5",
         "@types/mz": "0.0.32",
-        "@types/node": "^10.12.3",
+        "@types/node": "^10.12.9",
         "browserify": "^16.2.3",
         "chai": "^4.2.0",
         "husky": "^1.1.3",
