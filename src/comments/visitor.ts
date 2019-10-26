@@ -1,6 +1,7 @@
 import * as ts from "typescript";
 
 import { Transformation } from "../output/transformation";
+
 import { visitMultiLineCommentTrivia } from "./visitMultiLineCommentTrivia";
 import { visitSingleLineCommentTrivia } from "./visitSingleLineCommentTrivia";
 

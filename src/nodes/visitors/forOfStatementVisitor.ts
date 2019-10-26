@@ -1,7 +1,7 @@
 import { CommandNames } from "general-language-syntax";
+import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import * as tsutils from "tsutils";
 import { GlsLine } from "../../output/glsLine";
 import { Transformation } from "../../output/transformation";
 import { createUnsupportedTypeGlsLine } from "../../output/unsupported";

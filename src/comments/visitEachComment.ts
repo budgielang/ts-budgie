@@ -3,6 +3,7 @@ import * as ts from "typescript";
 
 import { Transformation } from "../output/transformation";
 import { ITransformerSettings } from "../service";
+
 import { commentVisitors } from "./visitor";
 
 export const visitEachComment = ({ sourceFile }: ITransformerSettings): Transformation[] => {

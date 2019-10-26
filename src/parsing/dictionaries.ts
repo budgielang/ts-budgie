@@ -2,6 +2,7 @@ import { CommandNames } from "general-language-syntax";
 import * as ts from "typescript";
 
 import { GlsLine } from "../output/glsLine";
+
 import { IRecurseOntoNode } from "./aliasers/recursiveAliaser";
 
 const getParameterValueType = (typeMember: ts.IndexSignatureDeclaration, recurseOntoNode: IRecurseOntoNode) => {

@@ -3,6 +3,7 @@ import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
 import { isNumericTypeName } from "../numerics";
+
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class ElementAccessExpressionAliaser extends RecursiveAliaser {

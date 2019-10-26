@@ -4,6 +4,7 @@ import * as ts from "typescript";
 
 import { GlsLine } from "../../../output/glsLine";
 import { Transformation } from "../../../output/transformation";
+
 import { PropertyAccessChecker } from "./propertyAccessChecker";
 
 export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {

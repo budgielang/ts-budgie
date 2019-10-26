@@ -5,6 +5,7 @@ import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { TransformationsPrinter } from "../printing/transformationsPrinter";
 import { ITransformerSettings } from "../service";
+
 import { VisitorContext } from "./context";
 import { NodeVisitRouter } from "./router";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";

@@ -2,6 +2,7 @@
     "extends": ["tslint:all", "tslint-config-prettier"],
     "rules": {
         "array-type": [true, "array"],
+        "callable-types": false,
         "completed-docs": false,
         "comment-format": false,
         "file-name-casing": false,
@@ -21,6 +22,8 @@
         "object-literal-key-quotes": false,
         "object-literal-sort-keys": false,
         "prefer-function-over-method": false,
+        "strict-comparisons": false,
+        "strict-string-expressions": false,
         "strict-type-predicates": false,
         "typedef": false
     }

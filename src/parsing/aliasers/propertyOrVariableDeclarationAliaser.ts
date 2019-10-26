@@ -1,6 +1,7 @@
 import * as ts from "typescript";
 
 import { GlsLine } from "../../output/glsLine";
+
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class PropertyOrVariableDeclarationAliaser extends RecursiveAliaser {

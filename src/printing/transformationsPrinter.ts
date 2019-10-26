@@ -1,5 +1,6 @@
 import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
+
 import { LineIndenter } from "./lineIndenter";
 
 /**

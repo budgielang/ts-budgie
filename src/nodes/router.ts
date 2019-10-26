@@ -6,6 +6,7 @@ import { GlsLine } from "../output/glsLine";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { TransformationsPrinter } from "../printing/transformationsPrinter";
+
 import { VisitorContext } from "./context";
 import { VisitorCreatorsBag } from "./visitorCreatorsBag";
 import { INodeVisitorCreator, VisitorsBag } from "./visitorsBag";

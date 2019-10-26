@@ -3,6 +3,7 @@ import * as ts from "typescript";
 import { Transformation } from "../../output/transformation";
 import { createUnsupportedGlsLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
+
 import { ArrayMemberFunctionChecker } from "./propertyAccess/arrayMemberFunctionChecker";
 import { ConsoleLogAccessChecker } from "./propertyAccess/consoleLogAccessChecker";
 import { DictionaryIndexAccessChecker } from "./propertyAccess/dictionaryIndexAccessChecker";

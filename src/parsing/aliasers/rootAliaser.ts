@@ -5,6 +5,7 @@ import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser"
 import { GlsLine } from "../../output/glsLine";
 import { TypeFlagsResolver } from "../flags";
 import { parseRawTypeToGls } from "../types";
+
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { ElementAccessExpressionAliaser } from "./elementAccessExpressionAliaser";
 import { NewExpressionAliaser } from "./newExpressionAliaser";
