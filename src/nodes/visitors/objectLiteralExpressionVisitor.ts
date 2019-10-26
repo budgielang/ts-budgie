@@ -1,19 +1,19 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 export class ObjectLiteralExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ObjectLiteralExpression): Transformation[] {
         if (node.parent === undefined) {
-            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedTypeGlsLine()])];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedTypeBudgieLine()])];
         }
 
         const parentTypePair = this.getParentTypePair(node.parent);
-        if (parentTypePair instanceof GlsLine) {
+        if (parentTypePair instanceof BudgieLine) {
             return [Transformation.fromNode(node, this.sourceFile, [parentTypePair])];
         }
 
@@ -33,24 +33,28 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
             return this.getDirectNodeTypePair(node);
         }
 
-        return createUnsupportedTypeGlsLine();
+        return createUnsupportedTypeBudgieLine();
     }
 
     private getDirectNodeTypePair(node: ts.Expression | ts.PropertyDeclaration | ts.VariableDeclaration) {
         const typeName = this.aliaser.getFriendlyTypeName(node);
-        if (!(typeName instanceof GlsLine) || typeName.command !== CommandNames.DictionaryType) {
-            return createUnsupportedTypeGlsLine();
+        if (!(typeName instanceof BudgieLine) || typeName.command !== CommandNames.DictionaryType) {
+            return createUnsupportedTypeBudgieLine();
         }
 
         return typeName.args;
     }
 
-    private returnForBlankDictionary(node: ts.Node, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryNew, typeKeys, typeValues)])];
+    private returnForBlankDictionary(node: ts.Node, typeKeys: string | BudgieLine, typeValues: string | BudgieLine) {
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(CommandNames.DictionaryNew, typeKeys, typeValues)])];
     }
 
-    private returnForPopulatingDictionary(node: ts.ObjectLiteralExpression, typeKeys: string | GlsLine, typeValues: string | GlsLine) {
-        const typeLine = new GlsLine(CommandNames.DictionaryType, typeKeys, typeValues);
+    private returnForPopulatingDictionary(
+        node: ts.ObjectLiteralExpression,
+        typeKeys: string | BudgieLine,
+        typeValues: string | BudgieLine,
+    ) {
+        const typeLine = new BudgieLine(CommandNames.DictionaryType, typeKeys, typeValues);
 
         this.context.setTypeCoercion(typeLine);
         const bodyNodes = node.properties.map((bodyNode) =>
@@ -59,9 +63,9 @@ export class ObjectLiteralExpressionVisitor extends NodeVisitor {
         this.context.exitTypeCoercion();
 
         return [
-            Transformation.fromNodeStart(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryNewStart, typeKeys, typeValues)]),
+            Transformation.fromNodeStart(node, this.sourceFile, [new BudgieLine(CommandNames.DictionaryNewStart, typeKeys, typeValues)]),
             ...bodyNodes,
-            Transformation.fromNodeEnd(node, [new GlsLine(CommandNames.DictionaryNewEnd)]),
+            Transformation.fromNodeEnd(node, [new BudgieLine(CommandNames.DictionaryNewEnd)]),
         ];
     }
 }

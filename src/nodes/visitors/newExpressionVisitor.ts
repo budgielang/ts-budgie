@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -10,10 +10,10 @@ export class NewExpressionVisitor extends NodeVisitor {
         const newTypes = this.getNewTypes(node.expression);
         const newArgs = this.collectNewArgs(node.arguments);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.New, newTypes[0], ...newArgs)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(CommandNames.New, newTypes[0], ...newArgs)])];
     }
 
-    private getNewTypes(expression: ts.Expression | undefined): (string | GlsLine)[] {
+    private getNewTypes(expression: ts.Expression | undefined): (string | BudgieLine)[] {
         if (expression === undefined) {
             return [];
         }
@@ -21,8 +21,8 @@ export class NewExpressionVisitor extends NodeVisitor {
         return [this.router.recurseIntoValue(expression)];
     }
 
-    private collectNewArgs(argsList: ts.NodeArray<ts.Expression> | undefined): (string | GlsLine)[] {
-        const args: (string | GlsLine)[] = [];
+    private collectNewArgs(argsList: ts.NodeArray<ts.Expression> | undefined): (string | BudgieLine)[] {
+        const args: (string | BudgieLine)[] = [];
         if (argsList === undefined) {
             return args;
         }

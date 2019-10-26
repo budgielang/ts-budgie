@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -21,9 +21,9 @@ export class InterfaceDeclarationVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.InterfaceStart, name, ...extensions),
+                new BudgieLine(CommandNames.InterfaceStart, name, ...extensions),
                 ...bodyNodes,
-                new GlsLine(CommandNames.InterfaceEnd),
+                new BudgieLine(CommandNames.InterfaceEnd),
             ]),
         ];
     }

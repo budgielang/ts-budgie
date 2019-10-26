@@ -1,18 +1,18 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class ArrayLiteralExpressionAliaser extends RecursiveAliaser {
-    public getFriendlyTypeName(node: ts.ArrayLiteralExpression): string | GlsLine | undefined {
+    public getFriendlyTypeName(node: ts.ArrayLiteralExpression): string | BudgieLine | undefined {
         const elementsType = this.getCommonElementsType(node.elements);
         if (elementsType === undefined) {
             return undefined;
         }
 
-        return new GlsLine(CommandNames.ListType, elementsType);
+        return new BudgieLine(CommandNames.ListType, elementsType);
     }
 
     private getCommonElementsType(elements: ReadonlyArray<ts.Expression>) {

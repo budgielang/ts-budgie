@@ -1,13 +1,13 @@
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 import { Transformation } from "../output/transformation";
 
 import { LineIndenter } from "./lineIndenter";
 
 /**
- * Counts the GLS endlines within a range of text.
+ * Counts the Budgie endlines within a range of text.
  *
  * @param text   Range of text from a source file.
- * @returns How many GLS endlines should be printed.
+ * @returns How many Budgie endlines should be printed.
  */
 const countEndlinesWithin = (text: string): number => {
     const matches = text.match(/\n/g);
@@ -19,11 +19,11 @@ const countEndlinesWithin = (text: string): number => {
 };
 
 /**
- * Prints series of transformations as lines of GLS.
+ * Prints series of transformations as lines of Budgie.
  */
 export class TransformationsPrinter {
     /**
-     * Indents GLS lines using their command metadata.
+     * Indents Budgie lines using their command metadata.
      */
     private readonly lineIndenter: LineIndenter = new LineIndenter();
 
@@ -39,14 +39,14 @@ export class TransformationsPrinter {
     }
 
     /**
-     * Prints a series of transformations as lines of GLS and literal string lines.
+     * Prints a series of transformations as lines of Budgie and literal string lines.
      *
      * @param sourceText   Full source text from the transforming file.
      * @param transformations   A series of transformations.
-     * @returns The transformations' equivalent GLS and literal string lines.
+     * @returns The transformations' equivalent Budgie and literal string lines.
      */
-    public printTransformations(sourceText: string, transformations: Transformation[]): (string | GlsLine)[] {
-        const lines: (string | GlsLine)[] = [];
+    public printTransformations(sourceText: string, transformations: Transformation[]): (string | BudgieLine)[] {
+        const lines: (string | BudgieLine)[] = [];
 
         if (transformations.length === 0) {
             return lines;
@@ -70,14 +70,14 @@ export class TransformationsPrinter {
     }
 
     /**
-     * Prints a series of transformations as lines of GLS.
+     * Prints a series of transformations as lines of Budgie.
      *
      * @param transformation   A transformations.
-     * @returns The transformation's equivalent GLS.
+     * @returns The transformation's equivalent Budgie.
      */
-    private printTransformation(sourceText: string, transformation: Transformation): (string | GlsLine)[] {
-        const lines: (string | GlsLine)[] = [];
-        let previous: string | Transformation | GlsLine | undefined;
+    private printTransformation(sourceText: string, transformation: Transformation): (string | BudgieLine)[] {
+        const lines: (string | BudgieLine)[] = [];
+        let previous: string | Transformation | BudgieLine | undefined;
 
         for (const transformed of transformation.output) {
             if (transformed instanceof Transformation) {

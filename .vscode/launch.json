@@ -7,20 +7,20 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Convert GLS with CLI",
-            "program": "${workspaceRoot}/../GLS-CLI/bin/gls",
+            "name": "Convert Budgie with CLI",
+            "program": "${workspaceRoot}/../budgie-cli/bin/budgie",
             "args": [
                 "--language",
                 "C#",
                 "--base-directory",
                 "src",
                 "--namespace",
-                "Gls",
+                "Budgie",
                 "--tsconfig",
-                "${workspaceRoot}/../GLS/tsconfig.json",
+                "${workspaceRoot}/../budgie/tsconfig.json",
                 "--exclude",
-                "${workspaceRoot}/../GLS/src/index.ts",
-                "${workspaceRoot}/../GLS/src/Rendering/Commands/VariableCommand.ts"
+                "${workspaceRoot}/../budgie/src/index.ts",
+                "${workspaceRoot}/../budgie/src/Rendering/Commands/VariableCommand.ts"
             ]
         },
         {

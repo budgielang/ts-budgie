@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -21,6 +21,6 @@ export class HasOwnPropertyAccessChecker extends PropertyAccessChecker {
 
         const args = this.router.recurseIntoValues(node.parent.arguments);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryContainsKey, ...args)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(CommandNames.DictionaryContainsKey, ...args)])];
     }
 }

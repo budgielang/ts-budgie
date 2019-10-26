@@ -20,12 +20,12 @@ export interface ITransformerDependencies {
     contextOptions: IContextOptions;
 
     /**
-     * Prints series of transformations as lines of GLS.
+     * Prints series of transformations as lines of Budgie.
      */
     printer: TransformationsPrinter;
 
     /**
-     * Retrieves and merges source-to-GLS transforms from a file.
+     * Retrieves and merges source-to-Budgie transforms from a file.
      */
     service: TransformationService;
 
@@ -44,7 +44,7 @@ export interface ITransformationResults {
 }
 
 /**
- * Transforms TypeScript to GLS.
+ * Transforms TypeScript to Budgie.
  */
 export class Transformer {
     /**
@@ -65,7 +65,7 @@ export class Transformer {
     }
 
     /**
-     * Transforms a source file to GLS.
+     * Transforms a source file to Budgie.
      *
      * @param sourceText   Source file to transform.
      * @returns Raw and formatted results from transforming the source file.

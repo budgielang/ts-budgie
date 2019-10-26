@@ -1,9 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine, createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const invalidInitializerComplaint = "Enum members must each have a constant numeric or string value.";
@@ -17,15 +17,15 @@ export class EnumMemberVisitor extends NodeVisitor {
 
     private getTransformationContents(node: ts.EnumMember) {
         if (!ts.isIdentifier(node.name)) {
-            return createUnsupportedTypeGlsLine();
+            return createUnsupportedTypeBudgieLine();
         }
 
         if (node.initializer === undefined) {
-            return createUnsupportedGlsLine(missingInitializerComplaint);
+            return createUnsupportedBudgieLine(missingInitializerComplaint);
         }
 
         if (typeof this.aliaser.getFriendlyTypeName(node.initializer) !== "string") {
-            return createUnsupportedGlsLine(invalidInitializerComplaint);
+            return createUnsupportedBudgieLine(invalidInitializerComplaint);
         }
 
         const args: string[] = [node.name.text, node.initializer.getText(this.sourceFile)];
@@ -34,6 +34,6 @@ export class EnumMemberVisitor extends NodeVisitor {
             args.push(",");
         }
 
-        return new GlsLine(CommandNames.EnumMember, ...args);
+        return new BudgieLine(CommandNames.EnumMember, ...args);
     }
 }

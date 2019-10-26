@@ -1,9 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine, createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const noArgumentExpressionComplaint = "No index passed to [] access.";
@@ -11,31 +11,31 @@ const noArgumentExpressionComplaint = "No index passed to [] access.";
 const knownSimpleFriendlyTypeCommands = new Map<string, string>([["string", CommandNames.StringIndex]]);
 
 const knownComplexFriendlyTypeCommands = new Map<string, string>([
-    [CommandNames.ListType, CommandNames.ListIndex],
-    [CommandNames.DictionaryType, CommandNames.DictionaryIndex],
+    [CommandNames.ListType, "list index"],
+    [CommandNames.DictionaryType, "dictionary index"],
 ]);
 
 export class ElementAccessExpressionVisitor extends NodeVisitor {
     public visit(node: ts.ElementAccessExpression) {
         if (node.argumentExpression === undefined) {
-            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(noArgumentExpressionComplaint)])];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedBudgieLine(noArgumentExpressionComplaint)])];
         }
 
         const commandName = this.getCommandName(node.expression);
-        if (commandName instanceof GlsLine) {
-            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(noArgumentExpressionComplaint)])];
+        if (commandName instanceof BudgieLine) {
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedBudgieLine(noArgumentExpressionComplaint)])];
         }
 
         const expression = this.router.recurseIntoValue(node.expression);
         const argument = this.router.recurseIntoValue(node.argumentExpression);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(commandName, expression, argument)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(commandName, expression, argument)])];
     }
 
-    private getCommandName(expression: ts.Expression): string | GlsLine {
+    private getCommandName(expression: ts.Expression): string | BudgieLine {
         const friendlyType = this.aliaser.getFriendlyTypeName(expression);
         if (friendlyType === undefined) {
-            return createUnsupportedTypeGlsLine();
+            return createUnsupportedTypeBudgieLine();
         }
 
         const [typeKey, commandsContainer] =
@@ -44,6 +44,6 @@ export class ElementAccessExpressionVisitor extends NodeVisitor {
                 : [friendlyType.command, knownComplexFriendlyTypeCommands];
 
         const typeCommand = commandsContainer.get(typeKey);
-        return typeCommand === undefined ? createUnsupportedTypeGlsLine() : typeCommand;
+        return typeCommand === undefined ? createUnsupportedTypeBudgieLine() : typeCommand;
     }
 }

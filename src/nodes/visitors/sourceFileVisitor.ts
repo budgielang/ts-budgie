@@ -1,7 +1,7 @@
-import { CaseStyle, CommandNames } from "general-language-syntax";
+import { CaseStyle, CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -11,9 +11,9 @@ export class SourceFileVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.FileStart, ...this.getPathComponents(node)),
+                new BudgieLine(CommandNames.FileStart, ...this.getPathComponents(node)),
                 ...body,
-                new GlsLine(CommandNames.FileEnd),
+                new BudgieLine(CommandNames.FileEnd),
             ]),
         ];
     }

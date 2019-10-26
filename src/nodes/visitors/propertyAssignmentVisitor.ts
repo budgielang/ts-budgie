@@ -1,9 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { wrapWithQuotes } from "../../parsing/strings";
 import { NodeVisitor } from "../visitor";
 
@@ -14,8 +14,8 @@ export class PropertyAssignmentVisitor extends NodeVisitor {
 
     private getTransformationContents(node: ts.PropertyAssignment) {
         const { coercion } = this.context;
-        if (!(coercion instanceof GlsLine) || coercion.command !== CommandNames.DictionaryType) {
-            return createUnsupportedTypeGlsLine();
+        if (!(coercion instanceof BudgieLine) || coercion.command !== CommandNames.DictionaryType) {
+            return createUnsupportedTypeBudgieLine();
         }
 
         const [keyType] = coercion.args;
@@ -24,12 +24,12 @@ export class PropertyAssignmentVisitor extends NodeVisitor {
         const keyWrapped = typeof key === "string" && keyType === "string" ? wrapWithQuotes(key) : key;
 
         const value = this.router.recurseIntoValue(node.initializer);
-        const results: (string | GlsLine)[] = [keyWrapped, value];
+        const results: (string | BudgieLine)[] = [keyWrapped, value];
         if (this.shouldAddComma(node)) {
             results.push(",");
         }
 
-        return new GlsLine(CommandNames.DictionaryPair, ...results);
+        return new BudgieLine(CommandNames.DictionaryPair, ...results);
     }
 
     private shouldAddComma(node: ts.PropertyAssignment) {

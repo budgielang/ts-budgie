@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -16,9 +16,9 @@ export class WhileStatementVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.WhileStart, expression),
+                new BudgieLine(CommandNames.WhileStart, expression),
                 ...transformations,
-                new GlsLine(CommandNames.WhileEnd),
+                new BudgieLine(CommandNames.WhileEnd),
             ]),
         ];
     }

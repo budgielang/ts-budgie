@@ -1,10 +1,10 @@
-import { CaseStyle, CommandNames } from "general-language-syntax";
+import { CaseStyle, CommandNames } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine, createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const noAbstractStaticMethods = "Static methods may not be marked abstract.";
@@ -17,7 +17,7 @@ export class MethodDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.MethodDeclaration): Transformation[] {
         const returnType = this.aliaser.getFriendlyReturnTypeName(node);
         if (returnType === undefined) {
-            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(unknownReturnTypeComplaint)])];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedBudgieLine(unknownReturnTypeComplaint)])];
         }
 
         const methodArgs = this.accumulateParameters(node.parameters);
@@ -31,44 +31,44 @@ export class MethodDeclarationVisitor extends NodeVisitor {
             : this.returnConcreteTransformation(node, parameters);
     }
 
-    private returnAbstractTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private returnAbstractTransformation(node: ts.MethodDeclaration, parameters: (string | BudgieLine)[]) {
         return [Transformation.fromNode(node, this.sourceFile, [this.getAbstractTransformationContents(node, parameters)])];
     }
 
-    private getAbstractTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private getAbstractTransformationContents(node: ts.MethodDeclaration, parameters: (string | BudgieLine)[]) {
         if (node.body !== undefined) {
-            return createUnsupportedGlsLine(noBodyComplaint);
+            return createUnsupportedBudgieLine(noBodyComplaint);
         }
 
         if (tsutils.hasModifier(node.modifiers, ts.SyntaxKind.StaticKeyword)) {
-            return createUnsupportedGlsLine(noAbstractStaticMethods);
+            return createUnsupportedBudgieLine(noAbstractStaticMethods);
         }
 
-        return new GlsLine(CommandNames.MemberFunctionDeclareAbstract, ...parameters);
+        return new BudgieLine(CommandNames.MemberFunctionDeclareAbstract, ...parameters);
     }
 
-    private returnConcreteTransformation(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private returnConcreteTransformation(node: ts.MethodDeclaration, parameters: (string | BudgieLine)[]) {
         return [Transformation.fromNode(node, this.sourceFile, this.getConcreteTransformationContents(node, parameters))];
     }
 
-    private getConcreteTransformationContents(node: ts.MethodDeclaration, parameters: (string | GlsLine)[]) {
+    private getConcreteTransformationContents(node: ts.MethodDeclaration, parameters: (string | BudgieLine)[]) {
         if (node.body === undefined) {
-            return [createUnsupportedGlsLine(noBodyComplaint)];
+            return [createUnsupportedBudgieLine(noBodyComplaint)];
         }
 
         const bodyNodes = this.router.recurseIntoNodes(node.body.statements);
         const [commandStart, commandEnd] = this.getConcreteCommandNames(node);
 
-        return [new GlsLine(commandStart, ...parameters), ...bodyNodes, new GlsLine(commandEnd)];
+        return [new BudgieLine(commandStart, ...parameters), ...bodyNodes, new BudgieLine(commandEnd)];
     }
 
-    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>): (string | GlsLine)[] {
-        const parameters: (string | GlsLine)[] = [];
+    private accumulateParameters(declarations: ReadonlyArray<ts.ParameterDeclaration>): (string | BudgieLine)[] {
+        const parameters: (string | BudgieLine)[] = [];
 
         for (const declaration of declarations) {
             const typeName = this.aliaser.getFriendlyTypeName(declaration);
             if (typeName === undefined) {
-                return [createUnsupportedTypeGlsLine()];
+                return [createUnsupportedTypeBudgieLine()];
             }
 
             parameters.push(declaration.name.getText(this.sourceFile));

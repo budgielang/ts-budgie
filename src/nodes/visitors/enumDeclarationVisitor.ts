@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -12,9 +12,9 @@ export class EnumDeclarationVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.EnumStart, name),
+                new BudgieLine(CommandNames.EnumStart, name),
                 ...bodyNodes,
-                new GlsLine(CommandNames.EnumEnd),
+                new BudgieLine(CommandNames.EnumEnd),
             ]),
         ];
     }

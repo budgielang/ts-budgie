@@ -1,6 +1,6 @@
 import * as ts from "typescript";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
 /**
  * Literals that may refer to a node's privacy.
@@ -13,14 +13,14 @@ export type IPrivacyName = "private" | "protected" | "public";
 export type IReturningNode = ts.ArrowFunction | ts.MethodDeclaration | ts.MethodSignature | ts.FunctionDeclaration;
 
 /**
- * Generates GLS-friendly names for node types.
+ * Generates Budgie-friendly names for node types.
  */
 export interface INodeAliaser {
     /**
-     * Generates a GLS-friendly name for a node's type.
+     * Generates a Budgie-friendly name for a node's type.
      *
      * @param node   Node to generate a type name of.
-     * @returns GLS-equivalent output type name of the node, if possible.
+     * @returns Budgie-equivalent output type name of the node, if possible.
      */
-    getFriendlyTypeName(node: ts.Node): string | GlsLine | undefined;
+    getFriendlyTypeName(node: ts.Node): string | BudgieLine | undefined;
 }

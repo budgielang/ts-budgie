@@ -1,2 +1,4 @@
+*.md
+.travis.yml
 test/end-to-end/**
 test/integration/**

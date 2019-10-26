@@ -5,16 +5,16 @@ import { visitSourceFile } from "./nodes/visitSourceFile";
 import { TransformationsPrinter } from "./printing/transformationsPrinter";
 import { ITransformer, TransformationService } from "./service";
 import { Transformer } from "./transforms";
-export { GlsLine } from "./output/glsLine";
+export { BudgieLine } from "./output/budgieLine";
 export { IOutput, Transformation } from "./output/transformation";
 export { IRange } from "./output/range";
 export { ITransformer, TransformationService } from "./service";
 export * from "./transforms";
 
 /**
- * Options to run TS-GLS.
+ * Options to run ts-budgie.
  */
-export interface ITsGlsOptions {
+export interface ITsBudgieOptions {
     /**
      * Base or root directory to ignore from the beginning of file paths, such as "src/", if not "".
      */
@@ -26,7 +26,7 @@ export interface ITsGlsOptions {
     compilerOptions?: ts.CompilerOptions;
 
     /**
-     * Namespace before path names, such as "Gls", if not "".
+     * Namespace before path names, such as "Budgie", if not "".
      */
     outputNamespace?: string;
 
@@ -42,11 +42,11 @@ export interface ITsGlsOptions {
 }
 
 /**
- * Creates a TypeScript-to-GLS code transformer.
+ * Creates a TypeScript-to-Budgie code transformer.
  *
- * @returns A TypeScript-to-GLS code transformer.
+ * @returns A TypeScript-to-Budgie code transformer.
  */
-export const createTransformer = (options: ITsGlsOptions) => {
+export const createTransformer = (options: ITsBudgieOptions) => {
     const transformers: ITransformer[] = [visitSourceFile];
 
     // For now, we skip comments to avoid having to resolve positioning

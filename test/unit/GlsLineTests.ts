@@ -1,13 +1,13 @@
 import { expect } from "chai";
 import "mocha";
 
-import { GlsLine } from "../../src/output/glsLine";
+import { BudgieLine } from "../../src/output/budgieLine";
 
-describe("GlsLine", () => {
+describe("BudgieLine", () => {
     describe("toString", () => {
         it("prints just a command name when there are no args", () => {
             // Arrange
-            const line = new GlsLine("command");
+            const line = new BudgieLine("command");
 
             // Act
             const printed = line.toString();
@@ -18,7 +18,7 @@ describe("GlsLine", () => {
 
         it("prints a single argument", () => {
             // Arrange
-            const line = new GlsLine("command", "abc");
+            const line = new BudgieLine("command", "abc");
 
             // Act
             const printed = line.toString();
@@ -29,7 +29,7 @@ describe("GlsLine", () => {
 
         it("prints multiple arguments", () => {
             // Arrange
-            const line = new GlsLine("command", "abc", "def");
+            const line = new BudgieLine("command", "abc", "def");
 
             // Act
             const printed = line.toString();
@@ -40,7 +40,7 @@ describe("GlsLine", () => {
 
         it("wraps arguments that include spaces", () => {
             // Arrange
-            const line = new GlsLine("command", "abc def", "ghi", "jkl mno");
+            const line = new BudgieLine("command", "abc def", "ghi", "jkl mno");
 
             // Act
             const printed = line.toString();
@@ -51,7 +51,7 @@ describe("GlsLine", () => {
 
         it("escapes a wrapped parenthesis", () => {
             // Arrange
-            const line = new GlsLine("command", "(abc (def) ghi)");
+            const line = new BudgieLine("command", "(abc (def) ghi)");
 
             // Act
             const printed = line.toString();
@@ -60,9 +60,9 @@ describe("GlsLine", () => {
             expect(printed).to.be.equal("command : ((abc (def\\) ghi\\))");
         });
 
-        it("recursively includes a GlsLine", () => {
+        it("recursively includes a BudgieLine", () => {
             // Arrange
-            const line = new GlsLine("command", new GlsLine("inner"));
+            const line = new BudgieLine("command", new BudgieLine("inner"));
 
             // Act
             const printed = line.toString();
@@ -71,9 +71,9 @@ describe("GlsLine", () => {
             expect(printed).to.be.equal("command : { inner }");
         });
 
-        it("recursively includes a GlsLine with wrapped args", () => {
+        it("recursively includes a BudgieLine with wrapped args", () => {
             // Arrange
-            const line = new GlsLine("command", new GlsLine("inner", "abc def"));
+            const line = new BudgieLine("command", new BudgieLine("inner", "abc def"));
 
             // Act
             const printed = line.toString();
@@ -84,7 +84,7 @@ describe("GlsLine", () => {
 
         it("escapes a starting bracket within a string", () => {
             // Arrange
-            const line = new GlsLine("command", '"{"');
+            const line = new BudgieLine("command", '"{"');
 
             // Act
             const printed = line.toString();

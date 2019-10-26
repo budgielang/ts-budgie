@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { getDictionaryTypeNameFromNode } from "../../parsing/dictionaries";
 import { NodeVisitor } from "../visitor";
 
@@ -13,6 +13,6 @@ export class TypeLiteralVisitor extends NodeVisitor {
     private getTransformationContents(node: ts.TypeLiteralNode) {
         const dictionaryTypeName = getDictionaryTypeNameFromNode(node, this.aliaser.getFriendlyTypeName);
 
-        return dictionaryTypeName === undefined ? createUnsupportedTypeGlsLine() : dictionaryTypeName;
+        return dictionaryTypeName === undefined ? createUnsupportedTypeBudgieLine() : dictionaryTypeName;
     }
 }

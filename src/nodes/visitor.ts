@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
@@ -24,7 +24,7 @@ export interface INodeVisitorDependencies {
  */
 export abstract class NodeVisitor {
     /**
-     * Generates GLS-friendly names for nodes.
+     * Generates Budgie-friendly names for nodes.
      */
     protected readonly aliaser: RootAliaser;
 

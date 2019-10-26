@@ -1,13 +1,13 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { isNumericTypeName } from "../numerics";
 
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class ElementAccessExpressionAliaser extends RecursiveAliaser {
-    public getFriendlyTypeName(node: ts.ElementAccessExpression): string | GlsLine | undefined {
+    public getFriendlyTypeName(node: ts.ElementAccessExpression): string | BudgieLine | undefined {
         const { argumentExpression } = node;
         if (argumentExpression === undefined) {
             return undefined;
@@ -19,7 +19,7 @@ export class ElementAccessExpressionAliaser extends RecursiveAliaser {
         }
 
         const arrayType = this.recurseOntoNode(node.expression);
-        if (!(arrayType instanceof GlsLine)) {
+        if (!(arrayType instanceof BudgieLine)) {
             return undefined;
         }
 

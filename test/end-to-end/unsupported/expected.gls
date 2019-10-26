@@ -1,7 +1,0 @@
-comment line
-file start : Test End-to-end Unsupported Source
-    unsupported : (GLS does not support namespaces.)
-
-    unsupported : (GLS does not support namespaces.)
-file end
-comment line

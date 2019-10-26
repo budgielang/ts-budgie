@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 
 import { LengthCommandTypeAdjustmentChecker } from "./typeAdjustments/lengthCommandTypeAdjustmentChecker";
 
@@ -9,7 +9,7 @@ export interface ITypeAdjustmentAttemptInfo {
     /**
      * Friendly type of the node's value, if immediately available.
      */
-    actualValue?: string | GlsLine;
+    actualValue?: string | BudgieLine;
 
     /**
      * Variable declaration node.
@@ -19,7 +19,7 @@ export interface ITypeAdjustmentAttemptInfo {
     /**
      * Original friendly type name of the node.
      */
-    originalType: string | GlsLine | undefined;
+    originalType: string | BudgieLine | undefined;
 }
 
 /**
@@ -32,13 +32,13 @@ export interface ITypeAdjustmentChecker {
      * @param info   Info on the variable declaration.
      * @returns More specific type for the variable declaration, if available.
      */
-    attempt(info: ITypeAdjustmentAttemptInfo): string | GlsLine | undefined;
+    attempt(info: ITypeAdjustmentAttemptInfo): string | BudgieLine | undefined;
 }
 
 /**
- * GLS commands with known return types, keyed to those return types.
+ * Budgie commands with known return types, keyed to those return types.
  */
-const knownGlsLineTypes = new Map<string, string>([
+const knownBudgieLineTypes = new Map<string, string>([
     [CommandNames.StringCaseLower, "string"],
     [CommandNames.StringCaseUpper, "string"],
     [CommandNames.StringFormat, "string"],
@@ -61,7 +61,7 @@ export class TypeAdjuster implements ITypeAdjustmentChecker {
      * @param info   Info on the variable declaration.
      * @returns More specific type for the variable declaration, if available.
      */
-    public attempt(info: ITypeAdjustmentAttemptInfo): GlsLine | string | undefined {
+    public attempt(info: ITypeAdjustmentAttemptInfo): BudgieLine | string | undefined {
         for (const checker of this.checkers) {
             const adjustedType = checker.attempt(info);
             if (adjustedType !== undefined) {
@@ -73,12 +73,12 @@ export class TypeAdjuster implements ITypeAdjustmentChecker {
     }
 
     /**
-     * Tries to find a more specific type based on a known GLS command.
+     * Tries to find a more specific type based on a known Budgie command.
      *
-     * @param line   GLS command line.
+     * @param line   Budgie command line.
      * @returns Known type of that command line, if available.
      */
-    public getKnownTypeOfGlsLine(line: GlsLine): string | undefined {
-        return knownGlsLineTypes.get(line.command);
+    public getKnownTypeOfBudgieLine(line: BudgieLine): string | undefined {
+        return knownBudgieLineTypes.get(line.command);
     }
 }

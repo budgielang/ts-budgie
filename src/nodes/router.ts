@@ -1,8 +1,8 @@
-import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 import { Transformation } from "../output/transformation";
 import { RootAliaser } from "../parsing/aliasers/rootAliaser";
 import { TransformationsPrinter } from "../printing/transformationsPrinter";
@@ -72,11 +72,11 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for a set of nodes.
+     * Retrieves the Budgie output for a set of nodes.
      *
      * @param node   Node to transform.
      * @param parent   Common parent of the nodes.
-     * @returns Transformed GLS output for the nodes.
+     * @returns Transformed Budgie output for the nodes.
      */
     public recurseIntoNodes(nodes: ReadonlyArray<ts.Node>): Transformation[] {
         const transformations: Transformation[] = [];
@@ -89,12 +89,12 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for an inline value.
+     * Retrieves the Budgie output for an inline value.
      *
      * @param node   Node to transform.
-     * @returns Transformed GLS output for the inline value.
+     * @returns Transformed Budgie output for the inline value.
      */
-    public recurseIntoValue(node: ts.Node): string | GlsLine {
+    public recurseIntoValue(node: ts.Node): string | BudgieLine {
         const subTransformations = this.recurseIntoNode(node);
         const { sourceFile } = this.dependencies;
 
@@ -102,13 +102,13 @@ export class NodeVisitRouter {
     }
 
     /**
-     * Retrieves the GLS output for a set of inline values.
+     * Retrieves the Budgie output for a set of inline values.
      *
      * @param nodes   Nodes to transform.
-     * @returns Transformed GLS output for the inline values.
+     * @returns Transformed Budgie output for the inline values.
      */
-    public recurseIntoValues(nodes: ts.NodeArray<ts.Node>): (string | GlsLine)[] {
-        const values: (string | GlsLine)[] = [];
+    public recurseIntoValues(nodes: ts.NodeArray<ts.Node>): (string | BudgieLine)[] {
+        const values: (string | BudgieLine)[] = [];
 
         for (const node of nodes) {
             values.push(this.recurseIntoValue(node));

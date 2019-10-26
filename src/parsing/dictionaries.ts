@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
 import { IRecurseOntoNode } from "./aliasers/recursiveAliaser";
 
@@ -24,5 +24,5 @@ export const getDictionaryTypeNameFromNode = (node: ts.TypeLiteralNode, recurseO
         return undefined;
     }
 
-    return new GlsLine(CommandNames.DictionaryType, "string", valueType);
+    return new BudgieLine(CommandNames.DictionaryType, "string", valueType);
 };

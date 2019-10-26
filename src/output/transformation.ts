@@ -1,15 +1,15 @@
 import * as ts from "typescript";
 
-import { GlsLine } from "./glsLine";
+import { BudgieLine } from "./budgieLine";
 import { IRange } from "./range";
 
 /**
  * Output from any level of node.
  */
-export type IOutput = (string | GlsLine | Transformation)[];
+export type IOutput = (string | BudgieLine | Transformation)[];
 
 /**
- * How a range of source should become GLS output.
+ * How a range of source should become Budgie output.
  */
 export class Transformation {
     /**
