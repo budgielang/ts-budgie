@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 import { Transformation } from "../output/transformation";
 
 const parseCommentLines = (commentText: string) => {
@@ -15,9 +15,9 @@ export const visitMultiLineCommentTrivia = (fullText: string, comment: ts.Commen
 
     return [
         Transformation.fromCommentRange(comment, [
-            new GlsLine(CommandNames.CommentBlockStart),
-            ...commentLines.map((line) => new GlsLine(CommandNames.CommentBlock, line)),
-            new GlsLine(CommandNames.CommentBlockEnd),
+            new BudgieLine(CommandNames.CommentBlockStart),
+            ...commentLines.map((line) => new BudgieLine(CommandNames.CommentBlock, line)),
+            new BudgieLine(CommandNames.CommentBlockEnd),
         ]),
     ];
 };

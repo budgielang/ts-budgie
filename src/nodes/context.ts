@@ -1,4 +1,4 @@
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 import { IContextOptions } from "../service";
 
 /**
@@ -8,7 +8,7 @@ export class VisitorContext {
     /**
      * Current type coercion, if any.
      */
-    private typeCoercion?: string | GlsLine;
+    private typeCoercion?: string | BudgieLine;
 
     /**
      * Constant conversion options for visiting nodes.
@@ -27,7 +27,7 @@ export class VisitorContext {
     /**
      * @returns The current type coercion, if any exists.
      */
-    public get coercion(): string | GlsLine | undefined {
+    public get coercion(): string | BudgieLine | undefined {
         return this.typeCoercion;
     }
 
@@ -36,7 +36,7 @@ export class VisitorContext {
      *
      * @param coercion   A new type coercion.
      */
-    public setTypeCoercion(coercion: string | GlsLine): void {
+    public setTypeCoercion(coercion: string | BudgieLine): void {
         this.typeCoercion = coercion;
     }
 
@@ -45,7 +45,7 @@ export class VisitorContext {
      *
      * @returns The exited type coercion, if any.
      */
-    public exitTypeCoercion(): string | GlsLine | undefined {
+    public exitTypeCoercion(): string | BudgieLine | undefined {
         const coercion = this.typeCoercion;
 
         this.typeCoercion = undefined;

@@ -1,6 +1,6 @@
-import { CommandsBag, CommandsBagFactory, LanguagesBag, RenderContext } from "general-language-syntax";
+import { CommandsBag, CommandsBagFactory, LanguagesBag, RenderContext } from "budgie";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
 /**
  * Generates spaces equivalent to 4-space code tabbing.
@@ -19,7 +19,7 @@ const generateTabs = (amount: number): string => {
 };
 
 /**
- * Indents GLS lines using their command metadata.
+ * Indents Budgie lines using their command metadata.
  */
 export class LineIndenter {
     private readonly commandsBag: CommandsBag;
@@ -29,12 +29,12 @@ export class LineIndenter {
     }
 
     /**
-     * Indents GLS lines using their command metadata.
+     * Indents Budgie lines using their command metadata.
      *
-     * @param lines   GLS and literal string lines.
+     * @param lines   Budgie and literal string lines.
      * @returns Indented versions of the lines.
      */
-    public indent(lines: (string | GlsLine)[]): string[] {
+    public indent(lines: (string | BudgieLine)[]): string[] {
         const output: string[] = [];
         if (lines.length === 0) {
             return output;
@@ -76,10 +76,10 @@ export class LineIndenter {
     /**
      * Computes how a line's command changes indentation.
      *
-     * @param line   Output GLS line.
+     * @param line   Output Budgie line.
      * @returns How the line's command changes indentation.
      */
-    private getIndentationChanges(line: GlsLine): number[] {
+    private getIndentationChanges(line: BudgieLine): number[] {
         const command = this.commandsBag.getCommand(line.command);
         const metadata = command.getMetadata();
 

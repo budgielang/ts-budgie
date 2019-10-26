@@ -7,7 +7,7 @@ const textWrapIndicators = new Set<string>(["{", "}", "(", ")", " ", ":"]);
 /**
  * Wraps a command argument if it has any spaces.
  *
- * @param arg   Argument to a GLS command.
+ * @param arg   Argument to a Budgie command.
  * @returns The argument, wrapped if necessary.
  */
 const wrapArg = (arg: string) => {
@@ -21,42 +21,42 @@ const wrapArg = (arg: string) => {
 };
 
 /**
- * Formats a string or recursive GLS command argument.
+ * Formats a string or recursive Budgie command argument.
  *
- * @param arg   String or recursive GLS command argument.
+ * @param arg   String or recursive Budgie command argument.
  * @returns The formatted argument.
  */
-const formatArg = (arg: string | GlsLine) => (typeof arg === "string" ? escapeSpecialCharacters(wrapArg(arg)) : `{ ${arg} }`);
+const formatArg = (arg: string | BudgieLine) => (typeof arg === "string" ? escapeSpecialCharacters(wrapArg(arg)) : `{ ${arg} }`);
 
 /**
- * A single line of output GLS.
+ * A single line of output Budgie.
  */
-export class GlsLine {
+export class BudgieLine {
     /**
-     * GLS command name.
+     * Budgie command name.
      */
     public readonly command: string;
 
     /**
      * Arguments for the command.
      */
-    public readonly args: (string | GlsLine)[];
+    public readonly args: (string | BudgieLine)[];
 
     /**
-     * Initializes a new instance of the GlsLine class.
+     * Initializes a new instance of the BudgieLine class.
      *
-     * @param command   GLS command name.
+     * @param command   Budgie command name.
      * @param args   Arguments for the command.
      */
-    public constructor(command: string, ...args: (string | GlsLine)[]) {
+    public constructor(command: string, ...args: (string | BudgieLine)[]) {
         this.command = command;
         this.args = args;
     }
 
     /**
-     * Creates the GLS syntax equivalent for this line.
+     * Creates the Budgie syntax equivalent for this line.
      *
-     * @returns The GLS syntax equivalent for this line.
+     * @returns The Budgie syntax equivalent for this line.
      */
     public toString(): string {
         if (this.args.length === 0) {

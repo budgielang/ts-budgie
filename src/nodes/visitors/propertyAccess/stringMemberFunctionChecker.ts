@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -22,15 +22,17 @@ export class StringMemberFunctionChecker extends PropertyAccessChecker {
         }
 
         const nativeMethodName = node.name.getText(this.sourceFile);
-        const glsMethodName = knownMethodPairs.get(nativeMethodName);
-        if (glsMethodName === undefined) {
+        const budgieMethodName = knownMethodPairs.get(nativeMethodName);
+        if (budgieMethodName === undefined) {
             return undefined;
         }
 
         const args = this.router.recurseIntoValues(node.parent.arguments);
 
         return [
-            Transformation.fromNode(node, this.sourceFile, [new GlsLine(glsMethodName, node.expression.getText(this.sourceFile), ...args)]),
+            Transformation.fromNode(node, this.sourceFile, [
+                new BudgieLine(budgieMethodName, node.expression.getText(this.sourceFile), ...args),
+            ]),
         ];
     }
 

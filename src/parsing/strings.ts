@@ -1,8 +1,8 @@
 /**
- * Converts text for a string to GLS-compatible quotes.
+ * Converts text for a string to Budgie-compatible quotes.
  *
  * @param text   Text that needs to be quote-wrapped.
- * @returns GLS-compatible quote-wrapped version of the text.
+ * @returns Budgie-compatible quote-wrapped version of the text.
  */
 export const wrapWithQuotes = (text: string): string => {
     if (text[0] === '"') {

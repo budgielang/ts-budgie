@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "budgie";
 import * as ts from "typescript";
 
 import { Transformation } from "../../../output/transformation";
@@ -12,7 +12,7 @@ import { INodeVisitorDependencies, NodeVisitor } from "../../visitor";
  */
 export abstract class PropertyAccessChecker {
     /**
-     * Generates GLS-friendly names for nodes.
+     * Generates Budgie-friendly names for nodes.
      */
     protected readonly aliaser: RootAliaser;
 

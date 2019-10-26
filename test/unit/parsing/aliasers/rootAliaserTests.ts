@@ -2,7 +2,7 @@ import { expect } from "chai";
 import "mocha";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../../src/output/glsLine";
+import { BudgieLine } from "../../../../src/output/budgieLine";
 import { RootAliaser } from "../../../../src/parsing/aliasers/rootAliaser";
 import { mountSourceText } from "../mounting";
 
@@ -17,8 +17,9 @@ describe("RootAliaser", () => {
 
         const assertTypeNameBecomes = (
             sourceText: string,
-            expectedTypeName: string | GlsLine | undefined,
-            getNode: INodeGetter = getRootNode) => {
+            expectedTypeName: string | BudgieLine | undefined,
+            getNode: INodeGetter = getRootNode,
+        ) => {
             // Arrange
             const { sourceFile, typeChecker } = mountSourceText(sourceText);
             const node = getNode(sourceFile);
@@ -56,24 +57,19 @@ describe("RootAliaser", () => {
         });
 
         it("gets a shallow dictionary type ", () => {
-            assertTypeNameBecomes(
-                "let foo: { [i: string]: boolean }",
-                "dictionary type : string boolean",
-                getVariableDeclarationType);
+            assertTypeNameBecomes("let foo: { [i: string]: boolean }", "dictionary type : string boolean", getVariableDeclarationType);
         });
 
         it("gets a deep dictionary type", () => {
             assertTypeNameBecomes(
                 "let foo: { [i: string]: { [i: string]: boolean} }",
                 "dictionary type : string { dictionary type : string boolean }",
-                getVariableDeclarationType);
+                getVariableDeclarationType,
+            );
         });
 
         it("defaults a dictionary numeric type to float", () => {
-            assertTypeNameBecomes(
-                "let foo: { [i: string]: number };",
-                "dictionary type : string float",
-                getVariableDeclarationType);
+            assertTypeNameBecomes("let foo: { [i: string]: number };", "dictionary type : string float", getVariableDeclarationType);
         });
     });
 
@@ -83,8 +79,9 @@ describe("RootAliaser", () => {
 
         const assertTypeNameBecomes = (
             sourceText: string,
-            expectedTypeName: string | GlsLine | undefined,
-            getNode: INodeGetter = getRootNode) => {
+            expectedTypeName: string | BudgieLine | undefined,
+            getNode: INodeGetter = getRootNode,
+        ) => {
             // Arrange
             const { sourceFile, typeChecker } = mountSourceText(sourceText);
             const node = getNode(sourceFile);
@@ -98,31 +95,19 @@ describe("RootAliaser", () => {
         };
 
         it("defaults a constructor to public", () => {
-            assertTypeNameBecomes(
-                "class Foo { constructor() {} }",
-                "public",
-                getFirstChildConstructor);
+            assertTypeNameBecomes("class Foo { constructor() {} }", "public", getFirstChildConstructor);
         });
 
         it("retrieves public from a public constructor", () => {
-            assertTypeNameBecomes(
-                "class Foo { constructor() {} }",
-                "public",
-                getFirstChildConstructor);
+            assertTypeNameBecomes("class Foo { constructor() {} }", "public", getFirstChildConstructor);
         });
 
         it("retrieves protected from a protected constructor", () => {
-            assertTypeNameBecomes(
-                "class Foo { protected constructor() {} }",
-                "protected",
-                getFirstChildConstructor);
+            assertTypeNameBecomes("class Foo { protected constructor() {} }", "protected", getFirstChildConstructor);
         });
 
         it("retrieves private from a private constructor", () => {
-            assertTypeNameBecomes(
-                "class Foo { private constructor() {} }",
-                "private",
-                getFirstChildConstructor);
+            assertTypeNameBecomes("class Foo { private constructor() {} }", "private", getFirstChildConstructor);
         });
     });
 });

@@ -1,6 +1,6 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 
-import { GlsLine } from "./glsLine";
+import { BudgieLine } from "./budgieLine";
 
 /**
  * Complaint text for an unsupported type.
@@ -8,16 +8,16 @@ import { GlsLine } from "./glsLine";
 const unsupportedTypeComplaint = "Could not parse unsupported type.";
 
 /**
- * Creates a GLS line for unsupported syntax.
+ * Creates a Budgie line for unsupported syntax.
  *
  * @param reason   Why the syntax is unsupported.
- * @returns GLS line for unsupported syntax for the reason.
+ * @returns Budgie line for unsupported syntax for the reason.
  */
-export const createUnsupportedGlsLine = (reason: string) => new GlsLine(CommandNames.Unsupported, reason);
+export const createUnsupportedBudgieLine = (reason: string) => new BudgieLine(CommandNames.Unsupported, reason);
 
 /**
- * Creates a GLS line for unsupported syntax due to an unsupported type.
+ * Creates a Budgie line for unsupported syntax due to an unsupported type.
  *
- * @returns GLS line for unsupported syntax for an unsupported type.
+ * @returns Budgie line for unsupported syntax for an unsupported type.
  */
-export const createUnsupportedTypeGlsLine = () => createUnsupportedGlsLine(unsupportedTypeComplaint);
+export const createUnsupportedTypeBudgieLine = () => createUnsupportedBudgieLine(unsupportedTypeComplaint);

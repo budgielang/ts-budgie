@@ -2,9 +2,9 @@ import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
 import { INodeAliaser, IPrivacyName, IReturningNode } from "../../nodes/aliaser";
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { TypeFlagsResolver } from "../flags";
-import { parseRawTypeToGls } from "../types";
+import { parseRawTypeToBudgie } from "../types";
 
 import { ArrayLiteralExpressionAliaser } from "./arrayLiteralExpressionAliaser";
 import { ElementAccessExpressionAliaser } from "./elementAccessExpressionAliaser";
@@ -65,7 +65,7 @@ export class RootAliaser implements RootAliaser {
         ]);
     }
 
-    public readonly getFriendlyTypeName = (node: ts.Node): string | GlsLine | undefined => {
+    public readonly getFriendlyTypeName = (node: ts.Node): string | BudgieLine | undefined => {
         const knownTypeNameConverter = this.typesWithKnownTypeNames.get(node.kind);
         if (knownTypeNameConverter !== undefined) {
             const typeNameConverted = knownTypeNameConverter.getFriendlyTypeName(node);
@@ -108,7 +108,7 @@ export class RootAliaser implements RootAliaser {
         }
 
         if (ts.isTypeNode(node)) {
-            return parseRawTypeToGls(node.getText());
+            return parseRawTypeToBudgie(node.getText());
         }
 
         // This seems to sometimes succeed when directly calling getSymbolAtLocation doesn't
@@ -132,7 +132,7 @@ export class RootAliaser implements RootAliaser {
         return "public";
     }
 
-    public getFriendlyReturnTypeName(node: IReturningNode): string | GlsLine | undefined {
+    public getFriendlyReturnTypeName(node: IReturningNode): string | BudgieLine | undefined {
         // If the node explicitly mentions a return type, use that
         if (node.type !== undefined) {
             return this.getFriendlyTypeName(node.type);

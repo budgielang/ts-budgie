@@ -5,7 +5,7 @@ import * as path from "path";
 import * as ts from "typescript";
 
 import { createTransformer } from "../src";
-import { findGlsTestSourcesUnder } from "../util";
+import { findBudgieTestSourcesUnder } from "../util";
 
 /**
  * Reads the code contents of a test file.
@@ -25,7 +25,7 @@ const readFileAndTrim = (directoryPath: string, fileName: string, trim: string):
 };
 
 /**
- * Test runner for comparing converted .gls files and expected output.
+ * Test runner for comparing converted .bg files and expected output.
  */
 export class ComparisonTestsRunner {
     /**
@@ -54,7 +54,7 @@ export class ComparisonTestsRunner {
     public constructor(section: string, testsToRun: Set<string> = new Set<string>(["*"])) {
         this.section = section;
         this.rootPath = path.resolve(section);
-        this.commandTests = findGlsTestSourcesUnder(this.rootPath, testsToRun);
+        this.commandTests = findBudgieTestSourcesUnder(this.rootPath, testsToRun);
         this.sourceFiles = this.createSourceFiles();
     }
 
@@ -63,13 +63,11 @@ export class ComparisonTestsRunner {
      */
     public run(): void {
         describe(this.section, () => {
-            this.commandTests.forEach(
-                (_, test): void => {
-                    it(test, () => {
-                        this.runCommandTest(path.join(this.section, test));
-                    });
-                },
-            );
+            this.commandTests.forEach((_, test): void => {
+                it(test, () => {
+                    this.runCommandTest(path.join(this.section, test));
+                });
+            });
         });
     }
 
@@ -81,7 +79,7 @@ export class ComparisonTestsRunner {
     public runCommandTest(directoryPath: string): void {
         // Arrange
         const sourceName = path.join(directoryPath, "source.ts");
-        const expectedText = readFileAndTrim(directoryPath, "expected.gls", "comment line");
+        const expectedText = readFileAndTrim(directoryPath, "expected.bg", "comment line");
 
         // Act
         const sourceFile = this.sourceFiles.get(sourceName) as ts.SourceFile;
@@ -101,19 +99,17 @@ export class ComparisonTestsRunner {
     private createSourceFiles(): Map<string, ts.SourceFile> {
         const sourceFiles = new Map<string, ts.SourceFile>();
 
-        this.commandTests.forEach(
-            (tests: string[], test: string): void => {
-                const directoryName = path.join(this.section, test);
+        this.commandTests.forEach((tests: string[], test: string): void => {
+            const directoryName = path.join(this.section, test);
 
-                for (const {} of tests) {
-                    const filePath = path.join(directoryName, "source.ts");
-                    const sourceText = readFileSync(filePath).toString();
-                    const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
+            for (const {} of tests) {
+                const filePath = path.join(directoryName, "source.ts");
+                const sourceText = readFileSync(filePath).toString();
+                const sourceFile = ts.createSourceFile(filePath, sourceText, ts.ScriptTarget.Latest, true, ts.ScriptKind.TS);
 
-                    sourceFiles.set(filePath, sourceFile);
-                }
-            },
-        );
+                sourceFiles.set(filePath, sourceFile);
+            }
+        });
 
         return sourceFiles;
     }

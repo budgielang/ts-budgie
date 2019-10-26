@@ -1,22 +1,22 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
 /**
- * Parses a raw TypeScript type name into the GLS command equivalent.
+ * Parses a raw TypeScript type name into the Budgie command equivalent.
  *
  * @param typeRaw   A raw TypeScript type.
- * @returns The GLS command equivalent for the type.
+ * @returns The Budgie command equivalent for the type.
  */
-export const parseRawTypeToGls = (typeRaw: string): string | GlsLine => {
+export const parseRawTypeToBudgie = (typeRaw: string): string | BudgieLine => {
     const angleBracketIndex = typeRaw.lastIndexOf("<");
     if (angleBracketIndex !== -1) {
-        return new GlsLine(CommandNames.GenericType, parseRawTypeToGls(typeRaw.substring(0, angleBracketIndex)));
+        return new BudgieLine(CommandNames.GenericType, parseRawTypeToBudgie(typeRaw.substring(0, angleBracketIndex)));
     }
 
     const arrayBracketIndex = typeRaw.lastIndexOf("[");
     if (arrayBracketIndex !== -1) {
-        return new GlsLine(CommandNames.ListType, parseRawTypeToGls(typeRaw.substring(0, arrayBracketIndex)));
+        return new BudgieLine(CommandNames.ListType, parseRawTypeToBudgie(typeRaw.substring(0, arrayBracketIndex)));
     }
 
     return typeRaw;

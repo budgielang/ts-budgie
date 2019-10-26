@@ -1,3 +1,3 @@
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
-export const getListValueType = (typeCommand: string | GlsLine) => (typeof typeCommand === "string" ? typeCommand : typeCommand.args[0]);
+export const getListValueType = (typeCommand: string | BudgieLine) => (typeof typeCommand === "string" ? typeCommand : typeCommand.args[0]);

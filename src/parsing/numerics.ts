@@ -1,12 +1,12 @@
-import { GlsLine } from "../output/glsLine";
+import { BudgieLine } from "../output/budgieLine";
 
 export type NumericType = "float" | "int";
 
 export const isNumericTypeName = (type: string): type is NumericType => type === "float" || type === "int";
 
-export const getNumericTypeNameFromUsages = (usages: (number | string | GlsLine)[]): NumericType => {
+export const getNumericTypeNameFromUsages = (usages: (number | string | BudgieLine)[]): NumericType => {
     for (const usage of usages) {
-        if (usage instanceof GlsLine) {
+        if (usage instanceof BudgieLine) {
             continue;
         }
 

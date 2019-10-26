@@ -1,9 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine, createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine, createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const cannotFindClassNameComplaint = "Cannot find class name for constructor.";
@@ -21,9 +21,9 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.ConstructorStart, privacy, className, ...parsedParameters),
+                new BudgieLine(CommandNames.ConstructorStart, privacy, className, ...parsedParameters),
                 ...bodyNodes,
-                new GlsLine(CommandNames.ConstructorEnd),
+                new BudgieLine(CommandNames.ConstructorEnd),
             ]),
         ];
     }
@@ -36,14 +36,14 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return body.statements;
     }
 
-    private parseParameters(parameters: ReadonlyArray<ts.ParameterDeclaration>): (string | GlsLine)[] {
-        const parsedParameters: (string | GlsLine)[] = [];
+    private parseParameters(parameters: ReadonlyArray<ts.ParameterDeclaration>): (string | BudgieLine)[] {
+        const parsedParameters: (string | BudgieLine)[] = [];
 
         for (const parameter of parameters) {
             const name = parameter.name.getText();
             const type = this.aliaser.getFriendlyTypeName(parameter);
             if (type === undefined) {
-                return [createUnsupportedTypeGlsLine()];
+                return [createUnsupportedTypeBudgieLine()];
             }
 
             parsedParameters.push(name, type);
@@ -52,17 +52,17 @@ export class ConstructorDeclarationVisitor extends NodeVisitor {
         return parsedParameters;
     }
 
-    private getParentClassName(originalNode: ts.ConstructorDeclaration, currentNode: ts.Node = originalNode): string | GlsLine {
+    private getParentClassName(originalNode: ts.ConstructorDeclaration, currentNode: ts.Node = originalNode): string | BudgieLine {
         if (ts.isClassDeclaration(currentNode)) {
             if (currentNode.name === undefined) {
-                return createUnsupportedGlsLine(noClassNameComplaint);
+                return createUnsupportedBudgieLine(noClassNameComplaint);
             }
 
             return currentNode.name.text;
         }
 
         if (currentNode.parent === undefined) {
-            return createUnsupportedGlsLine(cannotFindClassNameComplaint);
+            return createUnsupportedBudgieLine(cannotFindClassNameComplaint);
         }
 
         return this.getParentClassName(originalNode, currentNode.parent);

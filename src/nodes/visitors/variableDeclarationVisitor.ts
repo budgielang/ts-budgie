@@ -1,9 +1,9 @@
-import { CommandNames, KeywordNames } from "general-language-syntax";
+import { CommandNames, KeywordNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { TypeAdjuster } from "../adjustments/types";
 import { NodeVisitor } from "../visitor";
 
@@ -27,8 +27,8 @@ const multilineInitializerTypes = new Set([CommandNames.DictionaryNewStart]);
 /**
  * @returns Whether a variable declaration is of a type that has a Start and corresponding End.
  */
-const isInitializerMultilineNecessary = (initializerType: string | GlsLine | undefined) => {
-    if (!(initializerType instanceof GlsLine)) {
+const isInitializerMultilineNecessary = (initializerType: string | BudgieLine | undefined) => {
+    if (!(initializerType instanceof BudgieLine)) {
         return false;
     }
 
@@ -80,23 +80,23 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             interpretedType = this.getFriendlyTypeAtLocation(node);
         }
 
-        // As a last ditch effort, it may be that we're seeing the result of a GLS line
+        // As a last ditch effort, it may be that we're seeing the result of a Budgie line
         // If it's a command that we explicitly know to return a type, we can use that
-        if (interpretedType === undefined && aliasedValue instanceof GlsLine) {
-            interpretedType = this.typeAdjuster.getKnownTypeOfGlsLine(aliasedValue);
+        if (interpretedType === undefined && aliasedValue instanceof BudgieLine) {
+            interpretedType = this.typeAdjuster.getKnownTypeOfBudgieLine(aliasedValue);
         }
 
         // If we don't know the interpreted type by now, just give up
         if (interpretedType === undefined) {
-            return [createUnsupportedTypeGlsLine()];
+            return [createUnsupportedTypeBudgieLine()];
         }
 
-        const firstResultsLineArgs: (string | GlsLine)[] = [name, interpretedType];
+        const firstResultsLineArgs: (string | BudgieLine)[] = [name, interpretedType];
         if (aliasedValue !== undefined) {
             firstResultsLineArgs.push(aliasedValue);
         }
 
-        const lines: (string | GlsLine | Transformation)[] = [];
+        const lines: (string | BudgieLine | Transformation)[] = [];
         const command = isInitializerMultilineNecessary(firstResultsLineArgs[2]) ? CommandNames.VariableStart : CommandNames.Variable;
 
         if (command === CommandNames.VariableStart) {
@@ -107,7 +107,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
             }
         }
 
-        lines.unshift(new GlsLine(command, ...firstResultsLineArgs));
+        lines.unshift(new BudgieLine(command, ...firstResultsLineArgs));
 
         return lines;
     }
@@ -134,7 +134,7 @@ export class VariableDeclarationVisitor extends NodeVisitor {
         return allowedIntrinsicNames.has(intrinsicName) ? intrinsicName : undefined;
     }
 
-    private appendFullValueToLines(fullValue: (string | Transformation | GlsLine)[], lines: (string | GlsLine | Transformation)[]) {
+    private appendFullValueToLines(fullValue: (string | Transformation | BudgieLine)[], lines: (string | BudgieLine | Transformation)[]) {
         // Full values start with "dictionary new start" or similar commands.
         // This filters them out.
         if (fullValue.length === 1 && fullValue[0] instanceof Transformation) {

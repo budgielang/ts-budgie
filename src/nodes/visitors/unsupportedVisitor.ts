@@ -1,7 +1,7 @@
 import * as ts from "typescript";
 
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 /**
@@ -12,7 +12,11 @@ export abstract class UnsupportedVisitor {
         // tslint:disable-next-line:max-classes-per-file
         return class extends NodeVisitor {
             public visit(node: ts.Node): Transformation[] {
-                return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(`GLS does not support ${description}.`)])];
+                return [
+                    Transformation.fromNode(node, this.sourceFile, [
+                        createUnsupportedBudgieLine(`Budgie does not support ${description}.`),
+                    ]),
+                ];
             }
         };
     }

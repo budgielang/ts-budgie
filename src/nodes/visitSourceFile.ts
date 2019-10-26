@@ -1,4 +1,4 @@
-import { CaseStyleConverterBag, NameSplitter } from "general-language-syntax";
+import { CaseStyleConverterBag, NameSplitter } from "budgie";
 import * as tsutils from "tsutils";
 
 import { Transformation } from "../output/transformation";

@@ -8,7 +8,7 @@ import * as minimatch from "minimatch";
  * @param inclusions   Command groups to only include, if not all.
  * @returns Command names within the directory.
  */
-export const findGlsFilesUnder = (rootPath: string, inclusions?: Set<string>) => {
+export const findBudgieFilesUnder = (rootPath: string, inclusions?: Set<string>) => {
     const childrenNames = fs.readdirSync(rootPath).filter((childName) => childName.indexOf(".") === -1);
     if (inclusions === undefined) {
         return childrenNames;

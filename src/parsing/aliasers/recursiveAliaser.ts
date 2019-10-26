@@ -1,9 +1,9 @@
 import * as ts from "typescript";
 
 import { INodeAliaser } from "../../nodes/aliaser";
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 
-export type IRecurseOntoNode = (node: ts.Node) => string | GlsLine | undefined;
+export type IRecurseOntoNode = (node: ts.Node) => string | BudgieLine | undefined;
 
 export abstract class RecursiveAliaser implements INodeAliaser {
     protected readonly recurseOntoNode: IRecurseOntoNode;
@@ -14,5 +14,5 @@ export abstract class RecursiveAliaser implements INodeAliaser {
         this.typeChecker = typeChecker;
     }
 
-    public abstract getFriendlyTypeName(node: ts.Node): string | GlsLine | undefined;
+    public abstract getFriendlyTypeName(node: ts.Node): string | BudgieLine | undefined;
 }

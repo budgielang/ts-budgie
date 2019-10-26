@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { NodeVisitor } from "../visitor";
 
@@ -18,9 +18,9 @@ export class IfStatementVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.IfStart, expression),
+                new BudgieLine(CommandNames.IfStart, expression),
                 ...transformations,
-                new GlsLine(CommandNames.IfEnd),
+                new BudgieLine(CommandNames.IfEnd),
             ]),
         ];
     }
@@ -28,13 +28,13 @@ export class IfStatementVisitor extends NodeVisitor {
     private replaceWithElseCommands(elseStatement: ts.Statement, transformations: Transformation[]) {
         // If there are no commands, just end with an else command
         if (transformations.length === 0) {
-            return [Transformation.fromNode(elseStatement, this.sourceFile, [new GlsLine(CommandNames.ElseStart)])];
+            return [Transformation.fromNode(elseStatement, this.sourceFile, [new BudgieLine(CommandNames.ElseStart)])];
         }
 
         // 'else if' commands are still stored as IfStatement nodes under the parent's elseStatment
-        const starter = transformations[0].output[0] as GlsLine;
+        const starter = transformations[0].output[0] as BudgieLine;
         if (starter.command === CommandNames.IfStart) {
-            transformations[0].output[0] = new GlsLine(CommandNames.ElseIfStart, ...starter.args);
+            transformations[0].output[0] = new BudgieLine(CommandNames.ElseIfStart, ...starter.args);
         }
 
         // Removes any now-unnecessary 'if end' command

@@ -1,0 +1,7 @@
+comment line
+file start : Test End-to-end Unsupported Source
+    unsupported : (Budgie does not support namespaces.)
+
+    unsupported : (Budgie does not support namespaces.)
+file end
+comment line

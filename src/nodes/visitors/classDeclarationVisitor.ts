@@ -1,10 +1,10 @@
-import { CommandNames, KeywordNames } from "general-language-syntax";
+import { CommandNames, KeywordNames } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const classWithoutNameComplaint = "A class must have a name.";
@@ -12,7 +12,7 @@ const classWithoutNameComplaint = "A class must have a name.";
 export class ClassDeclarationVisitor extends NodeVisitor {
     public visit(node: ts.ClassDeclaration) {
         if (node.name === undefined) {
-            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedGlsLine(classWithoutNameComplaint)])];
+            return [Transformation.fromNode(node, this.sourceFile, [createUnsupportedBudgieLine(classWithoutNameComplaint)])];
         }
 
         const bodyNodes = this.router.recurseIntoNodes(node.members);
@@ -53,9 +53,9 @@ export class ClassDeclarationVisitor extends NodeVisitor {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.ClassStart, ...parameters),
+                new BudgieLine(CommandNames.ClassStart, ...parameters),
                 ...bodyNodes,
-                new GlsLine(CommandNames.ClassEnd),
+                new BudgieLine(CommandNames.ClassEnd),
             ]),
         ];
     }

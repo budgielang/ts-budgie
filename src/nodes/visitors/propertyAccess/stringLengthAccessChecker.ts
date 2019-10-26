@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -14,7 +14,7 @@ export class StringLengthAccessChecker extends PropertyAccessChecker {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.StringLength, node.expression.getText(this.sourceFile)),
+                new BudgieLine(CommandNames.StringLength, node.expression.getText(this.sourceFile)),
             ]),
         ];
     }

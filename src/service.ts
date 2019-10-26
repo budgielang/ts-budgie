@@ -12,7 +12,7 @@ export interface IContextOptions {
     baseDirectory: string;
 
     /**
-     * Namespace before path names, such as "Gls".
+     * Namespace before path names, such as "Budgie".
      */
     outputNamespace: string;
 }
@@ -38,7 +38,7 @@ export interface ITransformerSettings {
 }
 
 /**
- * Retrieves source-to-GLS transforms from a file.
+ * Retrieves source-to-Budgie transforms from a file.
  *
  * @param sourceFile   Source file to transform.
  * @param typeChecker   Type checker for the source file.
@@ -47,18 +47,18 @@ export interface ITransformerSettings {
 export type ITransformer = (settings: ITransformerSettings) => Transformation[];
 
 /**
- * Retrieves and merges source-to-GLS transforms from files.
+ * Retrieves and merges source-to-Budgie transforms from files.
  */
 export class TransformationService {
     /**
-     * Transformations to retrieve source-to-GLS transforms from a file.
+     * Transformations to retrieve source-to-Budgie transforms from a file.
      */
     private readonly transformers: ITransformer[];
 
     /**
      * Initializes a new instance of the TransformationService class.
      *
-     * @param transformers   Transformations to retrieve source-to-GLS transforms from a file.
+     * @param transformers   Transformations to retrieve source-to-Budgie transforms from a file.
      */
     public constructor(transformers: ITransformer[]) {
         this.transformers = transformers;

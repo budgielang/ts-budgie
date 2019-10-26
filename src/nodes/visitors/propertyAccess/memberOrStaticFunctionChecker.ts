@@ -1,8 +1,8 @@
-import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
+import { CaseStyle, CommandNames, KeywordNames } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -38,7 +38,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
         const functionName = this.casing.convertToCase(CaseStyle.PascalCase, functionNameSplit);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(commandName, privacy, caller, functionName, ...args)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(commandName, privacy, caller, functionName, ...args)])];
     }
 
     /**
@@ -51,7 +51,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
         expression: ts.CallExpression | ts.NewExpression,
         parent: ts.CallExpression,
     ): Transformation[] | undefined {
-        const newGlsLineCall = this.router.recurseIntoValue(expression);
+        const newBudgieLineCall = this.router.recurseIntoValue(expression);
         const args = parent.arguments.map((arg) => (arg === node ? node.name.text : this.router.recurseIntoValue(arg)));
 
         const functionNameSplit = this.nameSplitter.split(node.name.getText(this.sourceFile));
@@ -59,7 +59,7 @@ export class MemberOrStaticFunctionChecker extends PropertyAccessChecker {
 
         return [
             Transformation.fromNode(node, this.sourceFile, [
-                new GlsLine(CommandNames.MemberFunction, KeywordNames.Public, newGlsLineCall, functionName, ...args),
+                new BudgieLine(CommandNames.MemberFunction, KeywordNames.Public, newBudgieLineCall, functionName, ...args),
             ]),
         ];
     }

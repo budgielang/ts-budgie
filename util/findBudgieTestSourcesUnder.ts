@@ -1,7 +1,7 @@
 import * as fs from "fs";
 import * as path from "path";
 
-import { findGlsFilesUnder } from "./findGlsFilesUnder";
+import { findBudgieFilesUnder } from "./findBudgieFilesUnder";
 
 /**
  * Retrieves, for each command in a directory, tests under that command.
@@ -10,8 +10,8 @@ import { findGlsFilesUnder } from "./findGlsFilesUnder";
  * @param inclusions   Command groups to run, if not all.
  * @returns Tests for each command in a directory.
  */
-export const findGlsTestSourcesUnder = (rootPath: string, inclusions?: Set<string>): Map<string, string[]> => {
-    const childrenNames = findGlsFilesUnder(rootPath, inclusions);
+export const findBudgieTestSourcesUnder = (rootPath: string, inclusions?: Set<string>): Map<string, string[]> => {
+    const childrenNames = findBudgieFilesUnder(rootPath, inclusions);
     const tests = new Map<string, string[]>();
 
     for (const childName of childrenNames) {
@@ -19,8 +19,8 @@ export const findGlsTestSourcesUnder = (rootPath: string, inclusions?: Set<strin
             childName,
             fs
                 .readdirSync(path.resolve(rootPath, childName))
-                .filter((testFileName) => testFileName.indexOf(".gls") !== -1)
-                .map((testFileName) => testFileName.substring(0, testFileName.indexOf(".gls"))),
+                .filter((testFileName) => testFileName.indexOf(".bg") !== -1)
+                .map((testFileName) => testFileName.substring(0, testFileName.indexOf(".bg"))),
         );
     }
 

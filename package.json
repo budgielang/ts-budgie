@@ -1,7 +1,7 @@
 {
-    "name": "ts-gls",
+    "name": "ts-budgie",
     "version": "0.3.1",
-    "description": "Converts TypeScript code to General Language Syntax (GLS).",
+    "description": "Converts TypeScript code to Budgie.",
     "main": "src/index.js",
     "typings": "src/index.d.ts",
     "scripts": {
@@ -24,15 +24,15 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/highschoolhacking/TS-GLS.git"
+        "url": "git+https://github.com/budgielang/ts-budgie.git"
     },
-    "keywords": ["typescript", "general", "language", "syntax", "gls", "metalanguage", "metaprogramming", "yippee"],
+    "keywords": ["typescript", "budgie", "metalanguage", "metaprogramming", "yippee"],
     "author": "Josh Goldberg <joshuakgoldberg@outlook.com>",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/highschoolhacking/TS-GLS/issues"
+        "url": "https://github.com/budgielang/ts-budgie/issues"
     },
-    "homepage": "https://github.com/highschoolhacking/TS-GLS#readme",
+    "homepage": "https://github.com/budgielang/ts-budgie#readme",
     "devDependencies": {
         "@types/chai": "^4.2.4",
         "@types/minimatch": "^3.0.3",
@@ -49,11 +49,8 @@
         "tslint": "5.20.0",
         "tslint-config-prettier": "^1.18.0"
     },
-    "peerDependencies": {
-        "general-language-syntax": "^0.3.25"
-    },
     "dependencies": {
-        "general-language-syntax": "^0.3.25",
+        "budgie": "^0.3.27",
         "mz": "^2.7.0",
         "tsutils": "^3.17.1",
         "typescript": "^3.6.4"

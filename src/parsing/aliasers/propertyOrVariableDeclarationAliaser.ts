@@ -1,11 +1,11 @@
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 
 import { RecursiveAliaser } from "./recursiveAliaser";
 
 export class PropertyOrVariableDeclarationAliaser extends RecursiveAliaser {
-    public getFriendlyTypeName(node: ts.PropertyDeclaration | ts.VariableDeclaration): string | GlsLine | undefined {
+    public getFriendlyTypeName(node: ts.PropertyDeclaration | ts.VariableDeclaration): string | BudgieLine | undefined {
         if (node.type !== undefined) {
             return this.recurseOntoNode(node.type);
         }

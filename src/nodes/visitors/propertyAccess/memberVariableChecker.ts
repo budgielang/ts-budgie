@@ -1,7 +1,7 @@
-import { CommandNames, KeywordNames } from "general-language-syntax";
+import { CommandNames, KeywordNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -16,7 +16,9 @@ export class MemberVariableChecker extends PropertyAccessChecker {
         const variableName = node.name.getText(this.sourceFile);
         const privacy = this.getMemberPrivacy(node.expression, node.name);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.MemberVariable, privacy, caller, variableName)])];
+        return [
+            Transformation.fromNode(node, this.sourceFile, [new BudgieLine(CommandNames.MemberVariable, privacy, caller, variableName)]),
+        ];
     }
 
     private getMemberPrivacy(expression: ts.Expression, name: ts.Identifier) {

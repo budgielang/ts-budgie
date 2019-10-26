@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 
 import { PropertyAccessChecker } from "./propertyAccessChecker";
@@ -49,15 +49,15 @@ export class ArrayMemberFunctionChecker extends PropertyAccessChecker {
         }
 
         const nativeMethodName = node.name.getText(this.sourceFile);
-        const glsMethodPairing = knownMethodPairs.get(nativeMethodName);
-        if (glsMethodPairing === undefined || node.parent.arguments.length !== glsMethodPairing.argsCount) {
+        const budgieMethodPairing = knownMethodPairs.get(nativeMethodName);
+        if (budgieMethodPairing === undefined || node.parent.arguments.length !== budgieMethodPairing.argsCount) {
             return undefined;
         }
 
         const expression = this.router.recurseIntoValue(node.expression);
         const args = this.router.recurseIntoValues(node.parent.arguments);
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(glsMethodPairing.commandName, expression, ...args)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(budgieMethodPairing.commandName, expression, ...args)])];
     }
 
     private isArray(expression: ts.Expression) {

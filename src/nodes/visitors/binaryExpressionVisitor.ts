@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
 import { operators } from "../../parsing/aliases";
 import { NodeVisitor } from "../visitor";
@@ -13,7 +13,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
             return [
                 Transformation.fromNode(node, this.sourceFile, [
-                    new GlsLine(CommandNames.InstanceOf, node.left.getText(this.sourceFile), node.right.getText(this.sourceFile)),
+                    new BudgieLine(CommandNames.InstanceOf, node.left.getText(this.sourceFile), node.right.getText(this.sourceFile)),
                 ]),
             ];
         }
@@ -21,7 +21,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
             return [
                 Transformation.fromNode(node, this.sourceFile, [
-                    new GlsLine(
+                    new BudgieLine(
                         CommandNames.DictionaryContainsKey,
                         node.left.getText(this.sourceFile),
                         node.right.getText(this.sourceFile),
@@ -32,21 +32,21 @@ export class BinaryExpressionVisitor extends NodeVisitor {
 
         const contents = this.collectOperationContents(node).map((content) => this.recurseOnOperationContents(content));
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.Operation, ...contents)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine(CommandNames.Operation, ...contents)])];
     }
 
-    private collectOperationContents(node: ts.BinaryExpression): (string | GlsLine)[] {
+    private collectOperationContents(node: ts.BinaryExpression): (string | BudgieLine)[] {
         const { left, right } = node;
 
         if (node.operatorToken.kind === ts.SyntaxKind.InstanceOfKeyword) {
-            return [new GlsLine(CommandNames.InstanceOf, left.getText(this.sourceFile), right.getText(this.sourceFile))];
+            return [new BudgieLine(CommandNames.InstanceOf, left.getText(this.sourceFile), right.getText(this.sourceFile))];
         }
 
         if (node.operatorToken.kind === ts.SyntaxKind.InKeyword) {
-            return [new GlsLine(CommandNames.DictionaryContainsKey, left.getText(this.sourceFile), right.getText(this.sourceFile))];
+            return [new BudgieLine(CommandNames.DictionaryContainsKey, left.getText(this.sourceFile), right.getText(this.sourceFile))];
         }
 
-        const contents: (string | GlsLine)[] = [];
+        const contents: (string | BudgieLine)[] = [];
 
         if (ts.isBinaryExpression(left)) {
             contents.push(...this.collectOperationContents(left));
@@ -57,7 +57,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         if (node.operatorToken.kind in operators) {
             contents.push((operators as { [i: number]: string })[node.operatorToken.kind]);
         } else {
-            contents.push(new GlsLine(CommandNames.Unsupported, unknownOperatorComplaint));
+            contents.push(new BudgieLine(CommandNames.Unsupported, unknownOperatorComplaint));
         }
 
         if (ts.isBinaryExpression(right)) {
@@ -69,7 +69,7 @@ export class BinaryExpressionVisitor extends NodeVisitor {
         return contents;
     }
 
-    private recurseOnOperationContents(content: string | GlsLine) {
-        return typeof content === "string" || content instanceof GlsLine ? content : this.router.recurseIntoValue(content);
+    private recurseOnOperationContents(content: string | BudgieLine) {
+        return typeof content === "string" || content instanceof BudgieLine ? content : this.router.recurseIntoValue(content);
     }
 }

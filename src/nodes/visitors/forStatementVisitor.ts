@@ -1,9 +1,9 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine } from "../../output/unsupported";
 import { getNumericTypeNameFromUsages } from "../../parsing/numerics";
 import { NodeVisitor } from "../visitor";
 
@@ -25,12 +25,12 @@ export class ForStatementVisitor extends NodeVisitor {
             !ts.isVariableDeclarationList(initializer) ||
             initializer.declarations.length !== 1
         ) {
-            return [createUnsupportedGlsLine(irregularComplaint)];
+            return [createUnsupportedBudgieLine(irregularComplaint)];
         }
 
         const declaration = initializer.declarations[0];
         if (declaration.initializer === undefined) {
-            return [createUnsupportedGlsLine(irregularComplaint)];
+            return [createUnsupportedBudgieLine(irregularComplaint)];
         }
 
         const name = (declaration.name as ts.Identifier).text;
@@ -45,7 +45,7 @@ export class ForStatementVisitor extends NodeVisitor {
             parameters.push(incrementorText);
         }
 
-        return [new GlsLine(CommandNames.ForNumbersStart, ...parameters), ...bodyNodes, new GlsLine(CommandNames.ForNumbersEnd)];
+        return [new BudgieLine(CommandNames.ForNumbersStart, ...parameters), ...bodyNodes, new BudgieLine(CommandNames.ForNumbersEnd)];
     }
 
     private getIncrementorIfNotOne(target: string, incrementor: ts.Expression) {
@@ -63,7 +63,7 @@ export class ForStatementVisitor extends NodeVisitor {
             return right.text === "1" ? undefined : right.text;
         }
 
-        return createUnsupportedGlsLine(forLoopsMustBeAdditiveComplaint);
+        return createUnsupportedBudgieLine(forLoopsMustBeAdditiveComplaint);
     }
 
     private getConditionEnd(target: string, condition: ts.Expression) {
@@ -72,7 +72,7 @@ export class ForStatementVisitor extends NodeVisitor {
             (condition.left as ts.Identifier).text !== target ||
             condition.operatorToken.kind !== ts.SyntaxKind.LessThanToken
         ) {
-            return createUnsupportedGlsLine(irregularComplaint);
+            return createUnsupportedBudgieLine(irregularComplaint);
         }
 
         if (ts.isNumericLiteral(condition.right)) {

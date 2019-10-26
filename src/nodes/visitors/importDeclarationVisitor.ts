@@ -1,10 +1,10 @@
-import { CaseStyle, CommandNames, KeywordNames } from "general-language-syntax";
+import { CaseStyle, CommandNames, KeywordNames } from "budgie";
 import * as path from "path";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedGlsLine } from "../../output/unsupported";
+import { createUnsupportedBudgieLine } from "../../output/unsupported";
 import { NodeVisitor } from "../visitor";
 
 const noBaseDirectoryComplaint = "Import directory goes out of bounds of the base directory.";
@@ -22,27 +22,27 @@ export class ImportDeclarationVisitor extends NodeVisitor {
 
     private getTransformationContents(node: ts.ImportDeclaration) {
         if (node.importClause === undefined || node.importClause.namedBindings === undefined) {
-            return createUnsupportedGlsLine(noImportClauseComplaint);
+            return createUnsupportedBudgieLine(noImportClauseComplaint);
         }
 
         if (node.importClause.namedBindings.kind === ts.SyntaxKind.NamespaceImport) {
-            return createUnsupportedGlsLine(noNamespaceImportsComplaint);
+            return createUnsupportedBudgieLine(noNamespaceImportsComplaint);
         }
 
         const packagePath = this.parsePackagePath(node);
-        if (packagePath instanceof GlsLine) {
+        if (packagePath instanceof BudgieLine) {
             return packagePath;
         }
 
         const importedItems = node.importClause.namedBindings.elements.map((element) => element.name.text);
 
-        return new GlsLine(CommandNames.ImportLocal, ...packagePath, KeywordNames.Use, ...importedItems);
+        return new BudgieLine(CommandNames.ImportLocal, ...packagePath, KeywordNames.Use, ...importedItems);
     }
 
-    private parsePackagePath(node: ts.ImportDeclaration): string[] | GlsLine {
+    private parsePackagePath(node: ts.ImportDeclaration): string[] | BudgieLine {
         const packagePathRaw = node.moduleSpecifier.getText(this.sourceFile);
         if (packagePathRaw[1] !== ".") {
-            return createUnsupportedGlsLine(noPackageImportsComplaint);
+            return createUnsupportedBudgieLine(noPackageImportsComplaint);
         }
 
         const sourceDir = path.dirname(this.sourceFile.fileName);
@@ -50,7 +50,7 @@ export class ImportDeclarationVisitor extends NodeVisitor {
         const pathResolved = path.posix.join(sourceDir, packagePath);
 
         if (pathResolved.indexOf(this.context.options.baseDirectory) === -1) {
-            return createUnsupportedGlsLine(noBaseDirectoryComplaint);
+            return createUnsupportedBudgieLine(noBaseDirectoryComplaint);
         }
 
         const pathWithNamespace = path.posix.join(

@@ -1,10 +1,10 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as tsutils from "tsutils";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../output/glsLine";
+import { BudgieLine } from "../../output/budgieLine";
 import { Transformation } from "../../output/transformation";
-import { createUnsupportedTypeGlsLine } from "../../output/unsupported";
+import { createUnsupportedTypeBudgieLine } from "../../output/unsupported";
 import { getListValueType } from "../../parsing/lists";
 import { NodeVisitor } from "../visitor";
 
@@ -16,7 +16,7 @@ export class ForOfStatementVisitor extends NodeVisitor {
     private getTransformationContents(node: ts.ForOfStatement) {
         const expressionType = this.aliaser.getFriendlyTypeName(node.expression);
         if (expressionType === undefined) {
-            return [createUnsupportedTypeGlsLine()];
+            return [createUnsupportedTypeBudgieLine()];
         }
 
         const bodyNodes = this.router.recurseIntoNode(node.statement);
@@ -24,7 +24,11 @@ export class ForOfStatementVisitor extends NodeVisitor {
         const valueType = getListValueType(expressionType);
         const value = this.getContainer(node.initializer);
 
-        return [new GlsLine(CommandNames.ForEachStart, container, valueType, value), ...bodyNodes, new GlsLine(CommandNames.ForEachEnd)];
+        return [
+            new BudgieLine(CommandNames.ForEachStart, container, valueType, value),
+            ...bodyNodes,
+            new BudgieLine(CommandNames.ForEachEnd),
+        ];
     }
 
     private getContainer(initializer: ts.ForInitializer) {

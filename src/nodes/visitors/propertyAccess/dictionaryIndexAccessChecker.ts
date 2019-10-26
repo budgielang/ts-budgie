@@ -1,7 +1,7 @@
-import { CommandNames } from "general-language-syntax";
+import { CommandNames } from "budgie";
 import * as ts from "typescript";
 
-import { GlsLine } from "../../../output/glsLine";
+import { BudgieLine } from "../../../output/budgieLine";
 import { Transformation } from "../../../output/transformation";
 import { wrapWithQuotes } from "../../../parsing/strings";
 
@@ -20,11 +20,11 @@ export class DictionaryIndexAccessChecker extends PropertyAccessChecker {
             value = wrapWithQuotes(value);
         }
 
-        return [Transformation.fromNode(node, this.sourceFile, [new GlsLine(CommandNames.DictionaryIndex, key, value)])];
+        return [Transformation.fromNode(node, this.sourceFile, [new BudgieLine("dictionary index", key, value)])];
     }
 
     private isDictionary(expression: ts.Expression) {
         const friendlyName = this.aliaser.getFriendlyTypeName(expression);
-        return friendlyName instanceof GlsLine ? friendlyName.command === CommandNames.DictionaryType : false;
+        return friendlyName instanceof BudgieLine ? friendlyName.command === CommandNames.DictionaryType : false;
     }
 }
